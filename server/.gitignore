@@ -3,6 +3,7 @@
 
 # production
 /build
+/src/test
 
 # misc
 .DS_Store
