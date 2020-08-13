@@ -18,7 +18,7 @@ export class MessageResolver {
   private constructor(private readonly messageService: MessageService) {}
 
   @Query(() => [MessageObjectType])
-  async products(): Promise<Message[]> {
+  async messages(): Promise<Message[]> {
     return await this.messageService.getAll();
   }
 
