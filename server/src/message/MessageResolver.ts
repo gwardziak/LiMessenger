@@ -23,15 +23,16 @@ export class MessageResolver {
   }
 
   @Mutation(() => Boolean)
-  async publishMessage(
+  async sendMessage(
     @PubSub("MESSAGES") publish: Publisher<IMessage>,
     @Arg("message") message: string
   ): Promise<boolean> {
-    return await this.messageService.pushMessage(publish, message);
+    await this.messageService.sendMessage(publish, message);
+    return true;
   }
 
   @Subscription({ topics: "MESSAGES" })
-  chatSubscription(@Root() { id, text, sender }: IMessage): MessageObjectType {
-    return { id, text, sender };
+  chatSubscription(@Root() message: IMessage): MessageObjectType {
+    return message;
   }
 }

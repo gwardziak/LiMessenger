@@ -1,8 +1,10 @@
 import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
-import { IMessageEntity } from "../../models/Message";
+import { IMessage } from "../../models/Message";
+
+type EntityMessage = Omit<IMessage, "id">;
 
 @Entity()
-export class Message implements IMessageEntity {
+export class Message implements EntityMessage {
   @PrimaryGeneratedColumn()
   id!: number;
 
@@ -12,7 +14,7 @@ export class Message implements IMessageEntity {
   @Column()
   text!: string;
 
-  constructor(options: IMessageEntity) {
+  constructor(options: EntityMessage) {
     if (options) {
       Object.assign(this, options);
     }

@@ -12,10 +12,7 @@ export class MessageService {
     return await this.messageRepository.find();
   }
 
-  async pushMessage(
-    publish: Publisher<IMessage>,
-    text: string
-  ): Promise<boolean> {
+  async sendMessage(publish: Publisher<IMessage>, text: string): Promise<void> {
     const newMessage = new Message({
       text,
       sender: "Robert Lewandowski",
@@ -24,7 +21,5 @@ export class MessageService {
     const message = await this.messageRepository.save(newMessage);
 
     await publish(message);
-
-    return true;
   }
 }
