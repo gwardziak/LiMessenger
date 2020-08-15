@@ -1,8 +1,6 @@
 import {
   Arg,
   Mutation,
-  Publisher,
-  PubSub,
   Query,
   Resolver,
   Root,
@@ -23,11 +21,8 @@ export class MessageResolver {
   }
 
   @Mutation(() => Boolean)
-  async sendMessage(
-    @PubSub("MESSAGES") publish: Publisher<IMessage>,
-    @Arg("message") message: string
-  ): Promise<boolean> {
-    await this.messageService.sendMessage(publish, message);
+  async sendMessage(@Arg("message") message: string): Promise<boolean> {
+    await this.messageService.sendMessage(message);
     return true;
   }
 
