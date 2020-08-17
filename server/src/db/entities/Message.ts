@@ -1,10 +1,11 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 import { IMessage } from "../../models/Message";
+import { User } from "./User";
 
-type EntityMessage = Omit<IMessage, "id">;
+type IMessageEntity = Omit<IMessage, "id">;
 
 @Entity()
-export class Message implements EntityMessage {
+export class Message implements IMessageEntity {
   @PrimaryGeneratedColumn()
   id!: number;
 
@@ -14,7 +15,10 @@ export class Message implements EntityMessage {
   @Column()
   text!: string;
 
-  constructor(options: EntityMessage) {
+  @ManyToOne((type) => User, (user) => user.messages)
+  user!: User;
+
+  constructor(options: IMessageEntity) {
     if (options) {
       Object.assign(this, options);
     }

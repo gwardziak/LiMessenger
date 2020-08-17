@@ -1,5 +1,7 @@
-import { ApolloServer, PubSub } from "apollo-server";
+import { ApolloServer, PubSub } from "apollo-server-express";
 import "dotenv/config";
+import express from "express";
+import http from "http";
 import "reflect-metadata";
 import { buildSchema, useContainer } from "type-graphql";
 import { Container } from "typedi";
@@ -18,6 +20,8 @@ const main = async () => {
     pubSub,
   });
 
+  const app = express();
+  const httpServer = http.createServer(app);
   // Create GraphQL server
   const server = new ApolloServer({
     schema,
@@ -25,9 +29,15 @@ const main = async () => {
     // you can pass the endpoint path for subscriptions
     // otherwise it will be the same as main graphql endpoint
     // subscriptions: "/subscriptions",
+    subscriptions: {
+      onConnect: () => console.log("Connected to websocket"),
+    },
   });
 
-  server.listen(process.env.PORT || 4000);
+  server.installSubscriptionHandlers(httpServer);
+  server.applyMiddleware({ app, path: "/" });
+
+  httpServer.listen(process.env.PORT || 4000);
 
   console.log(
     `Running a GraphQL API server at http://localhost:${
@@ -36,10 +46,3 @@ const main = async () => {
   );
 };
 main().catch((err) => console.error(err));
-
-/*
-import Express from "express";
-import { MessageResolver } from './message/MessageResolver';
-
-const app = Express();
-*/
