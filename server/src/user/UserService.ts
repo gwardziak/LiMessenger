@@ -14,7 +14,7 @@ export class UserService {
     return crypto.randomBytes(20).toString("hex");
   }
 
-  async createUser(userData: SignUpArgs): Promise<User | Error> {
+  async createUser(userData: SignUpArgs): Promise<User> {
     const user = await this.userRepository
       .save({ ...userData, authToken: this.generateAuthToken() })
       .catch(async (err) => {
@@ -25,8 +25,8 @@ export class UserService {
 
     return user;
   }
-  //TODO
-  async signUp({ email, password, name }: SignUpArgs): Promise<string | Error> {
+
+  async signUp({ email, password, name }: SignUpArgs): Promise<string> {
     const isUser = await this.userRepository.findOne({ name });
     if (isUser) throw new Error(`Username ${name} already exist.`);
 
@@ -41,6 +41,6 @@ export class UserService {
       email,
     });
 
-    return "test";
+    return user.authToken;
   }
 }
