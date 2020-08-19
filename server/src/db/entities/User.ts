@@ -18,6 +18,9 @@ export class User implements UserEntity {
   @Column()
   email!: string;
 
+  @Column({ unique: true })
+  authToken!: string;
+
   @OneToMany((type) => Message, (message) => message.user)
   messages!: Message[];
 

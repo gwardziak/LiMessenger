@@ -7,6 +7,7 @@ import { buildSchema, useContainer } from "type-graphql";
 import { Container } from "typedi";
 import { createConnection } from "typeorm";
 import { MessageResolver } from "./message/MessageResolver";
+import { UserResolver } from './user/UserResolver';
 
 useContainer(Container);
 const pubSub = new PubSub();
@@ -16,7 +17,7 @@ const main = async () => {
   await createConnection();
 
   const schema = await buildSchema({
-    resolvers: [MessageResolver],
+    resolvers: [MessageResolver, UserResolver],
     pubSub,
   });
 

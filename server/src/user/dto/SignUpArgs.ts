@@ -1,7 +1,6 @@
+import { IsEmail, MinLength } from "class-validator";
 import { ArgsType, Field } from "type-graphql";
-import { IUser } from "../../models/User";
-
-type ISignUpArgs = Omit<IUser, "id">;
+import { ISignUpArgs } from "../../models/User";
 
 @ArgsType()
 export class SignUpArgs implements ISignUpArgs {
@@ -9,8 +8,10 @@ export class SignUpArgs implements ISignUpArgs {
   public readonly name!: string;
 
   @Field()
+  @MinLength(8)
   public readonly password!: string;
 
   @Field()
+  @IsEmail()
   public readonly email!: string;
 }
