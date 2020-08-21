@@ -2,7 +2,7 @@ import { Field, ID, ObjectType } from "type-graphql";
 import { Message } from "../../db/entities/Message";
 import { IUser } from "../../models/User";
 
-type IUserObjectType = Omit<IUser, "password">;
+type IUserObjectType = Omit<IUser, "password" | "authToken">;
 
 @ObjectType("User")
 export class UserObjectType implements IUserObjectType {
@@ -10,7 +10,7 @@ export class UserObjectType implements IUserObjectType {
   id!: number;
 
   @Field()
-  name!: string;
+  username!: string;
 
   @Field()
   email!: string;

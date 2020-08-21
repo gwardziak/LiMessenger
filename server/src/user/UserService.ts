@@ -1,9 +1,25 @@
+import { AuthenticationError, UserInputError } from "apollo-server-express";
 import * as bcrypt from "bcrypt";
 import * as crypto from "crypto";
 import { Service } from "typedi";
 import { getRepository } from "typeorm";
 import { User } from "../db/entities/User";
-import { SignUpArgs } from "./dto/SignUpArgs";
+import { IUser } from "./../models/User";
+import { isDuplicateError } from "./../utils/isDuplicateError";
+
+type Token = IUser["authToken"];
+
+export namespace UserService {
+  export type CreateUserOptions = {
+    username: string;
+    password: string;
+    email: string;
+  };
+  export type LoginUserOptions = {
+    login: string;
+    password: string;
+  };
+}
 
 @Service()
 export class UserService {
@@ -14,33 +30,44 @@ export class UserService {
     return crypto.randomBytes(20).toString("hex");
   }
 
-  async createUser(userData: SignUpArgs): Promise<User> {
-    const user = await this.userRepository
-      .save({ ...userData, authToken: this.generateAuthToken() })
-      .catch(async (err) => {
-        if (err.errno === 19) await this.createUser(userData);
-
-        throw new Error("User creation failed");
-      });
-
-    return user;
+  private async hashPassword(password: string): Promise<string> {
+    return await bcrypt.hash(password, this.saltRounds);
   }
 
-  async signUp({ email, password, name }: SignUpArgs): Promise<string> {
-    const isUser = await this.userRepository.findOne({ name });
-    if (isUser) throw new Error(`Username ${name} already exist.`);
-
-    const isEmail = await this.userRepository.findOne({ email });
-    if (isEmail) throw new Error(`Email ${email} is already in use.`);
-
-    const hashPassword = await bcrypt.hash(password, this.saltRounds);
-
-    const user = await this.createUser({
-      name,
-      password: hashPassword,
-      email,
+  async createUser(userOptions: UserService.CreateUserOptions): Promise<User> {
+    const user = new User({
+      ...userOptions,
+      password: await this.hashPassword(userOptions.password),
+      authToken: this.generateAuthToken(),
     });
 
-    return user.authToken;
+    try {
+      await this.userRepository.insert(user);
+      return user;
+    } catch (err) {
+      if (isDuplicateError(err, "user.authToken")) {
+        this.createUser(user);
+      }
+
+      throw err;
+    }
+  }
+
+  async login(loginOptions: UserService.LoginUserOptions): Promise<User> {
+    const user = await this.userRepository.findOne({
+      username: loginOptions.login,
+    });
+
+    if (!user) {
+      throw new UserInputError("No user found with this login credentials.");
+    }
+
+    const hashInputPassowrd = await this.hashPassword(loginOptions.password);
+
+    if (hashInputPassowrd === user.password) {
+      throw new AuthenticationError("Invalid password.");
+    }
+
+    return user;
   }
 }

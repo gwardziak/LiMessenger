@@ -9,13 +9,13 @@ export class User implements UserEntity {
   @PrimaryGeneratedColumn()
   id!: number;
 
-  @Column()
-  name!: string;
+  @Column({ unique: true })
+  username!: string;
 
   @Column()
   password!: string;
 
-  @Column()
+  @Column({ unique: true })
   email!: string;
 
   @Column({ unique: true })
