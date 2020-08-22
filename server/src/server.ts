@@ -1,4 +1,6 @@
 import { ApolloServer, PubSub } from "apollo-server-express";
+import cookieParser from "cookie-parser";
+import cors from "cors";
 import "dotenv/config";
 import express from "express";
 import http from "http";
@@ -7,7 +9,7 @@ import { buildSchema, useContainer } from "type-graphql";
 import { Container } from "typedi";
 import { createConnection } from "typeorm";
 import { MessageResolver } from "./message/MessageResolver";
-import { UserResolver } from './user/UserResolver';
+import { UserResolver } from "./user/UserResolver";
 
 useContainer(Container);
 const pubSub = new PubSub();
@@ -23,10 +25,13 @@ const main = async () => {
 
   const app = express();
   const httpServer = http.createServer(app);
+
   // Create GraphQL server
   const server = new ApolloServer({
     schema,
     playground: true,
+    context: ({ req, res }) => ({ req, res }),
+
     // you can pass the endpoint path for subscriptions
     // otherwise it will be the same as main graphql endpoint
     // subscriptions: "/subscriptions",
@@ -35,6 +40,8 @@ const main = async () => {
     },
   });
 
+  app.use(cors());
+  app.use(cookieParser());
   server.installSubscriptionHandlers(httpServer);
   server.applyMiddleware({ app, path: "/" });
 

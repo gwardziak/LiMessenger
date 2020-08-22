@@ -4,10 +4,8 @@ import * as crypto from "crypto";
 import { Service } from "typedi";
 import { getRepository } from "typeorm";
 import { User } from "../db/entities/User";
-import { IUser } from "./../models/User";
+import { IUser } from "../models/User";
 import { isDuplicateError } from "./../utils/isDuplicateError";
-
-type Token = IUser["authToken"];
 
 export namespace UserService {
   export type CreateUserOptions = {
@@ -19,6 +17,7 @@ export namespace UserService {
     login: string;
     password: string;
   };
+  export type Token = IUser["authToken"];
 }
 
 @Service()
@@ -53,7 +52,9 @@ export class UserService {
     }
   }
 
-  async login(loginOptions: UserService.LoginUserOptions): Promise<User> {
+  async login(
+    loginOptions: UserService.LoginUserOptions
+  ): Promise<UserService.Token> {
     const user = await this.userRepository.findOne({
       username: loginOptions.login,
     });
@@ -68,6 +69,6 @@ export class UserService {
       throw new AuthenticationError("Invalid password.");
     }
 
-    return user;
+    return user.authToken;
   }
 }
