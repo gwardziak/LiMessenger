@@ -1,10 +1,7 @@
 import { Args, Ctx, Mutation, Resolver } from "type-graphql";
-import { IUser } from "../models/User";
-import { SignInArgs } from "./dto/SignInArgs";
+import { ISignInArgs, SignInArgs } from "./dto/SignInArgs";
 import { SignUpArgs } from "./dto/SignUpArgs";
 import { UserService } from "./UserService";
-
-type Token = IUser["authToken"];
 
 @Resolver()
 export class UserResolver {
@@ -17,17 +14,19 @@ export class UserResolver {
   }
 
   @Mutation(() => Boolean)
-  async signIn(@Args() credentials: SignInArgs, @Ctx() ctx: any) {
+  async signIn(
+    @Args()
+    credentials: SignInArgs,
+    @Ctx() ctx: ISignInArgs.Context
+  ): Promise<boolean> {
     const token = await this.userService.login(credentials);
 
-    ctx.res.cookie("id", token, {
+    ctx.res.cookie("token", token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       maxAge: 1000 * 60 * 60 * 24 * 7, // 7 days
     });
-    console.log(token);
-    console.log("Cookie has been created");
-
+    console.log(ctx.authUser);
     return true;
   }
 }

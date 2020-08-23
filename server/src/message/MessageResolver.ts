@@ -1,6 +1,5 @@
 import {
   Arg,
-  Ctx,
   Mutation,
   Query,
   Resolver,
@@ -22,12 +21,8 @@ export class MessageResolver {
   }
 
   @Mutation(() => Boolean)
-  async sendMessage(
-    @Arg("message") message: string,
-    @Ctx() ctx: any
-  ): Promise<boolean> {
+  async sendMessage(@Arg("message") message: string): Promise<boolean> {
     await this.messageService.sendMessage(message);
-    console.log(ctx.req.cookies);
     return true;
   }
 
