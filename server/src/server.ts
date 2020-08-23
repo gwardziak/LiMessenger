@@ -31,8 +31,8 @@ const main = async () => {
     schema,
     playground: true,
 
-    context: ({ req, res }) => {
-      const authUser = verifyUserToken(req.cookies.token);
+    context: async ({ req, res }) => {
+      const authUser = await verifyUserToken(req.cookies.token);
       return { req, res, authUser };
     },
 

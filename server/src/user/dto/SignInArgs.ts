@@ -1,6 +1,5 @@
-import { Request, Response } from "express";
+import { Response } from "express";
 import { ArgsType, Field } from "type-graphql";
-import { User } from "../../db/entities/User";
 
 export namespace ISignInArgs {
   export type UserOptions = {
@@ -8,9 +7,7 @@ export namespace ISignInArgs {
     password: string;
   };
   export interface Context {
-    req: Request;
     res: Response;
-    authUser: User;
   }
 }
 
