@@ -1,3 +1,4 @@
+import { ForbiddenError } from "apollo-server-express";
 import {
   Arg,
   Ctx,
@@ -27,7 +28,10 @@ export class MessageResolver {
     @Arg("message") message: string,
     @Ctx() context: { authUser: User }
   ): Promise<boolean> {
-    console.log(context.authUser);
+    if (!context.authUser) {
+      throw new ForbiddenError("Not authenticated as user.");
+    }
+
     await this.messageService.sendMessage(message);
     return true;
   }
