@@ -9,6 +9,7 @@ import { Container } from "typedi";
 import { createConnection } from "typeorm";
 import { MessageResolver } from "./message/MessageResolver";
 import { UserResolver } from "./user/UserResolver";
+import { authChecker } from "./utils/authChecker";
 import { verifyUserToken } from "./utils/verifyUserToken";
 
 useContainer(Container);
@@ -21,6 +22,7 @@ const main = async () => {
   const schema = await buildSchema({
     resolvers: [MessageResolver, UserResolver],
     pubSub,
+    authChecker,
   });
 
   const app = express();
