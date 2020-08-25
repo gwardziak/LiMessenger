@@ -45,7 +45,6 @@ const main = async () => {
     // subscriptions: "/subscriptions",
     subscriptions: {
       onConnect: (connectionParams, webSocket, ctx) => {
-        //console.log(ctx.headers);
         console.log("Connected to ws");
       },
     },

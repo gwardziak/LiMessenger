@@ -7,9 +7,11 @@ import {
   Query,
   Resolver,
   Root,
+  Subscription,
 } from "type-graphql";
 import { Message } from "../db/entities/Message";
 import { User } from "../db/entities/User";
+import { IChatSubArgs } from "./dto/ChatSubArgs";
 import { MessageObjectType } from "./dto/MessageObjectType";
 import { MessageService } from "./MessageService";
 
@@ -43,10 +45,9 @@ export class MessageResolver {
     await this.messageService.sendMessage(context.authUser, message);
     return true;
   }
-  /*
+
   @Subscription({ topics: "MESSAGES" })
-  chatSubscription(@Root() message: IMessage): MessageObjectType {
+  chatSubscription(@Root() message: IChatSubArgs): MessageObjectType {
     return message;
   }
-  */
 }

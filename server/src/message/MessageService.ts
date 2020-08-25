@@ -26,8 +26,12 @@ export class MessageService {
     });
     newMessage.user = user;
 
-    const message = await this.messageRepository.save(newMessage);
-    await this.pubSub.publish("MESSAGES", message);
+    await this.messageRepository.insert(newMessage);
+    await this.pubSub.publish("MESSAGES", {
+      id: newMessage.id,
+      text: newMessage.text,
+      username: newMessage.user.username,
+    });
   }
 
   async getMessageOwner(messageId: number): Promise<User> {
