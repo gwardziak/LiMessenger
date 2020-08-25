@@ -1,6 +1,7 @@
 import {
   Arg,
   Authorized,
+  Ctx,
   Mutation,
   Query,
   Resolver,
@@ -8,6 +9,7 @@ import {
   Subscription,
 } from "type-graphql";
 import { Message } from "../db/entities/Message";
+import { User } from "../db/entities/User";
 import { IMessage } from "../models/Message";
 import { MessageObjectType } from "./dto/MessageObjectType";
 import { MessageService } from "./MessageService";
@@ -23,8 +25,11 @@ export class MessageResolver {
 
   @Authorized()
   @Mutation(() => Boolean)
-  async sendMessage(@Arg("message") message: string): Promise<boolean> {
-    await this.messageService.sendMessage(message);
+  async sendMessage(
+    @Arg("message") message: string,
+    @Ctx() context: { authUser: User }
+  ): Promise<boolean> {
+    await this.messageService.sendMessage(context.authUser.username, message);
     return true;
   }
 

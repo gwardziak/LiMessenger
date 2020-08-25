@@ -68,7 +68,11 @@ export class UserService {
     if (hashInputPassowrd === user.password) {
       throw new AuthenticationError("Invalid password.");
     }
-
+    /*
+    if (!user.accountVerified) {
+      throw new UserInputError("Account not verified.");
+    }
+*/
     return user.authToken;
   }
 }

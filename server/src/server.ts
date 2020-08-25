@@ -33,8 +33,10 @@ const main = async () => {
     schema,
     playground: true,
 
-    context: async ({ req, res }) => {
+    context: async ({ req, res, connection }) => {
+      if (connection) return connection.context;
       const authUser = await verifyUserToken(req.cookies.token);
+
       return { req, res, authUser };
     },
 
@@ -42,7 +44,10 @@ const main = async () => {
     // otherwise it will be the same as main graphql endpoint
     // subscriptions: "/subscriptions",
     subscriptions: {
-      onConnect: () => console.log("Connected to websocket"),
+      onConnect: (connectionParams, webSocket, ctx) => {
+        //console.log(ctx.headers);
+        console.log("Connected to ws");
+      },
     },
   });
 

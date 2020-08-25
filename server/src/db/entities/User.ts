@@ -21,6 +21,9 @@ export class User implements UserEntity {
   @Column({ unique: true })
   authToken!: string;
 
+  @Column({ default: false })
+  accountVerified!: boolean;
+
   @OneToMany((type) => Message, (message) => message.user)
   messages!: Message[];
 

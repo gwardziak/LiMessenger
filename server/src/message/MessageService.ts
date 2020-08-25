@@ -15,10 +15,10 @@ export class MessageService {
     return await this.messageRepository.find();
   }
 
-  async sendMessage(text: string): Promise<void> {
+  async sendMessage(username: string, text: string): Promise<void> {
     const newMessage = new Message({
       text,
-      sender: "Robert Lewandowski",
+      //username,
     });
 
     const message = await this.messageRepository.save(newMessage);

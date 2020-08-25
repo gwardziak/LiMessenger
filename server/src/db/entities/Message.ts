@@ -10,9 +10,6 @@ export class Message implements IMessageEntity {
   id!: number;
 
   @Column()
-  sender!: string;
-
-  @Column()
   text!: string;
 
   @ManyToOne((type) => User, (user) => user.messages)
