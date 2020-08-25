@@ -8,8 +8,7 @@ export class MessageObjectType implements IMessage {
 
   @Field()
   text!: string;
-  /*
-  @Field()
-  sender!: string;
-*/
+
+  @Field((type) => String)
+  username!: string;
 }

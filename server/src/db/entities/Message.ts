@@ -7,7 +7,7 @@ type IMessageEntity = Omit<IMessage, "id">;
 @Entity()
 export class Message implements IMessageEntity {
   @PrimaryGeneratedColumn()
-  id!: number;
+  readonly id!: number;
 
   @Column()
   text!: string;

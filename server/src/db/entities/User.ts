@@ -7,7 +7,7 @@ type UserEntity = Omit<IUser, "id">;
 @Entity()
 export class User implements UserEntity {
   @PrimaryGeneratedColumn()
-  id!: number;
+  readonly id!: number;
 
   @Column({ unique: true })
   username!: string;

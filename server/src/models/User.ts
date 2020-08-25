@@ -5,9 +5,3 @@ export interface IUser {
   email: string;
   authToken: string;
 }
-
-export interface ISignUpArgs {
-  name: string;
-  password: string;
-  email: string;
-}
