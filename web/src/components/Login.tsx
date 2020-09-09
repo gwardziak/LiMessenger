@@ -1,35 +1,33 @@
 import React from "react";
 import styled from "styled-components";
-import { Link } from "./../ui/Link";
+import { Link as StyledLink } from "./../ui/Link";
 
 export const Login = () => {
   return (
-    <>
-      <LoginContainer>
-        <FormContainer>
-          <Box>
-            <Input type="text" placeholder="Email address or login" />
-          </Box>
-          <Box>
-            <Input type="password" placeholder="Password" />
-          </Box>
-          <Box>
-            <BlueButton>Log In</BlueButton>
-          </Box>
-          <Box>
-            <BlueLinkButton href="#">Forgotten account?</BlueLinkButton>
-          </Box>
-          <BoxWithLine></BoxWithLine>
-          <Box>
-            <GreenLinkButton href="#">Create New Account</GreenLinkButton>
-          </Box>
-        </FormContainer>
+    <LoginContainer>
+      <FormContainer>
         <Box>
-          <BoldLink href="#">Create a Page</BoldLink> for a celebrity, band or
-          business.
+          <Input type="text" placeholder="Email address or login" />
         </Box>
-      </LoginContainer>
-    </>
+        <Box>
+          <Input type="password" placeholder="Password" />
+        </Box>
+        <Box>
+          <BlueButton>Log In</BlueButton>
+        </Box>
+        <Box>
+          <BlueLinkButton href="#">Forgotten account?</BlueLinkButton>
+        </Box>
+        <BoxWithLine></BoxWithLine>
+        <Box>
+          <GreenLinkButton href="#">Create New Account</GreenLinkButton>
+        </Box>
+      </FormContainer>
+      <Box>
+        <BoldLink href="#">Create a Page</BoldLink> for a celebrity, band or
+        business.
+      </Box>
+    </LoginContainer>
   );
 };
 
@@ -56,6 +54,10 @@ const Input = styled.input`
 `;
 
 const BlueButton = styled.button`
+  &:focus {
+    outline: none;
+  }
+
   background-color: #1877f2;
   border: none;
   border-radius: 6px;
@@ -82,19 +84,13 @@ const BoxWithLine = styled(Box)`
   margin: 5px 16px 20px;
 `;
 
-const BlueLinkButton = styled(Link)`
-  :link {
-    color: #1877f2;
-  }
+const BlueLinkButton = styled(StyledLink)`
+  color: #1877f2;
 
   font-weight: 500;
 `;
 
-const GreenLinkButton = styled(Link)`
-  :link {
-    color: #fff;
-  }
-
+const GreenLinkButton = styled(StyledLink)`
   :hover {
     text-decoration: none;
     background-color: #36a420;
@@ -105,6 +101,7 @@ const GreenLinkButton = styled(Link)`
     background-color: #2b9217;
   }
 
+  color: #fff;
   font-weight: bold;
   border: none;
   border-radius: 6px;
@@ -117,7 +114,7 @@ const GreenLinkButton = styled(Link)`
   margin-bottom: 20px;
 `;
 
-const BoldLink = styled(Link)`
+const BoldLink = styled(StyledLink)`
   font-weight: 600;
 `;
 
