@@ -1,17 +1,14 @@
+import { Arg, Query, Resolver } from "type-graphql";
 import {
-  Arg,
   Authorized,
   Ctx,
   FieldResolver,
   Mutation,
-  Query,
-  Resolver,
   Root,
   Subscription,
-} from "type-graphql";
+} from "type-graphql/decorators";
 import { Message } from "../db/entities/Message";
-import { User } from "../db/entities/User";
-import { IChatSubArgs } from "./dto/ChatSubArgs";
+import { MyContext } from "../models/MyContext";
 import { MessageObjectType } from "./dto/MessageObjectType";
 import { MessageService } from "./MessageService";
 
@@ -20,8 +17,10 @@ export class MessageResolver {
   private constructor(private readonly messageService: MessageService) {}
 
   @Query(() => MessageObjectType, { nullable: true })
-  async message(@Arg("messageId") id: number): Promise<Message | undefined> {
-    return await this.messageService.getOne(id);
+  async message(
+    @Arg("uuid", () => String) uuid: string
+  ): Promise<Message | undefined> {
+    return await this.messageService.getOne(uuid);
   }
 
   @Query(() => [MessageObjectType])
@@ -29,25 +28,24 @@ export class MessageResolver {
     return await this.messageService.getAll();
   }
 
-  @FieldResolver()
-  async username(@Root() message: Message): Promise<string> {
-    const user = await this.messageService.getMessageOwner(message.id);
-
-    return user!.username;
-  }
-
   @Authorized()
   @Mutation(() => Boolean)
   async sendMessage(
     @Arg("message") message: string,
-    @Ctx() context: { authUser: User }
+    @Ctx() context: MyContext
   ): Promise<boolean> {
     await this.messageService.sendMessage(context.authUser, message);
     return true;
   }
 
+  @FieldResolver(() => String)
+  async username(@Root() message: Message): Promise<string> {
+    const user = await this.messageService.getMessageOwner(message.id);
+    return user.username;
+  }
+
   @Subscription({ topics: "MESSAGES" })
-  chatSubscription(@Root() message: IChatSubArgs): MessageObjectType {
+  chatSubscription(@Root() message: Message): MessageObjectType {
     return message;
   }
 }

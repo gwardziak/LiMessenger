@@ -12,8 +12,8 @@ export class MessageService {
 
   private messageRepository = getRepository(Message);
 
-  async getOne(id: number): Promise<Message | undefined> {
-    return await this.messageRepository.findOne(id);
+  async getOne(uuid: string): Promise<Message | undefined> {
+    return await this.messageRepository.findOne(uuid);
   }
 
   async getAll(): Promise<Message[]> {
@@ -21,16 +21,14 @@ export class MessageService {
   }
 
   async sendMessage(user: User, text: string): Promise<void> {
-    const newMessage = new Message({
+    const message = new Message({
       text,
+      user,
     });
-    newMessage.user = user;
 
-    await this.messageRepository.insert(newMessage);
+    await this.messageRepository.insert(message);
     await this.pubSub.publish("MESSAGES", {
-      id: newMessage.id,
-      text: newMessage.text,
-      username: newMessage.user.username,
+      ...message,
     });
   }
 

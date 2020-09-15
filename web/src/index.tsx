@@ -1,7 +1,9 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import { createGlobalStyle } from "styled-components";
+import { createClient, Provider } from "urql";
 import App from "./App";
+import { RouteProvider } from "./router";
 
 const GlobalStyle = createGlobalStyle`
 body {
@@ -22,10 +24,23 @@ code {
 }
 `;
 
+const client = createClient({
+  url: "http://localhost:4000",
+  requestPolicy: "cache-and-network",
+  fetchOptions: {
+    credentials: "include",
+    mode: "cors",
+  },
+});
+
 ReactDOM.render(
   <React.StrictMode>
     <GlobalStyle />
-    <App />
+    <Provider value={client}>
+      <RouteProvider>
+        <App />
+      </RouteProvider>
+    </Provider>
   </React.StrictMode>,
   document.getElementById("root")
 );

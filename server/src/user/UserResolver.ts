@@ -1,6 +1,7 @@
-import { Args, Ctx, Mutation, Resolver } from "type-graphql";
-import { ISignInArgs, SignInArgs } from "./dto/SignInArgs";
-import { SignUpArgs } from "./dto/SignUpArgs";
+import { Arg, Ctx, Mutation, Resolver } from "type-graphql";
+import { MyContext } from "./../models/MyContext";
+import { SignInInput } from "./dto/SignInInput";
+import { SignUpInput } from "./dto/SignUpInput";
 import { UserService } from "./UserService";
 
 @Resolver()
@@ -8,18 +9,18 @@ export class UserResolver {
   private constructor(private readonly userService: UserService) {}
 
   @Mutation(() => Boolean)
-  async signUp(@Args() credentials: SignUpArgs): Promise<boolean> {
-    await this.userService.createUser(credentials);
+  async signUp(@Arg("options") options: SignUpInput): Promise<boolean> {
+    await this.userService.createUser(options);
     return true;
   }
 
   @Mutation(() => Boolean)
   async signIn(
-    @Args()
-    credentials: SignInArgs,
-    @Ctx() context: ISignInArgs.Context
+    @Arg("options")
+    options: SignInInput,
+    @Ctx() context: MyContext
   ): Promise<boolean> {
-    const token = await this.userService.login(credentials);
+    const token = await this.userService.login(options);
 
     context.res.cookie("token", token, {
       httpOnly: true,

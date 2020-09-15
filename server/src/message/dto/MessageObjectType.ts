@@ -1,14 +1,25 @@
-import { Field, ID, ObjectType } from "type-graphql";
-import { IMessage } from "../../models/Message";
+import { Field, ObjectType } from "type-graphql";
+
+namespace MessageObjectType {
+  export type Options = {
+    uuid: string;
+    text: string;
+    createdAt: Date;
+    updatedAt: Date;
+  };
+}
 
 @ObjectType("Message")
-export class MessageObjectType implements IMessage {
-  @Field((type) => ID)
-  id!: number;
+export class MessageObjectType implements MessageObjectType.Options {
+  @Field()
+  uuid!: string;
 
   @Field()
   text!: string;
 
-  @Field((type) => String)
-  username!: string;
+  @Field((type) => Date)
+  createdAt!: Date;
+
+  @Field((type) => Date)
+  updatedAt!: Date;
 }

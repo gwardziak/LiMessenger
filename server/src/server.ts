@@ -1,5 +1,6 @@
 import { ApolloServer, PubSub } from "apollo-server-express";
 import cookieParser from "cookie-parser";
+import cors from "cors";
 import "dotenv/config";
 import express from "express";
 import http from "http";
@@ -28,6 +29,13 @@ const main = async () => {
   const app = express();
   const httpServer = http.createServer(app);
 
+  app.use(
+    cors({
+      origin: "http://localhost:3000",
+      credentials: true,
+    })
+  );
+
   // Create GraphQL server
   const server = new ApolloServer({
     schema,
@@ -52,7 +60,7 @@ const main = async () => {
 
   app.use(cookieParser());
   server.installSubscriptionHandlers(httpServer);
-  server.applyMiddleware({ app, path: "/" });
+  server.applyMiddleware({ app, path: "/", cors: false });
 
   httpServer.listen(process.env.PORT || 4000);
 

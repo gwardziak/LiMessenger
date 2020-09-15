@@ -1,8 +1,21 @@
 import React from "react";
 import styled from "styled-components";
+import { routes } from "../router";
+import { useSignInMutation } from "./../generated/graphql";
 import { Link as StyledLink } from "./../ui/Link";
 
 export const Login = () => {
+  const options = { login: "loser", password: "password" };
+  const [, login] = useSignInMutation();
+
+  const handleClick = async (
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent>
+  ) => {
+    e.preventDefault();
+    const res = await login({ options });
+
+    console.log(res);
+  };
   return (
     <LoginContainer>
       <FormContainer>
@@ -13,19 +26,22 @@ export const Login = () => {
           <Input type="password" placeholder="Password" />
         </Box>
         <Box>
-          <BlueButton>Log In</BlueButton>
+          <BlueButton onClick={(e) => handleClick(e)}>Log In</BlueButton>
         </Box>
         <Box>
-          <BlueLinkButton href="#">Forgotten account?</BlueLinkButton>
+          <BlueLinkButton {...routes.forgotCredentials().link}>
+            Forgotten account?
+          </BlueLinkButton>
         </Box>
         <BoxWithLine></BoxWithLine>
         <Box>
-          <GreenLinkButton href="#">Create New Account</GreenLinkButton>
+          <GreenLinkButton {...routes.register().link}>
+            Create New Account
+          </GreenLinkButton>
         </Box>
       </FormContainer>
       <Box>
-        <BoldLink href="#">Create a Page</BoldLink> for a celebrity, band or
-        business.
+        <BoldLink>Create a Page</BoldLink> for a celebrity, band or business.
       </Box>
     </LoginContainer>
   );

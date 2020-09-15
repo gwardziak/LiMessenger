@@ -5,15 +5,15 @@ import { Service } from "typedi";
 import { getRepository } from "typeorm";
 import { User } from "../db/entities/User";
 import { IUser } from "../models/User";
-import { isDuplicateError } from "./../utils/isDuplicateError";
+import { isDuplicateError } from "../utils/isDuplicateError";
 
 export namespace UserService {
-  export type CreateUserOptions = {
+  export type CreateUser = {
     username: string;
     password: string;
     email: string;
   };
-  export type LoginUserOptions = {
+  export type Login = {
     login: string;
     password: string;
   };
@@ -33,10 +33,10 @@ export class UserService {
     return await bcrypt.hash(password, this.saltRounds);
   }
 
-  async createUser(userOptions: UserService.CreateUserOptions): Promise<User> {
+  async createUser(options: UserService.CreateUser): Promise<User> {
     const user = new User({
-      ...userOptions,
-      password: await this.hashPassword(userOptions.password),
+      ...options,
+      password: await this.hashPassword(options.password),
       authToken: this.generateAuthToken(),
     });
 
@@ -52,9 +52,7 @@ export class UserService {
     }
   }
 
-  async login(
-    loginOptions: UserService.LoginUserOptions
-  ): Promise<UserService.Token> {
+  async login(loginOptions: UserService.Login): Promise<UserService.Token> {
     const user = await this.userRepository.findOne({
       username: loginOptions.login,
     });

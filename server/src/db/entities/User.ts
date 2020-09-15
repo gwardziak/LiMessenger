@@ -1,13 +1,31 @@
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
-import { IUser } from "../../models/User";
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  Generated,
+  OneToMany,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
+} from "typeorm";
 import { Message } from "./Message";
 
-type UserEntity = Omit<IUser, "id">;
+export namespace User {
+  export type Options = {
+    username: string;
+    password: string;
+    email: string;
+    authToken: string;
+  };
+}
 
 @Entity()
-export class User implements UserEntity {
+export class User implements User.Options {
   @PrimaryGeneratedColumn()
   readonly id!: number;
+
+  @Column()
+  @Generated("uuid")
+  uuid!: string;
 
   @Column({ unique: true })
   username!: string;
@@ -21,13 +39,19 @@ export class User implements UserEntity {
   @Column({ unique: true })
   authToken!: string;
 
+  @CreateDateColumn()
+  createdAt!: Date;
+
+  @UpdateDateColumn()
+  updatedAt!: Date;
+
   @Column({ default: false })
   accountVerified!: boolean;
 
   @OneToMany((type) => Message, (message) => message.user)
   messages!: Message[];
 
-  constructor(options: UserEntity) {
+  constructor(options: User.Options) {
     if (options) {
       Object.assign(this, options);
     }
