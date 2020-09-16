@@ -43,8 +43,10 @@ const main = async () => {
 
     context: async ({ req, res, connection }) => {
       if (connection) return connection.context;
+      console.log(req.cookies);
       const authUser = await verifyUserToken(req.cookies.token);
 
+      console.log("authUser", authUser);
       return { req, res, authUser };
     },
 

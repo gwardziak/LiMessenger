@@ -1,12 +1,17 @@
 import { useEffect } from "react";
 import { useMeQuery } from "../generated/graphql";
-import { routes } from "../router";
+import { routes, useRoute } from "../router";
+
 export const useIsAuth = () => {
-  const [{ data, fetching }] = useMeQuery();
+  const [{ fetching, data }] = useMeQuery();
+  const route = useRoute();
+
+  console.log("route:", route);
 
   useEffect(() => {
+    console.log(route.name);
     if (!fetching && !data?.me) {
       routes.landing().replace();
     }
-  }, [fetching, data, routes]);
+  }, [fetching, data, route]);
 };

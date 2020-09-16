@@ -29,11 +29,16 @@ export class UserService {
     return crypto.randomBytes(20).toString("hex");
   }
 
-  private async hashPassword(password: string): Promise<string> {
+  private async hash(password: string): Promise<string> {
     return await bcrypt.hash(password, this.saltRounds);
   }
 
+  private async compareHash(password: string, hash: string): Promise<boolean> {
+    return await bcrypt.compare(password, hash);
+  }
+
   authorize(user: User | null): User | null {
+    console.log(user);
     // you are not logged in
     if (!user) {
       return null;
@@ -45,7 +50,7 @@ export class UserService {
   async createUser(options: UserService.CreateUser): Promise<User> {
     const user = new User({
       ...options,
-      password: await this.hashPassword(options.password),
+      password: await this.hash(options.password),
       authToken: this.generateAuthToken(),
     });
 
@@ -70,9 +75,7 @@ export class UserService {
       throw new UserInputError("No user found with this login credentials.");
     }
 
-    const hashInputPassowrd = await this.hashPassword(loginOptions.password);
-
-    if (hashInputPassowrd === user.password) {
+    if (!this.compareHash(loginOptions.password, user.password)) {
       throw new AuthenticationError("Invalid password.");
     }
     /*

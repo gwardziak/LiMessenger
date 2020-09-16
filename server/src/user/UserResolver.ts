@@ -1,4 +1,4 @@
-import { Arg, Ctx, Mutation, Query, Resolver } from "type-graphql";
+import { Arg, Authorized, Ctx, Mutation, Query, Resolver } from "type-graphql";
 import { User } from "../db/entities/User";
 import { MyContext } from "./../models/MyContext";
 import { SignInInput } from "./dto/SignInInput";
@@ -10,6 +10,7 @@ import { UserService } from "./UserService";
 export class UserResolver {
   private constructor(private readonly userService: UserService) {}
 
+  @Authorized()
   @Query(() => UserObjectType, { nullable: true })
   me(@Ctx() context: MyContext): User | null {
     return this.userService.authorize(context.authUser);
