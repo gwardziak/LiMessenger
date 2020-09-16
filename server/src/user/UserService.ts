@@ -33,6 +33,15 @@ export class UserService {
     return await bcrypt.hash(password, this.saltRounds);
   }
 
+  authorize(user: User | null): User | null {
+    // you are not logged in
+    if (!user) {
+      return null;
+    }
+
+    return user;
+  }
+
   async createUser(options: UserService.CreateUser): Promise<User> {
     const user = new User({
       ...options,

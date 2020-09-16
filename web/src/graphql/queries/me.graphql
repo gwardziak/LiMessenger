@@ -1,0 +1,9 @@
+query Me {
+  me {
+    uuid
+    username
+    email
+    password
+    accountVerified
+  }
+}

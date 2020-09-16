@@ -1,0 +1,7 @@
+query Message($uuid: String!) {
+  message(uuid: $uuid) {
+    uuid
+    text
+    username
+  }
+}

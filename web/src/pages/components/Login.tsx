@@ -1,10 +1,16 @@
 import React from "react";
 import styled from "styled-components";
-import { routes } from "../router";
-import { useSignInMutation } from "./../generated/graphql";
-import { Link as StyledLink } from "./../ui/Link";
+import { Route } from "type-route";
+import { useSignInMutation } from "../../generated/graphql";
+import { routes } from "../../router";
+import { Link as StyledLink } from "../../ui/Link";
 
-export const Login = () => {
+type Props = {
+  route: Route<typeof routes.landing>;
+};
+
+export const Login = (props: Props) => {
+  const { route } = props;
   const options = { login: "loser", password: "password" };
   const [, login] = useSignInMutation();
 
