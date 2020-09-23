@@ -1,20 +1,15 @@
 import React, { useState } from "react";
+import { useHistory } from "react-router-dom";
 import styled from "styled-components";
-import { Route } from "type-route";
 import { useSignInMutation } from "../generated/graphql";
-import { routes } from "../router";
 import { Link as StyledLink } from "../ui/Link";
 
-type Props = {
-  route: Route<typeof routes.landing>;
-};
+export const Login = () => {
+  const [loginCredential, setLoginCredential] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
 
-export const Login = (props: Props) => {
-  const [loginCredential, setLoginCredential] = useState<string>("sebix");
-  const [password, setPassword] = useState<string>("patox123");
-
-  const { route } = props;
   const [, login] = useSignInMutation();
+  const history = useHistory();
 
   const handleSubmit = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
@@ -25,7 +20,7 @@ export const Login = (props: Props) => {
     if (response.error) {
       console.log(response.error);
     } else {
-      routes.main().replace();
+      history.replace("/");
     }
   };
   return (
@@ -49,19 +44,18 @@ export const Login = (props: Props) => {
           <BlueButton onClick={(e) => handleSubmit(e)}>Log In</BlueButton>
         </Box>
         <Box>
-          <BlueLinkButton {...routes.forgotCredentials().link}>
+          <BlueLinkButton to="/forgot-password">
             Forgotten account?
           </BlueLinkButton>
         </Box>
         <BoxWithLine></BoxWithLine>
         <Box>
-          <GreenLinkButton {...routes.register().link}>
-            Create New Account
-          </GreenLinkButton>
+          <GreenLinkButton to="/register">Create New Account</GreenLinkButton>
         </Box>
       </FormContainer>
       <Box>
-        <BoldLink>Create a Page</BoldLink> for a celebrity, band or business.
+        <BoldLink to="/create-fanpage">Create a Page</BoldLink> for a celebrity,
+        band or business.
       </Box>
     </LoginContainer>
   );

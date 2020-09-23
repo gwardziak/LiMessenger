@@ -1,9 +1,9 @@
 import React from "react";
 import ReactDOM from "react-dom";
+import { BrowserRouter as Router } from "react-router-dom";
 import { createGlobalStyle } from "styled-components";
 import { createClient, Provider } from "urql";
 import App from "./App";
-import { RouteProvider } from "./router";
 
 const GlobalStyle = createGlobalStyle`
 body {
@@ -37,9 +37,9 @@ ReactDOM.render(
   <React.StrictMode>
     <GlobalStyle />
     <Provider value={client}>
-      <RouteProvider>
+      <Router>
         <App />
-      </RouteProvider>
+      </Router>
     </Provider>
   </React.StrictMode>,
   document.getElementById("root")
