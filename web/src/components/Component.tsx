@@ -47,7 +47,7 @@ export const Component = () => {
             />
           </SingleIconCont>
         </IconsContainer>
-        <AnotherKurwaCoint>
+        <AnotherTestCoint>
           <Input contentEditable="true"></Input>
           <Smile
             height="24px"
@@ -55,7 +55,7 @@ export const Component = () => {
             viewBox="0 0 26 26"
             fill="rgb(0, 153, 255)"
           />
-        </AnotherKurwaCoint>
+        </AnotherTestCoint>
         <LikeContainer>
           <Like
             height="36px"
@@ -145,7 +145,7 @@ const Test1 = styled.div`
   transition: transform 0.22s cubic-bezier(0.5, 0, 0.4, 1);
 `;
 
-const AnotherKurwaCoint = styled.div`
+const AnotherTestCoint = styled.div`
   background-color: rgba(0, 0, 0, 0.05);
   border-radius: 18px;
   display: flex;
