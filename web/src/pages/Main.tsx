@@ -1,5 +1,6 @@
 import React from "react";
 import styled from "styled-components";
+import { Chat } from "../components/Chat";
 import { ContentNav } from "../components/ContentNav";
 import { FriendList } from "../components/FriendList";
 import { FriendListNav } from "../components/FriendListNav";
@@ -21,7 +22,7 @@ export const Main = () => {
         <ContentNav />
         <ChatAndUserDetailsContainer>
           <UserDetails />
-          <ChatContainer></ChatContainer>
+          <Chat />
         </ChatAndUserDetailsContainer>
       </ContentContainer>
     </Container>
