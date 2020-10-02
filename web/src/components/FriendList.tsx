@@ -35,6 +35,7 @@ export const FriendList = () => {
 };
 
 const List = styled.ul`
+  grid-area: friendList;
   list-style-type: none;
   margin: 0;
   padding: 0;
@@ -48,7 +49,7 @@ const Item = styled.li`
   padding: 0 8px;
   margin: 0 8px;
 `;
-
+//duplicate
 const ItemSelected = styled.li`
   display: flex;
   height: 64px;

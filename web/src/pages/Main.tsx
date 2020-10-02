@@ -1,17 +1,54 @@
 import React from "react";
 import styled from "styled-components";
-import { Chat } from "../components/Chat";
-import { ContentNav } from "../components/ContentNav";
 import { FriendList } from "../components/FriendList";
-import { FriendListNav } from "../components/FriendListNav";
-import { SearchBar } from "../components/SearchBar";
-import { UserDetails } from "../components/UserDetails";
+import { UserOptions } from "../components/UserOptions";
 import { mediaQuery } from "../utils/css/cssMedia";
 
 export const Main = () => {
   const users = [1, 2, 3, 4, 5, 5, 6];
 
   return (
+    <Container>
+      <Nav />
+      <UserOptions />
+      <FriendList />
+      <Chat>b</Chat>
+      <FriendUserOptions>c</FriendUserOptions>
+    </Container>
+  );
+};
+
+const Container = styled.div`
+  display: grid;
+  grid-template-columns: 1fr 2fr 1fr;
+  grid-template-rows: 60px 1fr;
+  grid-template-areas:
+    "userOptions nav nav"
+    "friendList chat friendUserOptions
+  ";
+
+  @media ${mediaQuery.xs}, ${mediaQuery.sm}, ${mediaQuery.md}, {
+    grid-template-columns: 80px 2fr 1fr;
+  }
+`;
+
+const Nav = styled.div`
+  grid-area: nav;
+  background-color: yellow;
+`;
+
+const Chat = styled.div`
+  grid-area: chat;
+  background-color: black;
+`;
+
+const FriendUserOptions = styled.div`
+  grid-area: friendUserOptions;
+  background-color: grey;
+`;
+
+/*
+
     <Container>
       <FriendListContainer>
         <FriendListNav />
@@ -26,8 +63,9 @@ export const Main = () => {
         </ChatAndUserDetailsContainer>
       </ContentContainer>
     </Container>
-  );
-};
+
+
+
 
 const Container = styled.div`
   display: flex;
@@ -66,3 +104,4 @@ const ChatContainer = styled.div`
   display: flex;
   flex-direction: column;
 `;
+*/
