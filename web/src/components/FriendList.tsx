@@ -2,12 +2,14 @@ import React from "react";
 import styled from "styled-components";
 import { Avatar } from "../ui/Avatar";
 import { mediaQuery } from "../utils/css/cssMedia";
+import { SearchBar } from "./SearchBar";
 
 export const FriendList = () => {
   const users = [1, 2, 3, 4, 5, 5, 6];
 
   return (
     <>
+      <SearchBar />
       <List>
         <ItemSelected>
           <AvatarContainer>

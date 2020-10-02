@@ -11,7 +11,6 @@ export const UserOptions = () => {
     <Container>
       <Avatar src="https://scontent-frx5-1.xx.fbcdn.net/v/t31.0-1/cp0/c0.23.60.60a/p60x60/20507795_749401998564414_4605004011507775542_o.jpg?_nc_cat=110&_nc_sid=dbb9e7&_nc_ohc=NE80brTwWOAAX_THZuy&_nc_ht=scontent-frx5-1.xx&_nc_tp=27&oh=5c37d69f5da3863fbfc63c6a6fceda7b&oe=5F9D4E12" />
       <ListName>Czaty</ListName>
-      <IconsHelper />
       <IconContainer>
         <Settings fill="#000" height="30px" width="30px" viewBox="0 0 36 36" />
       </IconContainer>
@@ -32,19 +31,27 @@ export const UserOptions = () => {
 
 const Container = styled.div`
   grid-area: userOptions;
-  display: flex;
+  display: grid;
+  grid-template-columns: 40px 1fr 36px 36px 36px;
+  grid-template-areas: "avatar listName  icon icon icon";
+  grid-gap: 12px;
   padding: 10px 16px 10px 16px;
   align-items: center;
+  box-sizing: border-box;
+  min-width: 300px;
 
   @media ${mediaQuery.xs}, ${mediaQuery.sm}, ${mediaQuery.md}, {
+    grid-template-columns: 1fr;
+    min-width: 0;
+    display: flex;
     justify-content: center;
   }
 `;
 
 const Avatar = styled(DefaultAvatar)`
+  grid-area: avatar;
   height: 40px;
   width: 40px;
-  margin-right: 12px;
   cursor: pointer;
 
   @media ${mediaQuery.xs}, ${mediaQuery.sm}, ${mediaQuery.md} {
@@ -53,18 +60,13 @@ const Avatar = styled(DefaultAvatar)`
 `;
 
 const ListName = styled.h1`
+  grid-area: listName;
   margin: 0;
   font-size: 24px;
   font-weight: bold;
   text-overflow: ellipsis;
-
-  @media ${mediaQuery.xs}, ${mediaQuery.sm}, ${mediaQuery.md}, {
-    display: none;
-  }
-`;
-
-const IconsHelper = styled.div`
-  flex: 1 1 auto;
+  white-space: nowrap;
+  overflow: hidden;
 
   @media ${mediaQuery.xs}, ${mediaQuery.sm}, ${mediaQuery.md}, {
     display: none;
@@ -75,12 +77,10 @@ const IconContainer = styled.div`
   border-radius: 99px;
   background-color: rgba(0, 0, 0, 0.04);
   cursor: pointer;
-  height: 36px;
-  width: 36px;
-  margin-left: 12px;
   display: inline-flex;
   justify-content: center;
   align-items: center;
+  height: 36px;
 
   @media ${mediaQuery.xs}, ${mediaQuery.sm}, ${mediaQuery.md}, {
     display: none;
@@ -90,6 +90,6 @@ const IconContainer = styled.div`
 const IconMobileAndDesktopContainer = styled(IconContainer)`
   @media ${mediaQuery.xs}, ${mediaQuery.sm}, ${mediaQuery.md}, {
     display: flex;
-    margin: 0;
+    width: 36px;
   }
 `;

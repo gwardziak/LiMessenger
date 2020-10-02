@@ -1,6 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import { FriendList } from "../components/FriendList";
+import { Navbar } from "../components/Navbar";
 import { UserOptions } from "../components/UserOptions";
 import { mediaQuery } from "../utils/css/cssMedia";
 
@@ -9,7 +10,7 @@ export const Main = () => {
 
   return (
     <Container>
-      <Nav />
+      <Navbar />
       <UserOptions />
       <FriendList />
       <Chat>b</Chat>
@@ -30,11 +31,6 @@ const Container = styled.div`
   @media ${mediaQuery.xs}, ${mediaQuery.sm}, ${mediaQuery.md}, {
     grid-template-columns: 80px 2fr 1fr;
   }
-`;
-
-const Nav = styled.div`
-  grid-area: nav;
-  background-color: yellow;
 `;
 
 const Chat = styled.div`
