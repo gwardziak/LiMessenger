@@ -10,11 +10,12 @@ export const Navbar = () => {
     <Container>
       <Avatar src="https://scontent-frt3-1.xx.fbcdn.net/v/t1.0-1/cp0/p60x60/46844435_1931467286943369_1021085731109470208_o.jpg?_nc_cat=109&_nc_sid=dbb9e7&_nc_ohc=4pMEq64VPgIAX9y4pTX&_nc_ht=scontent-frt3-1.xx&_nc_tp=27&oh=8c85ae9698f070ec16a84beef5df483e&oe=5F9D606C" />
       <Username>Filip zawada</Username>
-      <Acticity>Aktywny(a) przez: Messenger</Acticity>
+      <Activity>Aktywny(a) przez: Messenger</Activity>
       <PhoneIcon viewBox="0 0 36 36" />
       <CamcorderIcon viewBox="0 0 36 36" />
-      <InfoIcon viewBox="0 0 36 36" />
-      <IconHelper />
+      <IconHelper>
+        <InfoIcon viewBox="0 0 36 36" />
+      </IconHelper>
     </Container>
   );
 };
@@ -45,7 +46,7 @@ const Username = styled.h2`
   font-weight: bold;
 `;
 
-const Acticity = styled.div`
+const Activity = styled.div`
   grid-area: activity;
   font-size: 12px;
   color: rgba(0, 0, 0, 0.4);
@@ -55,7 +56,6 @@ const Acticity = styled.div`
 const PhoneIcon = styled(Phone)`
   grid-area: phoneIcon;
   cursor: pointer;
-  padding: 9px 0 9px 8px;
   fill: #0099ff;
   height: 32px;
   width: 32px;
@@ -64,7 +64,6 @@ const PhoneIcon = styled(Phone)`
 const CamcorderIcon = styled(Camcorder)`
   grid-area: camcorderIcon;
   cursor: pointer;
-  padding: 9px 0 9px 8px;
   fill: #0099ff;
   height: 32px;
   width: 32px;
@@ -76,15 +75,12 @@ const InfoIcon = styled(InfoCircle)`
   fill: #0099ff;
   height: 32px;
   width: 32px;
-  padding: 9px 0 9px 8px;
 `;
 
 const IconHelper = styled.div`
   grid-area: infoIcon;
-  background-color: rgb(0, 153, 255);
+  background-color: rgba(0, 153, 255, 0.2);
   border-radius: 99px;
   height: 32px;
   width: 32px;
-  opacity: 0.2;
-  margin-left: 8px;
 `;

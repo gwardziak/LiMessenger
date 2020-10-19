@@ -4,44 +4,42 @@ import { mediaQuery } from "../utils/css/cssMedia";
 
 export const SearchBar = () => {
   return (
-    <>
-      <Container>
-        <MagnifierImg />
-        <SearchBarInput placeholder="Szukaj w Messengerze" />
-      </Container>
-    </>
+    <Container>
+      <SearchBarInput placeholder="Szukaj w Messengerze" />
+      <MagnifierImg />
+    </Container>
   );
 };
 
 const Container = styled.div`
-  padding: 4px 16px 12px;
   position: relative;
+  margin: 4px 16px 0;
 
-  @media ${mediaQuery.xs}, ${mediaQuery.sm}, ${mediaQuery.md} {
+  @media ${mediaQuery.xs}, ${mediaQuery.sm}, ${mediaQuery.md}, {
     display: none;
   }
 `;
 
 const MagnifierImg = styled.div`
-  position: absolute;
-  top: 14px;
-  left: 28px;
   height: 16px;
   width: 16px;
+  top: 10px;
+  left: 12px;
   background: red;
+  position: absolute;
 `;
 
 const SearchBarInput = styled.input`
   background-color: rgba(0, 0, 0, 0.04);
   border-radius: 50px;
   font-size: 15px;
-  height: 36px;
   padding: 0px 16px 0px 36px;
   text-align: left;
   outline: 0;
-  box-sizing: border-box;
   border-style: none;
+  height: 36px;
   width: 100%;
+  box-sizing: border-box;
 
   &::placeholder {
     color: rgba(0, 0, 0, 0.4);
