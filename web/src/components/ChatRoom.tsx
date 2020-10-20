@@ -1,31 +1,34 @@
 import React from "react";
 import styled from "styled-components";
 import { Avatar as DefaultAvatar } from "../ui/Avatar";
+import Scrollbar from "../utils/Scrollbar";
 
 export const ChatRoom = () => {
   return (
-    <Container>
-      <MessageDate>Dziś</MessageDate>
-      <MessageContainer>
-        <Avatar src="https://scontent-frt3-1.xx.fbcdn.net/v/t1.30497-1/c29.0.100.100a/p100x100/84241059_189132118950875_4138507100605120512_n.jpg?_nc_cat=1&_nc_sid=7206a8&_nc_ohc=jpVmHYL2xgEAX_eH_Qn&_nc_ht=scontent-frt3-1.xx&_nc_tp=27&oh=e5c68a6969033f02f9d8f25d6a3d5560&oe=5F98D99E" />
-        <Message>Już</Message>
-        <Message>
-          Już
-          wrzucamaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaas
-        </Message>
-        <Message>Już wrzucam</Message>
-        <Message>Już wrzucam</Message>
-      </MessageContainer>
-      <MessageContainerDuplicate>
-        <MessageDuplicate>Już</MessageDuplicate>
-        <MessageDuplicate>
-          Już
-          wrzucamaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaas
-        </MessageDuplicate>
-        <MessageDuplicate>Już wrzucam</MessageDuplicate>
-        <MessageDuplicate>Już wrzucam</MessageDuplicate>
-      </MessageContainerDuplicate>
-    </Container>
+    <StyledScrollbar autoHide noScrollX>
+      <Container>
+        <MessageDate>Dziś</MessageDate>
+        <MessageContainer>
+          <Avatar src="https://scontent-frt3-1.xx.fbcdn.net/v/t1.30497-1/c29.0.100.100a/p100x100/84241059_189132118950875_4138507100605120512_n.jpg?_nc_cat=1&_nc_sid=7206a8&_nc_ohc=jpVmHYL2xgEAX_eH_Qn&_nc_ht=scontent-frt3-1.xx&_nc_tp=27&oh=e5c68a6969033f02f9d8f25d6a3d5560&oe=5F98D99E" />
+          <Message>Już</Message>
+          <Message>
+            Już
+            wrzucamaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaas
+          </Message>
+          <Message>Już wrzucam</Message>
+          <Message>Już wrzucam</Message>
+        </MessageContainer>
+        <MessageContainerDuplicate>
+          <MessageDuplicate>Już</MessageDuplicate>
+          <MessageDuplicate>
+            Już
+            wrzucamaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaas
+          </MessageDuplicate>
+          <MessageDuplicate>Już wrzucam</MessageDuplicate>
+          <MessageDuplicate>Już wrzucam</MessageDuplicate>
+        </MessageContainerDuplicate>
+      </Container>
+    </StyledScrollbar>
   );
 };
 
@@ -110,6 +113,11 @@ const MessageDuplicate = styled.div`
   :last-child {
     border-bottom-right-radius: 1.3em;
   }
+`;
+
+const StyledScrollbar = styled(Scrollbar)`
+  border-left: 1px solid rgba(0, 0, 0, 0.1);
+  box-sizing: border-box;
 `;
 
 /*

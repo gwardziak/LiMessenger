@@ -43,6 +43,7 @@ export const SendMessage = () => {
           }
           onBlur={handleBlur}
         />
+
         <SmileIcon viewBox="0 0 26 26" />
       </MessageContainer>
       <LikeIcon viewBox="0 1 36 36" />
@@ -59,13 +60,17 @@ const Container = styled.div<{ isToggle: boolean }>`
   grid-template-rows: 1fr;
   padding: 0 8px;
   grid-column-gap: 8px;
-  align-items: center;
+  align-items: flex-end;
+  border-left: 1px solid rgba(0, 0, 0, 0.1);
+  box-sizing: border-box;
+  margin-bottom: 8px;
 `;
 
 const PlusIcon = styled(Plus)<{ isToggle: boolean }>`
   height: 24px;
   width: 24px;
   justify-self: center;
+  margin-bottom: 6px;
 
   fill: ${(props) =>
     props.isToggle ? "rgba(134, 142, 153, 0.75)" : "rgb(0, 153, 255)"};
@@ -131,7 +136,7 @@ const MessageContainer = styled.div`
   min-width: 100px;
   border-radius: 18px;
   padding: 0 8px 0 12px;
-  align-items: center;
+  align-items: flex-end;
   cursor: context-menu;
 `;
 
@@ -140,6 +145,8 @@ const Input = styled(ContentEditable)`
   outline: 0;
   cursor: auto;
   overflow: hidden;
+  max-height: 144px;
+  overflow-y: auto;
 `;
 
 const SmileIcon = styled(Smile)`
@@ -147,4 +154,5 @@ const SmileIcon = styled(Smile)`
   width: 24px;
   fill: #0099ff;
   cursor: pointer;
+  padding-bottom: 7px;
 `;

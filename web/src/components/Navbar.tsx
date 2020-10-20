@@ -31,6 +31,7 @@ const Container = styled.div`
   padding: 8px 8px 8px 16px;
   grid-column-gap: 12px;
   align-items: center;
+  border-left: 1px solid rgba(0, 0, 0, 0.1);
 `;
 
 const Avatar = styled(DefaultAvatar)`
