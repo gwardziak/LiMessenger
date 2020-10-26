@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import { Avatar as DefaultAvatar } from "../ui/Avatar";
-import Scrollbar from "../utils/Scrollbar";
+import { MyScrollbar } from "../utils/Scrollbar";
 import { PrivacyMenu } from "./PrivacyMenu";
 import { SettingsMenu } from "./SettingsMenu";
 import { SharedFilesMenu } from "./SharedFilesMenu";
@@ -11,8 +11,8 @@ export const ChatRoomOptions = () => {
   return (
     <StyledScrollbar autoHide noScrollX>
       <Container>
-        <Avatar src="https://scontent-frt3-1.xx.fbcdn.net/v/t1.0-1/p160x160/1908321_487589871394123_3669658637878936630_n.jpg?_nc_cat=102&_nc_sid=dbb9e7&_nc_ohc=fX3Wq6Pwg5UAX8QAER2&_nc_ht=scontent-frt3-1.xx&tp=6&oh=a67de794600c2ca4b89e0074f77c22d9&oe=5FA35242" />
-        <Username>Tomasz Grzyb Martyński </Username>
+        <Avatar src="https://scontent-frt3-1.xx.fbcdn.net/v/t1.30497-1/c29.0.100.100a/p100x100/84241059_189132118950875_4138507100605120512_n.jpg?_nc_cat=1&_nc_sid=7206a8&_nc_ohc=zLcWETlL6TIAX95SnPH&_nc_ht=scontent-frt3-1.xx&_nc_tp=27&oh=062a10092c5cb258d651a46799cf7c89&oe=5FA0C29E" />
+        <Username>Tomasz </Username>
         <Activity>Aktywny(a) 1 godz. temu</Activity>
         <SettingsMenu />
         <PrivacyMenu />
@@ -55,7 +55,7 @@ const Activity = styled.div`
   padding-bottom: 16px;
 `;
 
-const StyledScrollbar = styled(Scrollbar)`
+const StyledScrollbar = styled(MyScrollbar)`
   border-left: 1px solid rgba(0, 0, 0, 0.1);
   box-sizing: border-box;
 `;

@@ -9,9 +9,16 @@ import { Like } from "../Icons/Like";
 import { Microphone } from "../Icons/Microphone";
 import { Plus } from "../Icons/Plus";
 import { Smile } from "../Icons/Smile";
+import { mediaQuery } from "../utils/css/cssMedia";
+import { useMatchesMediaQuery } from "../utils/css/useMatchesMediaQuery";
 import ContentEditable from "../utils/ReactContentEditable";
 
 export const SendMessage = () => {
+  const isMobile = useMatchesMediaQuery([
+    mediaQuery.xs,
+    mediaQuery.sm,
+    mediaQuery.md,
+  ]);
   const defaultInput = "Wpisz wiadomość...";
   const [toggle, setToggle] = useState<boolean>(false);
   const [input, setInput] = useState<string>(defaultInput);
@@ -25,17 +32,32 @@ export const SendMessage = () => {
         isToggle={toggle}
         viewBox="0 0 24 24"
       />
-      {toggle && (
+      {!isMobile && (
         <>
-          <CameraIcon viewBox="0 0 36 36" />
-          <GamePadIcon viewBox="0 0 36 36" />
-          <MicrophoneIcon viewBox="0 0 36 36" />
+          {toggle && !isMobile && (
+            <>
+              <CameraIcon viewBox="0 0 36 36" />
+              <GamePadIcon viewBox="0 0 36 36" />
+              <MicrophoneIcon viewBox="0 0 36 36" />
+            </>
+          )}
+          <GifIcon viewBox="0 0 36 36" />
+          <EmojiIcon viewBox="0 0 36 36" />
+          <AttachmentIcon viewBox="0 0 36 36" />
         </>
       )}
-      <GifIcon viewBox="0 0 36 36" />
-      <EmojiIcon viewBox="0 0 36 36" />
-      <AttachmentIcon viewBox="0 0 36 36" />
-      <MessageContainer>
+      {isMobile && toggle && (
+        <MobileIconsContainer isToggle={toggle}>
+          <AttachmentIcon isToggle={toggle} viewBox="0 0 36 36" />
+          <EmojiIcon isToggle={toggle} viewBox="0 0 36 36" />
+          <GifIcon isToggle={toggle} viewBox="0 0 36 36" />
+          <MicrophoneIcon isToggle={toggle} viewBox="0 0 36 36" />
+          <GamePadIcon isToggle={toggle} viewBox="0 0 36 36" />
+          <CameraIcon isToggle={toggle} viewBox="0 0 36 36" />
+        </MobileIconsContainer>
+      )}
+
+      <MessageContainer isToggle={toggle}>
         <Input
           html={input}
           onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
@@ -64,9 +86,15 @@ const Container = styled.div<{ isToggle: boolean }>`
   border-left: 1px solid rgba(0, 0, 0, 0.1);
   box-sizing: border-box;
   margin-bottom: 8px;
+
+  @media ${mediaQuery.xs}, ${mediaQuery.sm}, ${mediaQuery.md}, {
+    grid-template-columns: ${(props) => props.isToggle && "28px 1fr 36px"};
+    grid-template-rows: ${(props) => (props.isToggle ? "52px 1fr" : "1fr")};
+    grid-row-gap: 8px;
+  }
 `;
 
-const PlusIcon = styled(Plus)<{ isToggle: boolean }>`
+const PlusIcon = styled(Plus)<{ isToggle?: boolean }>`
   height: 24px;
   width: 24px;
   justify-self: center;
@@ -77,58 +105,62 @@ const PlusIcon = styled(Plus)<{ isToggle: boolean }>`
   transition: transform 0.22s cubic-bezier(0.5, 0, 0.4, 1);
   transform: ${(props) => props.isToggle && "rotate(45deg)"};
   cursor: pointer;
+
+  @media ${mediaQuery.xs}, ${mediaQuery.sm}, ${mediaQuery.md}, {
+    grid-row: ${(props) => props.isToggle && 2};
+  }
 `;
 
-const GifIcon = styled(GifFolder)`
+const GifIcon = styled(GifFolder)<{ isToggle?: boolean }>`
   height: 36px;
   width: 36px;
   fill: rgb(0, 153, 255);
   cursor: pointer;
 `;
 
-const EmojiIcon = styled(EmojiFolder)`
+const EmojiIcon = styled(EmojiFolder)<{ isToggle?: boolean }>`
   height: 36px;
   width: 36px;
   fill: rgb(0, 153, 255);
   cursor: pointer;
 `;
 
-const AttachmentIcon = styled(Attachment)`
+const AttachmentIcon = styled(Attachment)<{ isToggle?: boolean }>`
   height: 36px;
   width: 36px;
   fill: rgb(0, 153, 255);
   cursor: pointer;
 `;
 
-const CameraIcon = styled(Camera)`
+const CameraIcon = styled(Camera)<{ isToggle?: boolean }>`
   height: 36px;
   width: 36px;
   fill: rgb(0, 153, 255);
   cursor: pointer;
 `;
 
-const GamePadIcon = styled(GamePad)`
+const GamePadIcon = styled(GamePad)<{ isToggle?: boolean }>`
   height: 36px;
   width: 36px;
   fill: rgb(0, 153, 255);
   cursor: pointer;
 `;
 
-const MicrophoneIcon = styled(Microphone)`
+const MicrophoneIcon = styled(Microphone)<{ isToggle?: boolean }>`
   height: 36px;
   width: 36px;
   fill: rgb(0, 153, 255);
   cursor: pointer;
 `;
 
-const LikeIcon = styled(Like)`
+const LikeIcon = styled(Like)<{ isToggle?: boolean }>`
   height: 36px;
   width: 36px;
   fill: rgb(0, 153, 255);
   cursor: pointer;
 `;
 
-const MessageContainer = styled.div`
+const MessageContainer = styled.div<{ isToggle: boolean }>`
   display: grid;
   grid-template-columns: 1fr 24px;
   grid-template-rows: 1fr;
@@ -138,6 +170,11 @@ const MessageContainer = styled.div`
   padding: 0 8px 0 12px;
   align-items: flex-end;
   cursor: context-menu;
+  font-size: 14px;
+
+  @media ${mediaQuery.xs}, ${mediaQuery.sm}, ${mediaQuery.md}, {
+    grid-column: ${(props) => (props.isToggle ? "2/3" : "2/6")};
+  }
 `;
 
 const Input = styled(ContentEditable)`
@@ -147,6 +184,10 @@ const Input = styled(ContentEditable)`
   overflow: hidden;
   max-height: 144px;
   overflow-y: auto;
+
+  &::placeholder {
+    color: red;
+  }
 `;
 
 const SmileIcon = styled(Smile)`
@@ -155,4 +196,14 @@ const SmileIcon = styled(Smile)`
   fill: #0099ff;
   cursor: pointer;
   padding-bottom: 7px;
+`;
+
+const MobileIconsContainer = styled.div<{ isToggle: boolean }>`
+  display: grid;
+  grid-template-columns: repeat(6, 36px);
+  background-color: #fafafa;
+  column-gap: 16px;
+  grid-column: 1/4;
+  padding: 8px 0 8px 8px;
+  margin: 0 -8px;
 `;

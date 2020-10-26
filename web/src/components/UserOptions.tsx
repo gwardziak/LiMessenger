@@ -9,7 +9,7 @@ import { mediaQuery } from "../utils/css/cssMedia";
 export const UserOptions = () => {
   return (
     <Container>
-      <Avatar src="https://scontent-frx5-1.xx.fbcdn.net/v/t31.0-1/cp0/c0.23.60.60a/p60x60/20507795_749401998564414_4605004011507775542_o.jpg?_nc_cat=110&_nc_sid=dbb9e7&_nc_ohc=NE80brTwWOAAX_THZuy&_nc_ht=scontent-frx5-1.xx&_nc_tp=27&oh=5c37d69f5da3863fbfc63c6a6fceda7b&oe=5F9D4E12" />
+      <Avatar src="https://scontent-frt3-1.xx.fbcdn.net/v/t1.30497-1/c29.0.100.100a/p100x100/84241059_189132118950875_4138507100605120512_n.jpg?_nc_cat=1&_nc_sid=7206a8&_nc_ohc=zLcWETlL6TIAX95SnPH&_nc_ht=scontent-frt3-1.xx&_nc_tp=27&oh=062a10092c5cb258d651a46799cf7c89&oe=5FA0C29E" />
       <ListName>Czaty</ListName>
       <IconContainer>
         <Settings fill="#000" height="30px" width="30px" viewBox="0 0 36 36" />

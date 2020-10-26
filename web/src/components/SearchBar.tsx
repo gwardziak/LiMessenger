@@ -1,6 +1,5 @@
 import React from "react";
 import styled from "styled-components";
-import { mediaQuery } from "../utils/css/cssMedia";
 
 export const SearchBar = () => {
   return (
@@ -14,10 +13,6 @@ export const SearchBar = () => {
 const Container = styled.div`
   position: relative;
   margin: 4px 16px 0;
-
-  @media ${mediaQuery.xs}, ${mediaQuery.sm}, ${mediaQuery.md}, {
-    display: none;
-  }
 `;
 
 const MagnifierImg = styled.div`

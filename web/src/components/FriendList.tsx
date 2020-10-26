@@ -2,130 +2,81 @@ import React from "react";
 import styled from "styled-components";
 import { Avatar as DefaultAvatar } from "../ui/Avatar";
 import { mediaQuery } from "../utils/css/cssMedia";
-import Scrollbar from "../utils/Scrollbar";
+import { useMatchesMediaQuery } from "../utils/css/useMatchesMediaQuery";
+import { MyScrollbar } from "../utils/Scrollbar";
 import { SearchBar } from "./SearchBar";
 
 export const FriendList = () => {
-  const users = [1, 2, 3, 4, 5, 5, 6];
+  const isBg = useMatchesMediaQuery([mediaQuery.bg]);
 
   return (
-    <Scrollbar autoHide noScrollX>
+    <MyScrollbar autoHide noScrollX>
       <Container>
-        <SearchBar />
+        {isBg && <SearchBar />}
         <List>
           <ItemSelected>
             <Avatar src="https://scontent-frt3-1.xx.fbcdn.net/v/t1.30497-1/c29.0.100.100a/p100x100/84241059_189132118950875_4138507100605120512_n.jpg?_nc_cat=1&_nc_sid=7206a8&_nc_ohc=zLcWETlL6TIAX95SnPH&_nc_ht=scontent-frt3-1.xx&_nc_tp=27&oh=062a10092c5cb258d651a46799cf7c89&oe=5FA0C29E"></Avatar>
-            <Username>Radosław Zieliński</Username>
-            <Message>Chuj ci w dupe</Message>
+            <Username>Radosław </Username>
+            <Message>aaaaaaaaaaaa</Message>
           </ItemSelected>
           <Item>
             <Avatar src="https://scontent-frt3-1.xx.fbcdn.net/v/t1.30497-1/c29.0.100.100a/p100x100/84241059_189132118950875_4138507100605120512_n.jpg?_nc_cat=1&_nc_sid=7206a8&_nc_ohc=zLcWETlL6TIAX95SnPH&_nc_ht=scontent-frt3-1.xx&_nc_tp=27&oh=062a10092c5cb258d651a46799cf7c89&oe=5FA0C29E"></Avatar>
-            <Username>Radosław Zieliński</Username>
-            <Message>
-              Chuj ci w dupeaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaas
-            </Message>
+            <Username>Radosław</Username>
+            <Message>aaaaaaaaaaaa</Message>
           </Item>
           <Item>
             <Avatar src="https://scontent-frt3-1.xx.fbcdn.net/v/t1.30497-1/c29.0.100.100a/p100x100/84241059_189132118950875_4138507100605120512_n.jpg?_nc_cat=1&_nc_sid=7206a8&_nc_ohc=zLcWETlL6TIAX95SnPH&_nc_ht=scontent-frt3-1.xx&_nc_tp=27&oh=062a10092c5cb258d651a46799cf7c89&oe=5FA0C29E"></Avatar>
-            <Username>Radosław Zieliński</Username>
-            <Message>
-              Chuj ci w dupeaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaas
-            </Message>
-          </Item>
+            <Username>Radosław</Username>
+            <Message>aaaaaaaaaaaa</Message>
+          </Item>{" "}
           <Item>
             <Avatar src="https://scontent-frt3-1.xx.fbcdn.net/v/t1.30497-1/c29.0.100.100a/p100x100/84241059_189132118950875_4138507100605120512_n.jpg?_nc_cat=1&_nc_sid=7206a8&_nc_ohc=zLcWETlL6TIAX95SnPH&_nc_ht=scontent-frt3-1.xx&_nc_tp=27&oh=062a10092c5cb258d651a46799cf7c89&oe=5FA0C29E"></Avatar>
-            <Username>Radosław Zieliński</Username>
-            <Message>
-              Chuj ci w dupeaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaas
-            </Message>
-          </Item>
+            <Username>Radosław</Username>
+            <Message>aaaaaaaaaaaa</Message>
+          </Item>{" "}
           <Item>
             <Avatar src="https://scontent-frt3-1.xx.fbcdn.net/v/t1.30497-1/c29.0.100.100a/p100x100/84241059_189132118950875_4138507100605120512_n.jpg?_nc_cat=1&_nc_sid=7206a8&_nc_ohc=zLcWETlL6TIAX95SnPH&_nc_ht=scontent-frt3-1.xx&_nc_tp=27&oh=062a10092c5cb258d651a46799cf7c89&oe=5FA0C29E"></Avatar>
-            <Username>Radosław Zieliński</Username>
-            <Message>
-              Chuj ci w dupeaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaas
-            </Message>
-          </Item>
+            <Username>Radosław</Username>
+            <Message>aaaaaaaaaaaa</Message>
+          </Item>{" "}
           <Item>
             <Avatar src="https://scontent-frt3-1.xx.fbcdn.net/v/t1.30497-1/c29.0.100.100a/p100x100/84241059_189132118950875_4138507100605120512_n.jpg?_nc_cat=1&_nc_sid=7206a8&_nc_ohc=zLcWETlL6TIAX95SnPH&_nc_ht=scontent-frt3-1.xx&_nc_tp=27&oh=062a10092c5cb258d651a46799cf7c89&oe=5FA0C29E"></Avatar>
-            <Username>Radosław Zieliński</Username>
-            <Message>
-              Chuj ci w dupeaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaas
-            </Message>
-          </Item>
+            <Username>Radosław</Username>
+            <Message>aaaaaaaaaaaa</Message>
+          </Item>{" "}
           <Item>
             <Avatar src="https://scontent-frt3-1.xx.fbcdn.net/v/t1.30497-1/c29.0.100.100a/p100x100/84241059_189132118950875_4138507100605120512_n.jpg?_nc_cat=1&_nc_sid=7206a8&_nc_ohc=zLcWETlL6TIAX95SnPH&_nc_ht=scontent-frt3-1.xx&_nc_tp=27&oh=062a10092c5cb258d651a46799cf7c89&oe=5FA0C29E"></Avatar>
-            <Username>Radosław Zieliński</Username>
-            <Message>
-              Chuj ci w dupeaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaas
-            </Message>
-          </Item>
+            <Username>Radosław</Username>
+            <Message>aaaaaaaaaaaa</Message>
+          </Item>{" "}
           <Item>
             <Avatar src="https://scontent-frt3-1.xx.fbcdn.net/v/t1.30497-1/c29.0.100.100a/p100x100/84241059_189132118950875_4138507100605120512_n.jpg?_nc_cat=1&_nc_sid=7206a8&_nc_ohc=zLcWETlL6TIAX95SnPH&_nc_ht=scontent-frt3-1.xx&_nc_tp=27&oh=062a10092c5cb258d651a46799cf7c89&oe=5FA0C29E"></Avatar>
-            <Username>Radosław Zieliński</Username>
-            <Message>
-              Chuj ci w dupeaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaas
-            </Message>
-          </Item>
+            <Username>Radosław</Username>
+            <Message>aaaaaaaaaaaa</Message>
+          </Item>{" "}
           <Item>
             <Avatar src="https://scontent-frt3-1.xx.fbcdn.net/v/t1.30497-1/c29.0.100.100a/p100x100/84241059_189132118950875_4138507100605120512_n.jpg?_nc_cat=1&_nc_sid=7206a8&_nc_ohc=zLcWETlL6TIAX95SnPH&_nc_ht=scontent-frt3-1.xx&_nc_tp=27&oh=062a10092c5cb258d651a46799cf7c89&oe=5FA0C29E"></Avatar>
-            <Username>Radosław Zieliński</Username>
-            <Message>
-              Chuj ci w dupeaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaas
-            </Message>
-          </Item>
+            <Username>Radosław</Username>
+            <Message>aaaaaaaaaaaa</Message>
+          </Item>{" "}
           <Item>
             <Avatar src="https://scontent-frt3-1.xx.fbcdn.net/v/t1.30497-1/c29.0.100.100a/p100x100/84241059_189132118950875_4138507100605120512_n.jpg?_nc_cat=1&_nc_sid=7206a8&_nc_ohc=zLcWETlL6TIAX95SnPH&_nc_ht=scontent-frt3-1.xx&_nc_tp=27&oh=062a10092c5cb258d651a46799cf7c89&oe=5FA0C29E"></Avatar>
-            <Username>Radosław Zieliński</Username>
-            <Message>
-              Chuj ci w dupeaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaas
-            </Message>
-          </Item>
+            <Username>Radosław</Username>
+            <Message>aaaaaaaaaaaa</Message>
+          </Item>{" "}
           <Item>
             <Avatar src="https://scontent-frt3-1.xx.fbcdn.net/v/t1.30497-1/c29.0.100.100a/p100x100/84241059_189132118950875_4138507100605120512_n.jpg?_nc_cat=1&_nc_sid=7206a8&_nc_ohc=zLcWETlL6TIAX95SnPH&_nc_ht=scontent-frt3-1.xx&_nc_tp=27&oh=062a10092c5cb258d651a46799cf7c89&oe=5FA0C29E"></Avatar>
-            <Username>Radosław Zieliński</Username>
-            <Message>
-              Chuj ci w dupeaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaas
-            </Message>
-          </Item>
+            <Username>Radosław</Username>
+            <Message>aaaaaaaaaaaa</Message>
+          </Item>{" "}
           <Item>
             <Avatar src="https://scontent-frt3-1.xx.fbcdn.net/v/t1.30497-1/c29.0.100.100a/p100x100/84241059_189132118950875_4138507100605120512_n.jpg?_nc_cat=1&_nc_sid=7206a8&_nc_ohc=zLcWETlL6TIAX95SnPH&_nc_ht=scontent-frt3-1.xx&_nc_tp=27&oh=062a10092c5cb258d651a46799cf7c89&oe=5FA0C29E"></Avatar>
-            <Username>Radosław Zieliński</Username>
-            <Message>
-              Chuj ci w dupeaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaas
-            </Message>
-          </Item>
-          <Item>
-            <Avatar src="https://scontent-frt3-1.xx.fbcdn.net/v/t1.30497-1/c29.0.100.100a/p100x100/84241059_189132118950875_4138507100605120512_n.jpg?_nc_cat=1&_nc_sid=7206a8&_nc_ohc=zLcWETlL6TIAX95SnPH&_nc_ht=scontent-frt3-1.xx&_nc_tp=27&oh=062a10092c5cb258d651a46799cf7c89&oe=5FA0C29E"></Avatar>
-            <Username>Radosław Zieliński</Username>
-            <Message>
-              Chuj ci w dupeaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaas
-            </Message>
-          </Item>
-          <Item>
-            <Avatar src="https://scontent-frt3-1.xx.fbcdn.net/v/t1.30497-1/c29.0.100.100a/p100x100/84241059_189132118950875_4138507100605120512_n.jpg?_nc_cat=1&_nc_sid=7206a8&_nc_ohc=zLcWETlL6TIAX95SnPH&_nc_ht=scontent-frt3-1.xx&_nc_tp=27&oh=062a10092c5cb258d651a46799cf7c89&oe=5FA0C29E"></Avatar>
-            <Username>Radosław Zieliński</Username>
-            <Message>
-              Chuj ci w dupeaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaas
-            </Message>
-          </Item>
-          <Item>
-            <Avatar src="https://scontent-frt3-1.xx.fbcdn.net/v/t1.30497-1/c29.0.100.100a/p100x100/84241059_189132118950875_4138507100605120512_n.jpg?_nc_cat=1&_nc_sid=7206a8&_nc_ohc=zLcWETlL6TIAX95SnPH&_nc_ht=scontent-frt3-1.xx&_nc_tp=27&oh=062a10092c5cb258d651a46799cf7c89&oe=5FA0C29E"></Avatar>
-            <Username>Radosław Zieliński</Username>
-            <Message>
-              Chuj ci w dupeaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaas
-            </Message>
-          </Item>
-          <Item>
-            <Avatar src="https://scontent-frt3-1.xx.fbcdn.net/v/t1.30497-1/c29.0.100.100a/p100x100/84241059_189132118950875_4138507100605120512_n.jpg?_nc_cat=1&_nc_sid=7206a8&_nc_ohc=zLcWETlL6TIAX95SnPH&_nc_ht=scontent-frt3-1.xx&_nc_tp=27&oh=062a10092c5cb258d651a46799cf7c89&oe=5FA0C29E"></Avatar>
-            <Username>Radosław Zieliński</Username>
-            <Message>
-              Chuj ci w dupeaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaas
-            </Message>
+            <Username>Radosław</Username>
+            <Message>aaaaaaaaaaaa</Message>
           </Item>
         </List>
       </Container>
-    </Scrollbar>
+    </MyScrollbar>
   );
 };
 

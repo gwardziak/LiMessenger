@@ -23,7 +23,7 @@ w arrow function spawdac czy jest na props.onMouseEnter i callowac po twojej fun
  }
 }}
 */
-export default ({ autoHide, children, ...props }: any) => {
+export const MyScrollbar = ({ autoHide, children, ...props }: any) => {
   const [inUse, setInUse] = useState<boolean>();
   const style = {
     style: autoHide && { visibility: inUse ? "visible" : "hidden" },
