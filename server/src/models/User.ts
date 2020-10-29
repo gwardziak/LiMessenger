@@ -10,6 +10,5 @@ export interface IUser {
   createdAt: Date;
   updatedAt: Date;
   accountVerified: boolean;
-
   messages: IMessage[];
 }

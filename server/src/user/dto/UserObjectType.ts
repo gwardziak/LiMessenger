@@ -7,6 +7,7 @@ namespace UserObjectType {
     password: string;
     email: string;
     accountVerified: boolean;
+    // friends: Friends[];
   };
 }
 
@@ -26,6 +27,11 @@ export class UserObjectType implements UserObjectType.Options {
 
   @Field(() => Boolean)
   accountVerified!: boolean;
+
+  /*
+  @Field(() => [Friends])
+  friends: Friends[];
+*/
 }
 
 /*

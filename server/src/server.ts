@@ -8,6 +8,7 @@ import "reflect-metadata";
 import { buildSchema, useContainer } from "type-graphql";
 import { Container } from "typedi";
 import { createConnection } from "typeorm";
+import { FriendshipResolver } from "./friendship/FriendshipResolver";
 import { MessageResolver } from "./message/MessageResolver";
 import { UserResolver } from "./user/UserResolver";
 import { authChecker } from "./utils/authChecker";
@@ -21,7 +22,7 @@ const main = async () => {
   await createConnection();
 
   const schema = await buildSchema({
-    resolvers: [MessageResolver, UserResolver],
+    resolvers: [MessageResolver, UserResolver, FriendshipResolver],
     pubSub,
     authChecker,
   });
