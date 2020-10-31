@@ -15,7 +15,7 @@ export class FriendshipService {
   async getAll(id: number): Promise<Friendship[]> {
     const a: any = await this.friendshipRepository.find({
       relations: ["users"],
-      where: { userA: 2 },
+      where: { userB: 2 },
     });
     console.log(a);
     return await this.friendshipRepository.find({ where: { userA: id } });
@@ -29,7 +29,7 @@ export class FriendshipService {
     }
 
     const friendship = new Friendship({
-      userA: user.id > friendId ? friend : user,
+      userA: user.id > friendId ? friendId : user.id,
       userB: user.id > friendId ? user.id : friendId,
       users: [user, friend],
     });

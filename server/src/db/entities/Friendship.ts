@@ -10,7 +10,7 @@ import { User } from "./User";
 
 export namespace Friendship {
   export type Options = {
-    userA: User;
+    userA: number;
     userB: number;
     users: User[];
   };
@@ -23,7 +23,7 @@ export class Friendship implements Friendship.Options {
   id!: number;
 
   @Column({ name: "userA" })
-  userA!: User;
+  userA!: number;
 
   @Column({ name: "userB" })
   userB!: number;
