@@ -13,10 +13,15 @@ export class FriendshipService {
   }
 
   async getAll(id: number): Promise<Friendship[]> {
+    const a: any = await this.friendshipRepository.find({
+      relations: ["users"],
+      where: { userA: 2 },
+    });
+    console.log(a);
     return await this.friendshipRepository.find({ where: { userA: id } });
   }
 
-  async addFriend(myId: number, friendId: number): Promise<void> {
+  async addFriend(user: User, friendId: number): Promise<void> {
     const friend = await this.userRepository.findOne(friendId);
 
     if (!friend) {
@@ -24,10 +29,11 @@ export class FriendshipService {
     }
 
     const friendship = new Friendship({
-      userA: myId > friendId ? friendId : myId,
-      userB: myId > friendId ? myId : friendId,
+      userA: user.id > friendId ? friend : user,
+      userB: user.id > friendId ? user.id : friendId,
+      users: [user, friend],
     });
 
-    await this.friendshipRepository.insert(friendship);
+    await this.friendshipRepository.save(friendship);
   }
 }

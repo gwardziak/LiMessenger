@@ -26,7 +26,20 @@ export class FriendshipResolver {
     @Ctx() context: MyContext
   ): Promise<boolean> {
     //await this.friendshipService.addFriend(context.authUser.id, id);
-    await this.friendshipService.addFriend(1, id);
+    await this.friendshipService.addFriend(context.authUser, id);
     return true;
   }
 }
+
+/*
+  @Mutation(() => Boolean)
+  async addFriend(
+    @Arg("id") id: number,
+    @Ctx() context: MyContext
+  ): Promise<boolean> {
+    //await this.friendshipService.addFriend(context.authUser.id, id);
+    await this.friendshipService.addFriend(1, id);
+    return true;
+  }
+
+*/
