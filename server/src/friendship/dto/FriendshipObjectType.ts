@@ -1,18 +1,17 @@
-import { Field, Int, ObjectType } from "type-graphql";
-import { User } from "../../db/entities/User";
+import { Field, ObjectType } from "type-graphql";
 
 namespace FriendshipObjectType {
   export type Options = {
-    userA: User;
-    userB: User;
+    uuid: string;
+    username: string;
   };
 }
 
 @ObjectType("Friendship")
 export class FriendshipObjectType implements FriendshipObjectType.Options {
-  @Field(() => Int)
-  userA!: User;
+  @Field(() => String)
+  uuid!: string;
 
-  @Field(() => Int)
-  userB!: User;
+  @Field(() => String)
+  username!: string;
 }

@@ -1,5 +1,4 @@
 import { Arg, Ctx, Int, Mutation, Query, Resolver } from "type-graphql";
-import { Friendship } from "../db/entities/Friendship";
 import { MyContext } from "../models/MyContext";
 import { FriendshipObjectType } from "./dto/FriendshipObjectType";
 import { FriendshipService } from "./FriendshipService";
@@ -9,8 +8,29 @@ export class FriendshipResolver {
   private constructor(private readonly friendshipService: FriendshipService) {}
 
   @Query(() => [FriendshipObjectType])
-  async friendships(@Arg("id", () => Int) id: number): Promise<Friendship[]> {
-    return await this.friendshipService.getAll(id);
+  async friendships(
+    @Arg("id", () => Int) id: number
+  ): Promise<FriendshipObjectType[]> {
+    const result = await this.friendshipService.getAll(id);
+
+    if (result.length === 0) return [];
+    else {
+      const filterFriends = [];
+
+      for (const friend of result) {
+        friend.userA.id != id
+          ? filterFriends.push({
+              uuid: friend.userA.uuid,
+              username: friend.userA.username,
+            })
+          : filterFriends.push({
+              uuid: friend.userB.uuid,
+              username: friend.userB.username,
+            });
+      }
+
+      return filterFriends;
+    }
   }
 
   @Mutation(() => Boolean)
@@ -18,7 +38,6 @@ export class FriendshipResolver {
     @Arg("id") id: number,
     @Ctx() { authUser }: MyContext
   ): Promise<boolean> {
-    //await this.friendshipService.addFriend(1, id);
     await this.friendshipService.addFriend(authUser, id);
     return true;
   }
