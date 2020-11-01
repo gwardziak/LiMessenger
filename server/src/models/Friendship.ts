@@ -1,5 +1,6 @@
+import { User } from "../db/entities/User";
+
 export interface Friendship {
-  id: number;
-  userA: number;
-  userB: number;
+  userA: User;
+  userB: User;
 }

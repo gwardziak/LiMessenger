@@ -1,87 +1,38 @@
-import {
-  Column,
-  Entity,
-  JoinTable,
-  ManyToMany,
-  PrimaryGeneratedColumn,
-  Unique,
-} from "typeorm";
+import { Entity, Index, ManyToOne } from "typeorm";
 import { User } from "./User";
 
 export namespace Friendship {
   export type Options = {
-    userA: number;
-    userB: number;
-    users: User[];
+    userA: User;
+    userB: User;
   };
 }
 
 @Entity()
-@Unique(["userA", "userB"])
-export class Friendship implements Friendship.Options {
-  @PrimaryGeneratedColumn()
-  id!: number;
+@Index(["userA", "userB"], { unique: true })
+export class Friendship {
+  @ManyToOne((type) => User, {
+    nullable: false,
+    primary: true,
+    eager: true,
+  })
+  public readonly userA!: User;
 
-  @Column({ name: "userA" })
-  userA!: number;
-
-  @Column({ name: "userB" })
-  userB!: number;
-
-  @ManyToMany(() => User)
-  @JoinTable()
-  users!: User[];
+  @ManyToOne((type) => User, { nullable: false, primary: true, eager: true })
+  public readonly userB!: User;
 
   constructor(options: Friendship.Options) {
     if (options) {
-      Object.assign(this, options);
+      let userA, userB;
+      if (options.userA.id < options.userB.id) {
+        userA = options.userA;
+        userB = options.userB;
+      } else {
+        userA = options.userB;
+        userB = options.userA;
+      }
+
+      Object.assign(this, userA, userB, { ...options });
     }
   }
 }
-
-/*
-
-
-import {
-  Column,
-  Entity,
-  JoinTable,
-  ManyToMany,
-  PrimaryGeneratedColumn,
-  Unique,
-} from "typeorm";
-import { User } from "./User";
-
-export namespace Friendship {
-  export type Options = {
-    userA: number;
-    userB: number;
-    users: User[];
-  };
-}
-
-@Entity()
-@Unique(["userA", "userB"])
-export class Friendship implements Friendship.Options {
-  @PrimaryGeneratedColumn()
-  id!: number;
-
-  @Column({ name: "userA" })
-  userA!: number;
-
-  @Column({ name: "userB" })
-  userB!: number;
-
-  @ManyToMany(() => User)
-  @JoinTable()
-  users!: User[];
-
-  constructor(options: Friendship.Options) {
-    if (options) {
-      Object.assign(this, options);
-    }
-  }
-}
-
-
-*/

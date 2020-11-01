@@ -8,13 +8,6 @@ import { FriendshipService } from "./FriendshipService";
 export class FriendshipResolver {
   private constructor(private readonly friendshipService: FriendshipService) {}
 
-  @Query(() => FriendshipObjectType, { nullable: true })
-  async friendship(
-    @Arg("id", () => Int) id: number
-  ): Promise<Friendship | undefined> {
-    return await this.friendshipService.getOne(id);
-  }
-
   @Query(() => [FriendshipObjectType])
   async friendships(@Arg("id", () => Int) id: number): Promise<Friendship[]> {
     return await this.friendshipService.getAll(id);
@@ -23,23 +16,10 @@ export class FriendshipResolver {
   @Mutation(() => Boolean)
   async addFriend(
     @Arg("id") id: number,
-    @Ctx() context: MyContext
+    @Ctx() { authUser }: MyContext
   ): Promise<boolean> {
-    //await this.friendshipService.addFriend(context.authUser.id, id);
-    await this.friendshipService.addFriend(context.authUser, id);
+    //await this.friendshipService.addFriend(1, id);
+    await this.friendshipService.addFriend(authUser, id);
     return true;
   }
 }
-
-/*
-  @Mutation(() => Boolean)
-  async addFriend(
-    @Arg("id") id: number,
-    @Ctx() context: MyContext
-  ): Promise<boolean> {
-    //await this.friendshipService.addFriend(context.authUser.id, id);
-    await this.friendshipService.addFriend(1, id);
-    return true;
-  }
-
-*/

@@ -8,32 +8,29 @@ export class FriendshipService {
   private friendshipRepository = getRepository(Friendship);
   private userRepository = getRepository(User);
 
-  async getOne(id: number): Promise<Friendship | undefined> {
-    return await this.friendshipRepository.findOne(id);
-  }
-
   async getAll(id: number): Promise<Friendship[]> {
-    const a: any = await this.friendshipRepository.find({
-      relations: ["users"],
-      where: { userB: 2 },
-    });
-    console.log(a);
-    return await this.friendshipRepository.find({ where: { userA: id } });
+    const result = await this.friendshipRepository
+      .createQueryBuilder("friendship")
+      .leftJoinAndSelect("friendship.userA", "userA")
+      .leftJoinAndSelect("friendship.userB", "userB")
+      .where("userA.id = :userId OR userB.id = :userId", { userId: id })
+      .getMany();
+
+    return result;
   }
 
   async addFriend(user: User, friendId: number): Promise<void> {
     const friend = await this.userRepository.findOne(friendId);
 
     if (!friend) {
-      throw Error("user not found");
+      throw new Error("friend not found");
     }
 
     const friendship = new Friendship({
-      userA: user.id > friendId ? friendId : user.id,
-      userB: user.id > friendId ? user.id : friendId,
-      users: [user, friend],
+      userA: user,
+      userB: friend,
     });
 
-    await this.friendshipRepository.save(friendship);
+    await this.friendshipRepository.insert(friendship);
   }
 }
