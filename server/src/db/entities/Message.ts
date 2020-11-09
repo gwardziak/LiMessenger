@@ -7,11 +7,13 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from "typeorm";
+import { Chatroom } from "./Chatroom";
 import { User } from "./User";
 
 export namespace Message {
   export type Options = {
     text: string;
+    room: Chatroom;
     user: User;
   };
 }
@@ -36,6 +38,11 @@ export class Message implements Message.Options {
 
   @ManyToOne((type) => User, (user) => user.messages)
   user!: User;
+
+  @ManyToOne((type) => Chatroom, {
+    nullable: false,
+  })
+  public readonly room!: Chatroom;
 
   constructor(options: Message.Options) {
     if (options) {

@@ -32,7 +32,7 @@ export class Friendship {
         userB = options.userA;
       }
 
-      Object.assign(this, userA, userB, { ...options });
+      Object.assign(this, { ...options, userA, userB });
     }
   }
 }

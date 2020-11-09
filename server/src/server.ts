@@ -8,6 +8,7 @@ import "reflect-metadata";
 import { buildSchema, useContainer } from "type-graphql";
 import { Container } from "typedi";
 import { createConnection } from "typeorm";
+import { ChatroomResolver } from "./chatroom/ChatroomResolver";
 import { FriendshipResolver } from "./friendship/FriendshipResolver";
 import { MessageResolver } from "./message/MessageResolver";
 import { UserResolver } from "./user/UserResolver";
@@ -22,7 +23,12 @@ const main = async () => {
   await createConnection();
 
   const schema = await buildSchema({
-    resolvers: [MessageResolver, UserResolver, FriendshipResolver],
+    resolvers: [
+      MessageResolver,
+      UserResolver,
+      FriendshipResolver,
+      ChatroomResolver,
+    ],
     pubSub,
     authChecker,
   });
@@ -56,7 +62,15 @@ const main = async () => {
     // subscriptions: "/subscriptions",
     subscriptions: {
       onConnect: (connectionParams, webSocket, ctx) => {
+        console.log(connectionParams, "connectionParams");
+        // console.log(webSocket, "ws");
+        //console.log(ctx, "CTX");
+        console.log(ctx.request.headers.cookie, "COOKIE");
         console.log("Connected to ws");
+      },
+
+      onDisconnect: (websocket, context) => {
+        console.log("User dced.");
       },
     },
   });

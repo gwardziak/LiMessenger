@@ -32,9 +32,10 @@ export class MessageResolver {
   @Mutation(() => Boolean)
   async sendMessage(
     @Arg("message") message: string,
+    @Arg("topic") topic: string,
     @Ctx() context: MyContext
   ): Promise<boolean> {
-    await this.messageService.sendMessage(context.authUser, message);
+    await this.messageService.sendMessage(context.authUser, message, "1");
     return true;
   }
 
