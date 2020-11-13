@@ -1,13 +1,4 @@
-import {
-  Arg,
-  Ctx,
-  Int,
-  Mutation,
-  Query,
-  Resolver,
-  Root,
-  Subscription,
-} from "type-graphql";
+import { Arg, Ctx, Int, Mutation, Query, Resolver } from "type-graphql";
 import { MyContext } from "../models/MyContext";
 import { FriendshipObjectType } from "./dto/FriendshipObjectType";
 import { FriendshipService } from "./FriendshipService";
@@ -49,11 +40,5 @@ export class FriendshipResolver {
   ): Promise<boolean> {
     await this.friendshipService.addFriend(authUser, id);
     return true;
-  }
-
-  @Subscription({ topics: "FRIENDSHIPS" })
-  friendshipSubscription(@Root() message: any): FriendshipObjectType {
-    console.log(message);
-    return message;
   }
 }

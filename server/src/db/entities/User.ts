@@ -3,6 +3,7 @@ import {
   CreateDateColumn,
   Entity,
   Generated,
+  Index,
   OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
@@ -18,6 +19,7 @@ export namespace User {
   };
 }
 
+@Index(["uuid"], { unique: true })
 @Entity()
 export class User implements User.Options {
   @PrimaryGeneratedColumn()
@@ -48,7 +50,7 @@ export class User implements User.Options {
   @Column({ default: false })
   accountVerified!: boolean;
 
-  @OneToMany((type) => Message, (message) => message.user)
+  @OneToMany((type) => Message, (message) => message.sender)
   messages!: Message[];
 
   constructor(options: User.Options) {

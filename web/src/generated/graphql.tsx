@@ -16,14 +16,26 @@ export type Scalars = {
 
 export type Query = {
   __typename?: 'Query';
+  friendships: Array<Friendship>;
   message?: Maybe<Message>;
   messages: Array<Message>;
   me?: Maybe<User>;
 };
 
 
+export type QueryFriendshipsArgs = {
+  id: Scalars['Int'];
+};
+
+
 export type QueryMessageArgs = {
   uuid: Scalars['String'];
+};
+
+export type Friendship = {
+  __typename?: 'Friendship';
+  uuid: Scalars['String'];
+  username: Scalars['String'];
 };
 
 export type Message = {
@@ -32,9 +44,15 @@ export type Message = {
   text: Scalars['String'];
   createdAt: Scalars['DateTime'];
   updatedAt: Scalars['DateTime'];
-  username: Scalars['String'];
+  sender: UserMessage;
 };
 
+
+export type UserMessage = {
+  __typename?: 'UserMessage';
+  uuid: Scalars['String'];
+  username: Scalars['String'];
+};
 
 export type User = {
   __typename?: 'User';
@@ -47,13 +65,21 @@ export type User = {
 
 export type Mutation = {
   __typename?: 'Mutation';
+  addFriend: Scalars['Boolean'];
   sendMessage: Scalars['Boolean'];
   signUp: Scalars['Boolean'];
   signIn: Scalars['Boolean'];
 };
 
 
+export type MutationAddFriendArgs = {
+  id: Scalars['Float'];
+};
+
+
 export type MutationSendMessageArgs = {
+  recipentUuid: Scalars['String'];
+  topic: Scalars['String'];
   message: Scalars['String'];
 };
 
@@ -80,7 +106,19 @@ export type SignInInput = {
 
 export type Subscription = {
   __typename?: 'Subscription';
-  chatSubscription: Message;
+  chatroomSubscription: Message;
+};
+
+
+export type SubscriptionChatroomSubscriptionArgs = {
+  topic: Scalars['String'];
+};
+
+export type Notification = {
+  __typename?: 'Notification';
+  id: Scalars['ID'];
+  message?: Maybe<Scalars['String']>;
+  date: Scalars['DateTime'];
 };
 
 export type SignInMutationVariables = Exact<{
@@ -113,8 +151,29 @@ export type MessageQuery = (
   { __typename?: 'Query' }
   & { message?: Maybe<(
     { __typename?: 'Message' }
-    & Pick<Message, 'uuid' | 'text' | 'username'>
+    & Pick<Message, 'uuid' | 'text'>
+    & { sender: (
+      { __typename?: 'UserMessage' }
+      & Pick<UserMessage, 'uuid' | 'username'>
+    ) }
   )> }
+);
+
+export type ChatroomSubscriptionVariables = Exact<{
+  topic: Scalars['String'];
+}>;
+
+
+export type ChatroomSubscription = (
+  { __typename?: 'Subscription' }
+  & { chatroomSubscription: (
+    { __typename?: 'Message' }
+    & Pick<Message, 'uuid' | 'text' | 'createdAt' | 'updatedAt'>
+    & { sender: (
+      { __typename?: 'UserMessage' }
+      & Pick<UserMessage, 'uuid' | 'username'>
+    ) }
+  ) }
 );
 
 
@@ -147,11 +206,32 @@ export const MessageDocument = gql`
   message(uuid: $uuid) {
     uuid
     text
-    username
+    sender {
+      uuid
+      username
+    }
   }
 }
     `;
 
 export function useMessageQuery(options: Omit<Urql.UseQueryArgs<MessageQueryVariables>, 'query'> = {}) {
   return Urql.useQuery<MessageQuery>({ query: MessageDocument, ...options });
+};
+export const ChatroomDocument = gql`
+    subscription Chatroom($topic: String!) {
+  chatroomSubscription(topic: $topic) {
+    uuid
+    text
+    createdAt
+    updatedAt
+    sender {
+      uuid
+      username
+    }
+  }
+}
+    `;
+
+export function useChatroomSubscription<TData = ChatroomSubscription>(options: Omit<Urql.UseSubscriptionArgs<ChatroomSubscriptionVariables>, 'query'> = {}, handler?: Urql.SubscriptionHandler<ChatroomSubscription, TData>) {
+  return Urql.useSubscription<ChatroomSubscription, TData, ChatroomSubscriptionVariables>({ query: ChatroomDocument, ...options }, handler);
 };

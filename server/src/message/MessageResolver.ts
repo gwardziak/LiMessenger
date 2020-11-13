@@ -5,11 +5,13 @@ import {
   FieldResolver,
   Mutation,
   Root,
-  Subscription,
 } from "type-graphql/decorators";
 import { Message } from "../db/entities/Message";
 import { MyContext } from "../models/MyContext";
-import { MessageObjectType } from "./dto/MessageObjectType";
+import {
+  MessageObjectType,
+  UserMessageObjectType,
+} from "./dto/MessageObjectType";
 import { MessageService } from "./MessageService";
 
 @Resolver(MessageObjectType)
@@ -33,20 +35,16 @@ export class MessageResolver {
   async sendMessage(
     @Arg("message") message: string,
     @Arg("topic") topic: string,
-    @Ctx() context: MyContext
+    @Arg("recipentUuid") uuid: string,
+    @Ctx() { authUser }: MyContext
   ): Promise<boolean> {
-    await this.messageService.sendMessage(context.authUser, message, "1");
+    await this.messageService.sendMessage(authUser, message, uuid);
     return true;
   }
 
-  @FieldResolver(() => String)
-  async username(@Root() message: Message): Promise<string> {
-    const user = await this.messageService.getMessageOwner(message.id);
-    return user.username;
-  }
-
-  @Subscription({ topics: "MESSAGES" })
-  chatSubscription(@Root() message: Message): MessageObjectType {
-    return message;
+  @FieldResolver(() => UserMessageObjectType)
+  async sender(@Root() message: Message): Promise<UserMessageObjectType> {
+    const user = await this.messageService.user(message.id);
+    return { uuid: user.uuid, username: user.username };
   }
 }

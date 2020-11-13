@@ -16,6 +16,7 @@
     "react-scrollbars-custom": "^4.0.25",
     "react-use": "^15.3.4",
     "styled-components": "^5.2.0",
+    "subscriptions-transport-ws": "^0.9.18",
     "type-route": "^0.5.4",
     "urql": "^1.10.1"
   },

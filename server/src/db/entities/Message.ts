@@ -14,7 +14,7 @@ export namespace Message {
   export type Options = {
     text: string;
     room: Chatroom;
-    user: User;
+    sender: User;
   };
 }
 
@@ -36,8 +36,8 @@ export class Message implements Message.Options {
   @UpdateDateColumn()
   updatedAt!: Date;
 
-  @ManyToOne((type) => User, (user) => user.messages)
-  user!: User;
+  @ManyToOne((type) => User, (sender) => sender.messages)
+  sender!: User;
 
   @ManyToOne((type) => Chatroom, {
     nullable: false,

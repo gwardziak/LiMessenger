@@ -7,6 +7,10 @@ namespace MessageObjectType {
     createdAt: Date;
     updatedAt: Date;
   };
+  export type UserOptions = {
+    uuid: string;
+    username: string;
+  };
 }
 
 @ObjectType("Message")
@@ -22,4 +26,13 @@ export class MessageObjectType implements MessageObjectType.Options {
 
   @Field((type) => Date)
   updatedAt!: Date;
+}
+
+@ObjectType("UserMessage")
+export class UserMessageObjectType implements MessageObjectType.UserOptions {
+  @Field()
+  uuid!: string;
+
+  @Field()
+  username!: string;
 }

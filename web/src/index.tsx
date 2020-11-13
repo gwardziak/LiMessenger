@@ -2,7 +2,13 @@ import React from "react";
 import ReactDOM from "react-dom";
 import { BrowserRouter as Router } from "react-router-dom";
 import { createGlobalStyle } from "styled-components";
-import { createClient, Provider } from "urql";
+import { SubscriptionClient } from "subscriptions-transport-ws/dist/client";
+import {
+  createClient,
+  defaultExchanges,
+  Provider,
+  subscriptionExchange,
+} from "urql";
 import App from "./App";
 
 const GlobalStyle = createGlobalStyle`
@@ -17,6 +23,12 @@ body {
   font-family: SFUIDisplay-Regular, Helvetica Neue, system-ui, Segoe UI, Helvetica, Arial, sans-serif;
 }
 `;
+const subscriptionClient = new SubscriptionClient(
+  "ws://localhost:4000/graphql",
+  {
+    reconnect: true,
+  }
+);
 
 const client = createClient({
   url: "http://localhost:4000",
@@ -25,6 +37,14 @@ const client = createClient({
     credentials: "include",
     mode: "cors",
   },
+  exchanges: [
+    ...defaultExchanges,
+    subscriptionExchange({
+      forwardSubscription(operation) {
+        return subscriptionClient.request(operation);
+      },
+    }),
+  ],
 });
 
 ReactDOM.render(
