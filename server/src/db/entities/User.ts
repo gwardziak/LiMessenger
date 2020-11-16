@@ -4,11 +4,9 @@ import {
   Entity,
   Generated,
   Index,
-  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from "typeorm";
-import { Message } from "./Message";
 
 export namespace User {
   export type Options = {
@@ -49,9 +47,6 @@ export class User implements User.Options {
 
   @Column({ default: false })
   accountVerified!: boolean;
-
-  @OneToMany((type) => Message, (message) => message.sender)
-  messages!: Message[];
 
   constructor(options: User.Options) {
     if (options) {

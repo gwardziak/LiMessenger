@@ -6,20 +6,8 @@ import { FriendList } from "../components/FriendList";
 import { Navbar } from "../components/Navbar";
 import { UserOptions } from "../components/UserOptions";
 import { mediaQuery } from "../utils/css/cssMedia";
-import { useChatroomSubscription } from "./../generated/graphql";
 
 export const Main = () => {
-  const [{ data, error, fetching }] = useChatroomSubscription({
-    variables: {
-      topic:
-        "2bd70856-21c8-4065-b68a-c6e4d762dc1d14610c8f-7d64-496d-afe3-3530de69d27e",
-    },
-  });
-
-  console.log(data);
-  console.log(error);
-  console.log(fetching);
-
   return (
     <Container>
       <Navbar />

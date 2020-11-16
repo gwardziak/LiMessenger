@@ -3,6 +3,7 @@ import {
   CreateDateColumn,
   Entity,
   Generated,
+  Index,
   ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
@@ -15,6 +16,7 @@ export namespace Message {
     text: string;
     room: Chatroom;
     sender: User;
+    recipient: User;
   };
 }
 
@@ -24,6 +26,7 @@ export class Message implements Message.Options {
   readonly id!: number;
 
   @Column()
+  @Index()
   @Generated("uuid")
   uuid!: string;
 
@@ -36,10 +39,15 @@ export class Message implements Message.Options {
   @UpdateDateColumn()
   updatedAt!: Date;
 
-  @ManyToOne((type) => User, (sender) => sender.messages)
+  @ManyToOne(() => User)
   sender!: User;
 
-  @ManyToOne((type) => Chatroom, {
+  @ManyToOne(() => User, {
+    nullable: false,
+  })
+  public readonly recipient!: User;
+
+  @ManyToOne(() => Chatroom, {
     nullable: false,
   })
   public readonly room!: Chatroom;

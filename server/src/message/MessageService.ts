@@ -24,6 +24,19 @@ export class MessageService {
     return await this.messageRepository.find();
   }
 
+  async firstMessages(user: User): Promise<Message[]> {
+    return await this.messageRepository
+      .createQueryBuilder("messages")
+      .leftJoinAndSelect("messages.sender", "sender")
+      .leftJoinAndSelect("messages.recipient", "recipient")
+      .where(`sender.id = :participantId OR recipient.id = :participantId`, {
+        participantId: user.id,
+      })
+      .groupBy("sender.id")
+      .groupBy("recipient.id")
+      .getMany();
+  }
+
   async sendMessage(
     sender: User,
     text: string,
@@ -31,11 +44,12 @@ export class MessageService {
   ): Promise<void> {
     let room = await this.chatroomRepository
       .createQueryBuilder("chatroom")
-      .leftJoinAndSelect("chatroom.userA", "userA")
-      .leftJoinAndSelect("chatroom.userB", "userB")
+      .leftJoinAndSelect("chatroom.participantA", "participantA")
+      .leftJoinAndSelect("chatroom.participantB", "participantB")
       .where(
-        "userA.id = :userId AND userB.uuid = :uuid OR userA.uuid = :uuid AND userB.id = :userId",
-        { userId: sender.id, uuid: recipientUuid }
+        `participantA.id = :participantAId AND participantB.uuid = :participantBUuid OR  
+      participantA.uuid = :participantBUuid AND participantB.id = :participantAId`,
+        { participantAId: sender.id, participantBUuid: recipientUuid }
       )
       .getOne();
 
@@ -52,17 +66,29 @@ export class MessageService {
       text,
       sender,
       room,
+      recipient:
+        room.participantA.id === sender.id
+          ? room.participantB
+          : room.participantA,
     });
 
     await this.messageRepository.insert(message);
-    await this.pubSub.publish(room.userA.uuid + room.userB.uuid, message);
+    await this.pubSub.publish("NEW_MESSAGE", message);
   }
 
-  async user(id: number): Promise<User> {
+  async sender(id: number): Promise<User> {
     const message = await this.messageRepository.findOne({
       where: { id },
       relations: ["sender"],
     });
     return message!.sender;
+  }
+
+  async recipient(id: number): Promise<User> {
+    const message = await this.messageRepository.findOne({
+      where: { id },
+      relations: ["recipient"],
+    });
+    return message!.recipient;
   }
 }

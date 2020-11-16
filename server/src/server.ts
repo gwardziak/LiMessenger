@@ -9,7 +9,6 @@ import { buildSchema, useContainer } from "type-graphql";
 import { Container } from "typedi";
 import { createConnection } from "typeorm";
 import { ChatroomResolver } from "./chatroom/ChatroomResolver";
-import { FriendshipResolver } from "./friendship/FriendshipResolver";
 import { MessageResolver } from "./message/MessageResolver";
 import { UserResolver } from "./user/UserResolver";
 import { authChecker } from "./utils/authChecker";
@@ -23,12 +22,7 @@ const main = async () => {
   await createConnection();
 
   const schema = await buildSchema({
-    resolvers: [
-      MessageResolver,
-      UserResolver,
-      FriendshipResolver,
-      ChatroomResolver,
-    ],
+    resolvers: [MessageResolver, UserResolver, ChatroomResolver],
     pubSub,
     authChecker,
   });
@@ -50,10 +44,7 @@ const main = async () => {
 
     context: async ({ req, res, connection }) => {
       if (connection) return connection.context;
-      //console.log(req.cookies);
       const authUser = await verifyUserToken(req.cookies.token);
-
-      //console.log("authUser", authUser);
       return { req, res, authUser };
     },
 
@@ -61,12 +52,11 @@ const main = async () => {
     // otherwise it will be the same as main graphql endpoint
     // subscriptions: "/subscriptions",
     subscriptions: {
-      onConnect: (connectionParams, webSocket, ctx) => {
-        console.log(connectionParams, "connectionParams");
-        // console.log(webSocket, "ws");
-        //console.log(ctx, "CTX");
-        console.log(ctx.request.headers.cookie, "COOKIE");
-        console.log("Connected to ws");
+      onConnect: async (connectionParams, webSocket, context) => {
+        const authUser = await verifyUserToken(
+          context.request.headers.cookie?.substring(6)
+        );
+        return { authUser };
       },
 
       onDisconnect: (websocket, context) => {

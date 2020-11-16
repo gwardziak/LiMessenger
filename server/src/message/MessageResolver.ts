@@ -1,5 +1,6 @@
-import { Arg, Query, Resolver } from "type-graphql";
+import { Query, Resolver } from "type-graphql";
 import {
+  Arg,
   Authorized,
   Ctx,
   FieldResolver,
@@ -18,23 +19,20 @@ import { MessageService } from "./MessageService";
 export class MessageResolver {
   private constructor(private readonly messageService: MessageService) {}
 
-  @Query(() => MessageObjectType, { nullable: true })
-  async message(
-    @Arg("uuid", () => String) uuid: string
-  ): Promise<Message | undefined> {
-    return await this.messageService.getOne(uuid);
-  }
-
   @Query(() => [MessageObjectType])
   async messages(): Promise<Message[]> {
     return await this.messageService.getAll();
+  }
+
+  @Query(() => [MessageObjectType])
+  async firstMessages(@Ctx() { authUser }: MyContext): Promise<Message[]> {
+    return await this.messageService.firstMessages(authUser);
   }
 
   @Authorized()
   @Mutation(() => Boolean)
   async sendMessage(
     @Arg("message") message: string,
-    @Arg("topic") topic: string,
     @Arg("recipentUuid") uuid: string,
     @Ctx() { authUser }: MyContext
   ): Promise<boolean> {
@@ -44,7 +42,13 @@ export class MessageResolver {
 
   @FieldResolver(() => UserMessageObjectType)
   async sender(@Root() message: Message): Promise<UserMessageObjectType> {
-    const user = await this.messageService.user(message.id);
-    return { uuid: user.uuid, username: user.username };
+    const user = await this.messageService.sender(message.id);
+    return user;
+  }
+
+  @FieldResolver(() => UserMessageObjectType)
+  async recipient(@Root() message: Message): Promise<UserMessageObjectType> {
+    const user = await this.messageService.recipient(message.id);
+    return user;
   }
 }
