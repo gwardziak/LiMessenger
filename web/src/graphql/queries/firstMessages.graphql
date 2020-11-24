@@ -1,0 +1,15 @@
+query FirstMessages {
+  firstMessages {
+    uuid
+    text
+    createdAt
+    sender {
+      uuid
+      username
+    }
+    recipient {
+      uuid
+      username
+    }
+  }
+}

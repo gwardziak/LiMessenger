@@ -11,5 +11,5 @@ export const useIsAuth = () => {
     if (!fetching && !data?.me) {
       history.replace("/login?next=" + location.pathname);
     }
-  }, [fetching, data, history]);
+  }, [fetching, data, history, location.pathname]);
 };

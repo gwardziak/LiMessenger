@@ -87,7 +87,7 @@ const Container = styled.div<{ isToggle: boolean }>`
   box-sizing: border-box;
   margin-bottom: 8px;
 
-  @media ${mediaQuery.xs}, ${mediaQuery.sm}, ${mediaQuery.md}, {
+  @media ${mediaQuery.xs}, ${mediaQuery.sm}, ${mediaQuery.md} {
     grid-template-columns: ${(props) => props.isToggle && "28px 1fr 36px"};
     grid-template-rows: ${(props) => (props.isToggle ? "52px 1fr" : "1fr")};
     grid-row-gap: 8px;
@@ -106,7 +106,7 @@ const PlusIcon = styled(Plus)<{ isToggle?: boolean }>`
   transform: ${(props) => props.isToggle && "rotate(45deg)"};
   cursor: pointer;
 
-  @media ${mediaQuery.xs}, ${mediaQuery.sm}, ${mediaQuery.md}, {
+  @media ${mediaQuery.xs}, ${mediaQuery.sm}, ${mediaQuery.md} {
     grid-row: ${(props) => props.isToggle && 2};
   }
 `;
@@ -172,7 +172,7 @@ const MessageContainer = styled.div<{ isToggle: boolean }>`
   cursor: context-menu;
   font-size: 14px;
 
-  @media ${mediaQuery.xs}, ${mediaQuery.sm}, ${mediaQuery.md}, {
+  @media ${mediaQuery.xs}, ${mediaQuery.sm}, ${mediaQuery.md} {
     grid-column: ${(props) => (props.isToggle ? "2/3" : "2/6")};
   }
 `;

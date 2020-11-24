@@ -1,15 +1,23 @@
+import { observer } from "mobx-react-lite";
 import React from "react";
 import styled from "styled-components";
 import { Compose } from "../Icons/Compose";
 import { CreateNewRoom } from "../Icons/CreateNewRoom";
 import { Settings } from "../Icons/Settings";
+import { useRootStore } from "../stores/RootStore";
 import { Avatar as DefaultAvatar } from "../ui/Avatar";
 import { mediaQuery } from "../utils/css/cssMedia";
 
-export const UserOptions = () => {
+export const UserOptions = observer(() => {
+  const rootStore = useRootStore();
+
+  if (!rootStore.userStore.avatar) {
+    return <div>Loading...</div>;
+  }
+
   return (
     <Container>
-      <Avatar src="https://scontent-frt3-1.xx.fbcdn.net/v/t1.30497-1/c29.0.100.100a/p100x100/84241059_189132118950875_4138507100605120512_n.jpg?_nc_cat=1&_nc_sid=7206a8&_nc_ohc=zLcWETlL6TIAX95SnPH&_nc_ht=scontent-frt3-1.xx&_nc_tp=27&oh=062a10092c5cb258d651a46799cf7c89&oe=5FA0C29E" />
+      <Avatar src={rootStore.userStore.avatar} />
       <ListName>Czaty</ListName>
       <IconContainer>
         <Settings fill="#000" height="30px" width="30px" viewBox="0 0 36 36" />
@@ -27,7 +35,7 @@ export const UserOptions = () => {
       </IconMobileAndDesktopContainer>
     </Container>
   );
-};
+});
 
 const Container = styled.div`
   grid-area: userOptions;
@@ -40,7 +48,7 @@ const Container = styled.div`
   box-sizing: border-box;
   min-width: 300px;
 
-  @media ${mediaQuery.xs}, ${mediaQuery.sm}, ${mediaQuery.md}, {
+  @media ${mediaQuery.xs}, ${mediaQuery.sm}, ${mediaQuery.md} {
     grid-template-columns: 1fr;
     min-width: 0;
     display: flex;
@@ -68,7 +76,7 @@ const ListName = styled.h1`
   white-space: nowrap;
   overflow: hidden;
 
-  @media ${mediaQuery.xs}, ${mediaQuery.sm}, ${mediaQuery.md}, {
+  @media ${mediaQuery.xs}, ${mediaQuery.sm}, ${mediaQuery.md} {
     display: none;
   }
 `;
@@ -82,13 +90,13 @@ const IconContainer = styled.div`
   align-items: center;
   height: 36px;
 
-  @media ${mediaQuery.xs}, ${mediaQuery.sm}, ${mediaQuery.md}, {
+  @media ${mediaQuery.xs}, ${mediaQuery.sm}, ${mediaQuery.md} {
     display: none;
   }
 `;
 
 const IconMobileAndDesktopContainer = styled(IconContainer)`
-  @media ${mediaQuery.xs}, ${mediaQuery.sm}, ${mediaQuery.md}, {
+  @media ${mediaQuery.xs}, ${mediaQuery.sm}, ${mediaQuery.md} {
     display: flex;
     width: 36px;
   }

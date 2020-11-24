@@ -1,4 +1,4 @@
-import React from "react";
+import React, { createContext } from "react";
 import ReactDOM from "react-dom";
 import { BrowserRouter as Router } from "react-router-dom";
 import { createGlobalStyle } from "styled-components";
@@ -10,6 +10,7 @@ import {
   subscriptionExchange,
 } from "urql";
 import App from "./App";
+import { RootStore } from "./stores/RootStore";
 
 const GlobalStyle = createGlobalStyle`
 html {
@@ -46,6 +47,8 @@ const client = createClient({
     }),
   ],
 });
+
+export const StoreContext = createContext<RootStore>(new RootStore(client));
 
 ReactDOM.render(
   <React.StrictMode>
