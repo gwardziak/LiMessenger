@@ -4,8 +4,9 @@ import { BrowserRouter as Router } from "react-router-dom";
 import { createGlobalStyle } from "styled-components";
 import { SubscriptionClient } from "subscriptions-transport-ws/dist/client";
 import {
+  cacheExchange,
   createClient,
-  defaultExchanges,
+  dedupExchange,
   Provider,
   subscriptionExchange,
 } from "urql";
@@ -24,29 +25,57 @@ body {
   font-family: SFUIDisplay-Regular, Helvetica Neue, system-ui, Segoe UI, Helvetica, Arial, sans-serif;
 }
 `;
+
+const url = "http://localhost:4000/graphql";
+
+// const subscriptionClient = new SubscriptionClient(
+//   "ws://localhost:4000/graphql",
+//   {
+//     reconnect: true,
+//   }
+// );
+
 const subscriptionClient = new SubscriptionClient(
-  "ws://localhost:4000/graphql",
+  url.replace("https://", "wss://").replace("http://", "ws://"),
   {
     reconnect: true,
   }
 );
 
 const client = createClient({
-  url: "http://localhost:4000",
+  url,
   requestPolicy: "cache-and-network",
   fetchOptions: {
     credentials: "include",
     mode: "cors",
   },
   exchanges: [
-    ...defaultExchanges,
+    dedupExchange,
+    cacheExchange,
     subscriptionExchange({
-      forwardSubscription(operation) {
-        return subscriptionClient.request(operation);
-      },
+      forwardSubscription: (operation) => subscriptionClient.request(operation),
+      enableAllOperations: true,
     }),
   ],
 });
+
+// const client = createClient({
+//   url,
+//   requestPolicy: "cache-and-network",
+//   fetchOptions: {
+//     credentials: "include",
+//     mode: "cors",
+//   },
+//   exchanges: [
+//     ...defaultExchanges,
+//     subscriptionExchange({
+//       forwardSubscription(operation) {
+//         console.log(operation);
+//         return subscriptionClient.request(operation);
+//       },
+//     }),
+//   ],
+// });
 
 export const StoreContext = createContext<RootStore>(new RootStore(client));
 

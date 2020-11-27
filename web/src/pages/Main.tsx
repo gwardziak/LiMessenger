@@ -1,13 +1,26 @@
-import React from "react";
+import { observer } from "mobx-react-lite";
+import React, { useEffect } from "react";
 import styled from "styled-components";
 import { Chat } from "../components/Chat";
 import { ChatRoomOptions } from "../components/ChatRoomOptions";
 import { FriendList } from "../components/FriendList";
 import { Navbar } from "../components/Navbar";
 import { UserOptions } from "../components/UserOptions";
+import { useRootStore } from "../stores/RootStore";
 import { mediaQuery } from "../utils/css/cssMedia";
 
-export const Main = () => {
+export const Main = observer(() => {
+  const rootStore = useRootStore();
+
+  useEffect(() => {
+    rootStore.userStore.fetchUser();
+    rootStore.chatStore.subscribeAndFetch();
+  }, [rootStore]);
+
+  rootStore.chatStore.messagesInRoom().map((message) => {
+    return console.log(message);
+  });
+
   return (
     <Container>
       <Navbar />
@@ -17,7 +30,7 @@ export const Main = () => {
       <ChatRoomOptions />
     </Container>
   );
-};
+});
 
 const Container = styled.div`
   display: grid;
@@ -27,10 +40,9 @@ const Container = styled.div`
 
   grid-template-areas:
     "userOptions nav nav"
-    "friendList chat chatRoomOptions
-  ";
+    "friendList chat chatRoomOptions";
 
-  @media ${mediaQuery.xs}, ${mediaQuery.sm}, ${mediaQuery.md}, {
+  @media ${mediaQuery.xs}, ${mediaQuery.sm}, ${mediaQuery.md} {
     grid-template-columns: 80px 2fr 1fr;
   }
 `;

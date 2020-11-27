@@ -20,8 +20,11 @@ export class MessageResolver {
   private constructor(private readonly messageService: MessageService) {}
 
   @Query(() => [MessageObjectType])
-  async messages(): Promise<Message[]> {
-    return await this.messageService.getAll();
+  async messages(
+    @Arg("friendUuid") friendUuid: string,
+    @Ctx() { authUser }: MyContext
+  ): Promise<Message[]> {
+    return await this.messageService.getAll(authUser, friendUuid);
   }
 
   @Query(() => [MessageObjectType])

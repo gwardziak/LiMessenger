@@ -20,8 +20,17 @@ export class MessageService {
     return await this.messageRepository.findOne({ where: { uuid } });
   }
 
-  async getAll(): Promise<Message[]> {
-    return await this.messageRepository.find();
+  async getAll(me: User, friendUuid: string): Promise<Message[]> {
+    return await this.messageRepository
+      .createQueryBuilder("messages")
+      .leftJoinAndSelect("messages.sender", "sender")
+      .leftJoinAndSelect("messages.recipient", "recipient")
+      .where(
+        `sender.id = :senderId AND recipient.uuid = :recipientUuid OR
+          sender.uuid = :recipientUuid AND recipient.id = :senderId`,
+        { senderId: me.id, recipientUuid: friendUuid }
+      )
+      .getMany();
   }
 
   async firstMessages(user: User): Promise<Message[]> {
@@ -34,9 +43,9 @@ export class MessageService {
       })
       .groupBy("sender.id")
       .groupBy("recipient.id")
+      .addSelect("MAX(messages.createdAt)")
       .getMany();
   }
-
   async sendMessage(
     sender: User,
     text: string,

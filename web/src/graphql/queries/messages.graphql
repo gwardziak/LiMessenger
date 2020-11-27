@@ -1,9 +1,8 @@
-subscription Chatroom {
-  chatroomSubscription {
+query Messages($uuid: String!) {
+  messages(friendUuid: $uuid) {
     uuid
     text
     createdAt
-    updatedAt
     sender {
       uuid
       username

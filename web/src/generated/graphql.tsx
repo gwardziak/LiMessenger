@@ -21,6 +21,11 @@ export type Query = {
   me?: Maybe<User>;
 };
 
+
+export type QueryMessagesArgs = {
+  friendUuid: Scalars['String'];
+};
+
 export type Message = {
   __typename?: 'Message';
   uuid: Scalars['String'];
@@ -125,6 +130,44 @@ export type MeQuery = (
   )> }
 );
 
+export type MessagesQueryVariables = Exact<{
+  uuid: Scalars['String'];
+}>;
+
+
+export type MessagesQuery = (
+  { __typename?: 'Query' }
+  & { messages: Array<(
+    { __typename?: 'Message' }
+    & Pick<Message, 'uuid' | 'text' | 'createdAt'>
+    & { sender: (
+      { __typename?: 'UserMessage' }
+      & Pick<UserMessage, 'uuid' | 'username'>
+    ), recipient: (
+      { __typename?: 'UserMessage' }
+      & Pick<UserMessage, 'uuid' | 'username'>
+    ) }
+  )> }
+);
+
+export type ChatroomSubscriptionVariables = Exact<{ [key: string]: never; }>;
+
+
+export type ChatroomSubscription = (
+  { __typename?: 'Subscription' }
+  & { chatroomSubscription: (
+    { __typename?: 'Message' }
+    & Pick<Message, 'uuid' | 'text' | 'createdAt' | 'updatedAt'>
+    & { sender: (
+      { __typename?: 'UserMessage' }
+      & Pick<UserMessage, 'uuid' | 'username'>
+    ), recipient: (
+      { __typename?: 'UserMessage' }
+      & Pick<UserMessage, 'uuid' | 'username'>
+    ) }
+  ) }
+);
+
 
 export const SignInDocument = gql`
     mutation SignIn($options: SignInInput!) {
@@ -170,4 +213,47 @@ export const MeDocument = gql`
 
 export function useMeQuery(options: Omit<Urql.UseQueryArgs<MeQueryVariables>, 'query'> = {}) {
   return Urql.useQuery<MeQuery>({ query: MeDocument, ...options });
+};
+export const MessagesDocument = gql`
+    query Messages($uuid: String!) {
+  messages(friendUuid: $uuid) {
+    uuid
+    text
+    createdAt
+    sender {
+      uuid
+      username
+    }
+    recipient {
+      uuid
+      username
+    }
+  }
+}
+    `;
+
+export function useMessagesQuery(options: Omit<Urql.UseQueryArgs<MessagesQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<MessagesQuery>({ query: MessagesDocument, ...options });
+};
+export const ChatroomDocument = gql`
+    subscription Chatroom {
+  chatroomSubscription {
+    uuid
+    text
+    createdAt
+    updatedAt
+    sender {
+      uuid
+      username
+    }
+    recipient {
+      uuid
+      username
+    }
+  }
+}
+    `;
+
+export function useChatroomSubscription<TData = ChatroomSubscription>(options: Omit<Urql.UseSubscriptionArgs<ChatroomSubscriptionVariables>, 'query'> = {}, handler?: Urql.SubscriptionHandler<ChatroomSubscription, TData>) {
+  return Urql.useSubscription<ChatroomSubscription, TData, ChatroomSubscriptionVariables>({ query: ChatroomDocument, ...options }, handler);
 };
