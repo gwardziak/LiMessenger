@@ -1,4 +1,10 @@
-import { action, computed, observable, runInAction } from "mobx";
+import {
+  action,
+  computed,
+  makeObservable,
+  observable,
+  runInAction,
+} from "mobx";
 import { OperationResult } from "urql";
 import { pipe, subscribe } from "wonka";
 import {
@@ -37,11 +43,13 @@ export class ChatStore {
     Message[]
   > = observable.map();
 
-  @observable activeChat: string = "";
+  @observable activeChat: string | null = null;
 
-  constructor(private readonly rootStore: RootStore) {}
+  constructor(private readonly rootStore: RootStore) {
+    makeObservable(this);
+  }
 
-  @computed firstMessages(): Message[] {
+  @computed get firstMessages(): Message[] {
     const firstMessages: Message[] = [];
     const keys: IterableIterator<string> = this.messages.keys();
 
@@ -62,36 +70,39 @@ export class ChatStore {
     return sortMessages;
   }
 
-  @computed messagesInRoom(): Message[] {
+  @computed get messagesInRoom(): Message[][] {
+    if (!this.activeChat) {
+      return [];
+    }
     const roomMessages = this.messages.get(this.activeChat);
+    console.log(roomMessages, "roomy");
 
     if (!roomMessages) {
       return [];
     }
+
     const sortMessages = [...roomMessages].sort(
       (a, b) =>
         new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
     );
-    console.log(sortMessages, "sortedMessages");
-    // sortMessages.map((message) => {
-    //   return console.log(message.text);
-    // });
 
-    return sortMessages;
-    // const keys: IterableIterator<string> = this.messages.keys();
-    // const test = [];
-    // const roomMessages = this.messages.get(this.activeChat);
+    const messages: any = [];
+    let messType = this.rootStore.userStore.uuid;
+    for (const message of sortMessages) {
+      console.log(message.recipient.uuid);
+      if (messType === message.recipient.uuid) {
+        if (messages.length === 0) messages.push([]);
+        console.log("ta sama tablica");
+      } else {
+        messages.push([]);
+        messType = message.recipient.uuid;
+      }
+      messages[messages.length - 1].push(message);
+    }
 
-    // if (!roomMessages) {
-    //   return [];
-    // }
-    // console.log(roomMessages, "wiadomoscis");
-    // for (const obj of roomMessages) {
-    //   console.log(keys);
-    //   test.push(obj);
-    // }
-
-    // return test;
+    console.log(messages);
+    return messages;
+    // return sortMessages;
   }
 
   @action async fetchFirstMessages(): Promise<void> {
@@ -126,9 +137,10 @@ export class ChatStore {
     });
   }
 
-  @action async fetchChatMessages(room: string): Promise<void> {
+  @action async fetchChatMessages(room: string | null): Promise<void> {
     this.setChatroom(room);
 
+    if (!this.activeChat) return;
     const { data, error } = await this.rootStore.urqlClient
       .query<MessagesQuery, MessagesQueryVariables>(MessagesDocument, {
         uuid: this.activeChat,
@@ -144,15 +156,17 @@ export class ChatStore {
     }
 
     return runInAction(() => {
+      if (!this.activeChat) return;
       if (!this.messages.has(this.activeChat)) {
         this.messages.set(this.activeChat, []);
       }
       this.messages.get(this.activeChat)!.push(...data.messages);
+      console.log(this.messages.get(this.activeChat));
     });
   }
 
-  @action setChatroom(uuid?: string) {
-    if (this.activeChat === "") {
+  @action setChatroom(uuid?: string | null) {
+    if (!this.activeChat) {
       const firstMessages: Message[] = [];
       const keys: IterableIterator<string> = this.messages.keys();
 
@@ -224,6 +238,6 @@ export class ChatStore {
     await this.subscribeMessages();
     await this.fetchFirstMessages();
     this.setChatroom();
-    await this.fetchChatMessages(this.activeChat);
+    // await this.fetchChatMessages(this.activeChat);
   }
 }

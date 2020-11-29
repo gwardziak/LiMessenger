@@ -17,10 +17,6 @@ export const Main = observer(() => {
     rootStore.chatStore.subscribeAndFetch();
   }, [rootStore]);
 
-  rootStore.chatStore.messagesInRoom().map((message) => {
-    return console.log(message);
-  });
-
   return (
     <Container>
       <Navbar />

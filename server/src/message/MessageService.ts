@@ -41,11 +41,12 @@ export class MessageService {
       .where(`sender.id = :participantId OR recipient.id = :participantId`, {
         participantId: user.id,
       })
-      .groupBy("sender.id")
       .groupBy("recipient.id")
+      .addGroupBy("sender.id")
       .addSelect("MAX(messages.createdAt)")
       .getMany();
   }
+
   async sendMessage(
     sender: User,
     text: string,

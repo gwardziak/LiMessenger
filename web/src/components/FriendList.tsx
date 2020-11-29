@@ -18,7 +18,7 @@ export const FriendList = observer(() => {
       <Container>
         {isBg && <SearchBar />}
         <List>
-          {rootStore.chatStore.firstMessages().map((message) => {
+          {rootStore.chatStore.firstMessages.map((message) => {
             const friendUuid =
               rootStore.userStore.uuid === message.sender.uuid
                 ? message.recipient.uuid
