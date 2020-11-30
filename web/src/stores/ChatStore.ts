@@ -259,6 +259,6 @@ export class ChatStore {
     await this.subscribeMessages();
     await this.fetchFirstMessages();
     this.setChatroom();
-    await this.fetchChatMessages(this.activeChat);
+    // await this.fetchChatMessages(this.activeChat);
   }
 }

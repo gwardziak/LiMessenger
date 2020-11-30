@@ -24,9 +24,7 @@ export const SendMessage = observer(() => {
   ]);
   const defaultInput = "Wpisz wiadomość...";
   const [toggle, setToggle] = useState<boolean>(false);
-  const [input, setInput] = useState<string>(defaultInput);
-
-  const handleBlur = () => (input === "" ? setInput(defaultInput) : null);
+  const [input, setInput] = useState<string>("");
 
   return (
     <Container isToggle={toggle}>
@@ -50,32 +48,32 @@ export const SendMessage = observer(() => {
         </>
       )}
       {isMobile && toggle && (
-        <MobileIconsContainer isToggle={toggle}>
-          <AttachmentIcon isToggle={toggle} viewBox="0 0 36 36" />
-          <EmojiIcon isToggle={toggle} viewBox="0 0 36 36" />
-          <GifIcon isToggle={toggle} viewBox="0 0 36 36" />
-          <MicrophoneIcon isToggle={toggle} viewBox="0 0 36 36" />
-          <GamePadIcon isToggle={toggle} viewBox="0 0 36 36" />
-          <CameraIcon isToggle={toggle} viewBox="0 0 36 36" />
+        <MobileIconsContainer>
+          <AttachmentIcon viewBox="0 0 36 36" />
+          <EmojiIcon viewBox="0 0 36 36" />
+          <GifIcon viewBox="0 0 36 36" />
+          <MicrophoneIcon viewBox="0 0 36 36" />
+          <GamePadIcon viewBox="0 0 36 36" />
+          <CameraIcon viewBox="0 0 36 36" />
         </MobileIconsContainer>
       )}
 
       <MessageContainer isToggle={toggle}>
         <Input
+          placeholder={defaultInput}
           html={input}
           onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
             setInput(e.target.value)
           }
-          onBlur={handleBlur}
           onKeyDown={async (e: KeyboardEvent) => {
             if (e.keyCode === 13) {
               e.preventDefault();
 
               try {
                 await rootStore.chatStore.sendMessage(input);
-                setInput(defaultInput);
+                setInput("");
               } catch (ex) {
-                throw new Error("Error during secind message" + ex.message);
+                throw new Error("Error during sending a message" + ex.message);
               }
             }
           }}
@@ -126,49 +124,49 @@ const PlusIcon = styled(Plus)<{ isToggle?: boolean }>`
   }
 `;
 
-const GifIcon = styled(GifFolder)<{ isToggle?: boolean }>`
+const GifIcon = styled(GifFolder)`
   height: 36px;
   width: 36px;
   fill: rgb(0, 153, 255);
   cursor: pointer;
 `;
 
-const EmojiIcon = styled(EmojiFolder)<{ isToggle?: boolean }>`
+const EmojiIcon = styled(EmojiFolder)`
   height: 36px;
   width: 36px;
   fill: rgb(0, 153, 255);
   cursor: pointer;
 `;
 
-const AttachmentIcon = styled(Attachment)<{ isToggle?: boolean }>`
+const AttachmentIcon = styled(Attachment)`
   height: 36px;
   width: 36px;
   fill: rgb(0, 153, 255);
   cursor: pointer;
 `;
 
-const CameraIcon = styled(Camera)<{ isToggle?: boolean }>`
+const CameraIcon = styled(Camera)`
   height: 36px;
   width: 36px;
   fill: rgb(0, 153, 255);
   cursor: pointer;
 `;
 
-const GamePadIcon = styled(GamePad)<{ isToggle?: boolean }>`
+const GamePadIcon = styled(GamePad)`
   height: 36px;
   width: 36px;
   fill: rgb(0, 153, 255);
   cursor: pointer;
 `;
 
-const MicrophoneIcon = styled(Microphone)<{ isToggle?: boolean }>`
+const MicrophoneIcon = styled(Microphone)`
   height: 36px;
   width: 36px;
   fill: rgb(0, 153, 255);
   cursor: pointer;
 `;
 
-const LikeIcon = styled(Like)<{ isToggle?: boolean }>`
+const LikeIcon = styled(Like)`
   height: 36px;
   width: 36px;
   fill: rgb(0, 153, 255);
@@ -195,13 +193,20 @@ const MessageContainer = styled.div<{ isToggle: boolean }>`
 const Input = styled(ContentEditable)`
   padding: 9px 0;
   outline: 0;
-  cursor: auto;
+  cursor: text;
   overflow: hidden;
   max-height: 144px;
   overflow-y: auto;
 
-  &::placeholder {
-    color: red;
+  :empty {
+    color: rgba(0, 0, 0, 0.4);
+  }
+
+  :empty:before {
+    cursor: text;
+    color: rgba(0, 0, 0, 0.4);
+    content: attr(placeholder);
+    display: block; // For Firefox
   }
 `;
 
@@ -213,7 +218,7 @@ const SmileIcon = styled(Smile)`
   padding-bottom: 7px;
 `;
 
-const MobileIconsContainer = styled.div<{ isToggle: boolean }>`
+const MobileIconsContainer = styled.div`
   display: grid;
   grid-template-columns: repeat(6, 36px);
   background-color: #fafafa;

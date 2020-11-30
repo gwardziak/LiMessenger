@@ -10,21 +10,21 @@ export const ChatRoom = observer(() => {
   if (!rootStore.chatStore.messagesInRoom) {
     return <div>loading...</div>;
   }
+
   return (
     <StyledScrollbar autoHide noScrollX>
       <Container>
         <MessageDate>Dziś</MessageDate>
         {rootStore.chatStore.messagesInRoom.map((messages) => {
           const sender = rootStore.userStore.uuid === messages[0].sender.uuid;
-
           return (
-            <MessageContainer messagesSender={sender}>
+            <MessageContainer key={messages[0].uuid} messagesSender={sender}>
               <GroupMessages messagesSender={sender}>
                 {messages.map((message) => {
                   return (
-                    <>
-                      <Message sender={sender}>{message.text}</Message>
-                    </>
+                    <Message key={message.uuid} sender={sender}>
+                      {message.text}
+                    </Message>
                   );
                 })}
               </GroupMessages>
