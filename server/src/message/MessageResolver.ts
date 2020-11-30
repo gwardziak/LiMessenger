@@ -9,6 +9,7 @@ import {
 } from "type-graphql/decorators";
 import { Message } from "../db/entities/Message";
 import { MyContext } from "../models/MyContext";
+import { MessageInput } from "./dto/MessageInput";
 import {
   MessageObjectType,
   UserMessageObjectType,
@@ -35,13 +36,24 @@ export class MessageResolver {
   @Authorized()
   @Mutation(() => Boolean)
   async sendMessage(
-    @Arg("message") message: string,
-    @Arg("recipentUuid") uuid: string,
+    @Arg("options")
+    options: MessageInput,
     @Ctx() { authUser }: MyContext
   ): Promise<boolean> {
-    await this.messageService.sendMessage(authUser, message, uuid);
+    await this.messageService.sendMessage(authUser, options);
     return true;
   }
+
+  // @Authorized()
+  // @Mutation(() => Boolean)
+  // async sendMessage(
+  //   @Arg("message") message: string,
+  //   @Arg("recipentUuid") uuid: string,
+  //   @Ctx() { authUser }: MyContext
+  // ): Promise<boolean> {
+  //   await this.messageService.sendMessage(authUser, message, uuid);
+  //   return true;
+  // }
 
   @FieldResolver(() => UserMessageObjectType)
   async sender(@Root() message: Message): Promise<UserMessageObjectType> {

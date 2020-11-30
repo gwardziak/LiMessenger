@@ -1,0 +1,3 @@
+mutation SendMessage($options: MessageInput!) {
+  sendMessage(options: $options)
+}

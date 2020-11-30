@@ -17,6 +17,9 @@ import {
   MessagesDocument,
   MessagesQuery,
   MessagesQueryVariables,
+  SendMessageDocument,
+  SendMessageMutation,
+  SendMessageMutationVariables,
 } from "../generated/graphql";
 import { RootStore } from "./RootStore";
 export type Recipient = {
@@ -75,7 +78,6 @@ export class ChatStore {
       return [];
     }
     const roomMessages = this.messages.get(this.activeChat);
-    console.log(roomMessages, "roomy");
 
     if (!roomMessages) {
       return [];
@@ -86,23 +88,20 @@ export class ChatStore {
         new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
     );
 
-    const messages: any = [];
-    let messType = this.rootStore.userStore.uuid;
+    const messages: Message[][] = [];
+    let recipient = this.rootStore.userStore.uuid;
+
     for (const message of sortMessages) {
-      console.log(message.recipient.uuid);
-      if (messType === message.recipient.uuid) {
+      if (recipient === message.recipient.uuid) {
         if (messages.length === 0) messages.push([]);
-        console.log("ta sama tablica");
       } else {
         messages.push([]);
-        messType = message.recipient.uuid;
+        recipient = message.recipient.uuid;
       }
-      messages[messages.length - 1].push(message);
+      messages[messages.length - 1].unshift(message);
     }
 
-    console.log(messages);
-    return messages;
-    // return sortMessages;
+    return messages.reverse();
   }
 
   @action async fetchFirstMessages(): Promise<void> {
@@ -161,7 +160,6 @@ export class ChatStore {
         this.messages.set(this.activeChat, []);
       }
       this.messages.get(this.activeChat)!.push(...data.messages);
-      console.log(this.messages.get(this.activeChat));
     });
   }
 
@@ -234,10 +232,33 @@ export class ChatStore {
     );
   }
 
+  @action async sendMessage(text: string): Promise<void> {
+    if (!this.activeChat) {
+      throw new Error("No user selected");
+    }
+
+    const { data, error } = await this.rootStore.urqlClient
+      .mutation<SendMessageMutation, SendMessageMutationVariables>(
+        SendMessageDocument,
+        {
+          options: { recipientUuid: this.activeChat, text },
+        }
+      )
+      .toPromise();
+
+    if (error) {
+      throw new Error(error.message);
+    }
+
+    if (!data?.sendMessage) {
+      throw new Error("Data not found");
+    }
+  }
+
   @action async subscribeAndFetch(): Promise<void> {
     await this.subscribeMessages();
     await this.fetchFirstMessages();
     this.setChatroom();
-    // await this.fetchChatMessages(this.activeChat);
+    await this.fetchChatMessages(this.activeChat);
   }
 }

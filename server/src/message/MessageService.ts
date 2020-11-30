@@ -6,6 +6,13 @@ import { User } from "../db/entities/User";
 import { ChatroomService } from "./../chatroom/ChatroomService";
 import { Chatroom } from "./../db/entities/Chatroom";
 
+export namespace MessageService {
+  export type SendMessage = {
+    recipientUuid: string;
+    text: string;
+  };
+}
+
 @Service()
 export class MessageService {
   private constructor(
@@ -49,23 +56,22 @@ export class MessageService {
 
   async sendMessage(
     sender: User,
-    text: string,
-    recipientUuid: string
+    options: MessageService.SendMessage
   ): Promise<void> {
     let room = await this.chatroomRepository
       .createQueryBuilder("chatroom")
       .leftJoinAndSelect("chatroom.participantA", "participantA")
       .leftJoinAndSelect("chatroom.participantB", "participantB")
       .where(
-        `participantA.id = :participantAId AND participantB.uuid = :participantBUuid OR  
+        `participantA.id = :participantAId AND participantB.uuid = :participantBUuid OR
       participantA.uuid = :participantBUuid AND participantB.id = :participantAId`,
-        { participantAId: sender.id, participantBUuid: recipientUuid }
+        { participantAId: sender.id, participantBUuid: options.recipientUuid }
       )
       .getOne();
 
     if (!room) {
       const user = await this.userRepository.findOne({
-        where: { uuid: recipientUuid },
+        where: { uuid: options.recipientUuid },
       });
       if (!user) throw new Error("Selected chat doesnt exist");
 
@@ -73,7 +79,7 @@ export class MessageService {
     }
 
     const message = new Message({
-      text,
+      text: options.text,
       sender,
       room,
       recipient:

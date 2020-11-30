@@ -61,8 +61,7 @@ export type Mutation = {
 
 
 export type MutationSendMessageArgs = {
-  recipentUuid: Scalars['String'];
-  message: Scalars['String'];
+  options: MessageInput;
 };
 
 
@@ -73,6 +72,11 @@ export type MutationSignUpArgs = {
 
 export type MutationSignInArgs = {
   options: SignInInput;
+};
+
+export type MessageInput = {
+  recipientUuid: Scalars['String'];
+  text: Scalars['String'];
 };
 
 export type SignUpInput = {
@@ -90,6 +94,16 @@ export type Subscription = {
   __typename?: 'Subscription';
   chatroomSubscription: Message;
 };
+
+export type SendMessageMutationVariables = Exact<{
+  options: MessageInput;
+}>;
+
+
+export type SendMessageMutation = (
+  { __typename?: 'Mutation' }
+  & Pick<Mutation, 'sendMessage'>
+);
 
 export type SignInMutationVariables = Exact<{
   options: SignInInput;
@@ -169,6 +183,15 @@ export type ChatroomSubscription = (
 );
 
 
+export const SendMessageDocument = gql`
+    mutation SendMessage($options: MessageInput!) {
+  sendMessage(options: $options)
+}
+    `;
+
+export function useSendMessageMutation() {
+  return Urql.useMutation<SendMessageMutation, SendMessageMutationVariables>(SendMessageDocument);
+};
 export const SignInDocument = gql`
     mutation SignIn($options: SignInInput!) {
   signIn(options: $options)

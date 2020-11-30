@@ -1,3 +1,4 @@
+import { observer } from "mobx-react-lite";
 import React, { useState } from "react";
 import styled from "styled-components";
 import { Attachment } from "../Icons/Attachment";
@@ -9,11 +10,13 @@ import { Like } from "../Icons/Like";
 import { Microphone } from "../Icons/Microphone";
 import { Plus } from "../Icons/Plus";
 import { Smile } from "../Icons/Smile";
+import { useRootStore } from "../stores/RootStore";
 import { mediaQuery } from "../utils/css/cssMedia";
 import { useMatchesMediaQuery } from "../utils/css/useMatchesMediaQuery";
 import ContentEditable from "../utils/ReactContentEditable";
 
-export const SendMessage = () => {
+export const SendMessage = observer(() => {
+  const rootStore = useRootStore();
   const isMobile = useMatchesMediaQuery([
     mediaQuery.xs,
     mediaQuery.sm,
@@ -64,6 +67,18 @@ export const SendMessage = () => {
             setInput(e.target.value)
           }
           onBlur={handleBlur}
+          onKeyDown={async (e: KeyboardEvent) => {
+            if (e.keyCode === 13) {
+              e.preventDefault();
+
+              try {
+                await rootStore.chatStore.sendMessage(input);
+                setInput(defaultInput);
+              } catch (ex) {
+                throw new Error("Error during secind message" + ex.message);
+              }
+            }
+          }}
         />
 
         <SmileIcon viewBox="0 0 26 26" />
@@ -71,7 +86,7 @@ export const SendMessage = () => {
       <LikeIcon viewBox="0 1 36 36" />
     </Container>
   );
-};
+});
 
 const Container = styled.div<{ isToggle: boolean }>`
   display: grid;
