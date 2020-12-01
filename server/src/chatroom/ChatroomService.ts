@@ -26,8 +26,8 @@ export class ChatroomService {
       .leftJoinAndSelect("chatroom.participantA", "participantA")
       .leftJoinAndSelect("chatroom.participantB", "participantB")
       .where(
-        `participantA.id = :participantAId AND participantB.id = :participantBId OR  
-        participantA.id = :participantBId AND participantB.id = :participantBId`,
+        `(participantA.id = :participantAId AND participantB.id = :participantBId) OR  
+        (participantA.id = :participantBId AND participantB.id = :participantBId)`,
         { participantAId: participantA.id, participantBId: participantB.id }
       )
       .getOne();

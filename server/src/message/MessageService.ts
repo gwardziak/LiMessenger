@@ -33,8 +33,8 @@ export class MessageService {
       .leftJoinAndSelect("messages.sender", "sender")
       .leftJoinAndSelect("messages.recipient", "recipient")
       .where(
-        `sender.id = :senderId AND recipient.uuid = :recipientUuid OR
-          sender.uuid = :recipientUuid AND recipient.id = :senderId`,
+        `(sender.id = :senderId AND recipient.uuid = :recipientUuid) OR
+          (sender.uuid = :recipientUuid AND recipient.id = :senderId)`,
         { senderId: me.id, recipientUuid: friendUuid }
       )
       .getMany();
@@ -63,8 +63,8 @@ export class MessageService {
       .leftJoinAndSelect("chatroom.participantA", "participantA")
       .leftJoinAndSelect("chatroom.participantB", "participantB")
       .where(
-        `participantA.id = :participantAId AND participantB.uuid = :participantBUuid OR
-      participantA.uuid = :participantBUuid AND participantB.id = :participantAId`,
+        `(participantA.id = :participantAId AND participantB.uuid = :participantBUuid) OR
+      (participantA.uuid = :participantBUuid AND participantB.id = :participantAId)`,
         { participantAId: sender.id, participantBUuid: options.recipientUuid }
       )
       .getOne();
