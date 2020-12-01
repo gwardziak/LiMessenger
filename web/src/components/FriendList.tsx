@@ -27,9 +27,9 @@ export const FriendList = observer(() => {
               <Item
                 isActive={rootStore.chatStore.activeChat === friendUuid}
                 key={friendUuid}
-                onClick={async (e) => {
+                onClick={(e) => {
                   try {
-                    await rootStore.chatStore.fetchChatMessages(friendUuid);
+                    rootStore.chatStore.setChatroom(friendUuid);
                   } catch (ex) {
                     console.log("Error during selecting a chat", ex.message);
                   }

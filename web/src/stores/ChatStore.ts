@@ -22,6 +22,7 @@ import {
   SendMessageMutationVariables,
 } from "../generated/graphql";
 import { RootStore } from "./RootStore";
+
 export type Recipient = {
   uuid: string;
   username: string;
@@ -52,6 +53,28 @@ export class ChatStore {
     makeObservable(this);
   }
 
+  @action private addMessage(key: string, data: Message): void {
+    if (!this.messages.has(key)) {
+      this.messages.set(key, []);
+    }
+    this.messages.get(key)!.push(data);
+  }
+
+  private sortMessages(messages: Message[]): Message[] {
+    return [...messages].sort(
+      (a, b) =>
+        new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+    );
+  }
+
+  private roomId(message: Message): string {
+    const userUuid = this.rootStore.userStore.uuid;
+
+    return userUuid === message.sender.uuid
+      ? message.recipient.uuid
+      : message.sender.uuid;
+  }
+
   @computed get firstMessages(): Message[] {
     const firstMessages: Message[] = [];
     const keys: IterableIterator<string> = this.messages.keys();
@@ -65,15 +88,10 @@ export class ChatStore {
       firstMessages.push(messages![messages!.length - 1]);
     }
 
-    const sortMessages = firstMessages.sort(
-      (a, b) =>
-        new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-    );
-
-    return sortMessages;
+    return this.sortMessages(firstMessages);
   }
 
-  @computed get messagesInRoom(): Message[][] {
+  @computed get roomMessages(): Message[][] {
     if (!this.activeChat) {
       return [];
     }
@@ -83,21 +101,20 @@ export class ChatStore {
       return [];
     }
 
-    const sortMessages = [...roomMessages].sort(
-      (a, b) =>
-        new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-    );
-
     const messages: Message[][] = [];
+    const sortMessages = this.sortMessages([...roomMessages]);
     let recipient = this.rootStore.userStore.uuid;
 
     for (const message of sortMessages) {
       if (recipient === message.recipient.uuid) {
-        if (messages.length === 0) messages.push([]);
+        if (messages.length === 0) {
+          messages.push([]);
+        }
       } else {
         messages.push([]);
         recipient = message.recipient.uuid;
       }
+
       messages[messages.length - 1].unshift(message);
     }
 
@@ -120,26 +137,19 @@ export class ChatStore {
     }
 
     return runInAction(() => {
-      const userUuid = this.rootStore.userStore.uuid;
-
       for (const message of data.firstMessages) {
-        const key: string =
-          userUuid === message.sender.uuid
-            ? message.recipient.uuid
-            : message.sender.uuid;
+        const key: string = this.roomId(message);
 
-        if (!this.messages.has(key)) {
-          this.messages.set(key, []);
-        }
-        this.messages.get(key)!.push(message);
+        this.addMessage(key, message);
       }
     });
   }
 
-  @action async fetchChatMessages(room: string | null): Promise<void> {
-    this.setChatroom(room);
+  @action async fetchChatMessages(): Promise<void> {
+    if (!this.activeChat) {
+      throw new Error("Select a chatroom");
+    }
 
-    if (!this.activeChat) return;
     const { data, error } = await this.rootStore.urqlClient
       .query<MessagesQuery, MessagesQueryVariables>(MessagesDocument, {
         uuid: this.activeChat,
@@ -163,32 +173,12 @@ export class ChatStore {
     });
   }
 
-  @action setChatroom(uuid?: string | null) {
+  @action setChatroom(uuid?: string): void {
     if (!this.activeChat) {
-      const firstMessages: Message[] = [];
-      const keys: IterableIterator<string> = this.messages.keys();
+      const latestMessage: Message = this.firstMessages[0];
 
-      if (!this.messages) {
-        throw new Error("Chatroom not found");
-      }
-
-      for (const key of keys) {
-        const messages = this.messages.get(key);
-
-        firstMessages.push(messages![messages!.length - 1]);
-      }
-
-      const sortMessages = firstMessages.sort(
-        (a, b) =>
-          new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-      );
-      const userUuid = this.rootStore.userStore.uuid;
-      const uuid: string =
-        userUuid === sortMessages[0].sender.uuid
-          ? sortMessages[0].recipient.uuid
-          : sortMessages[0].sender.uuid;
-
-      this.activeChat = uuid;
+      this.activeChat = this.roomId(latestMessage);
+      this.fetchChatMessages();
       return;
     }
 
@@ -197,6 +187,7 @@ export class ChatStore {
     }
 
     this.activeChat = uuid;
+    this.fetchChatMessages();
   }
 
   @action async subscribeMessages(): Promise<void> {
@@ -216,17 +207,9 @@ export class ChatStore {
         }
 
         return runInAction(() => {
-          const userUuid = this.rootStore.userStore.uuid;
-          const key: string =
-            userUuid === data.chatroomSubscription.sender.uuid
-              ? data.chatroomSubscription.recipient.uuid
-              : data.chatroomSubscription.sender.uuid;
+          const key: string = this.roomId(data.chatroomSubscription);
 
-          if (!this.messages.has(key)) {
-            this.messages.set(key, []);
-          }
-
-          this.messages.get(key)!.push(data.chatroomSubscription);
+          this.addMessage(key, data.chatroomSubscription);
         });
       })
     );
@@ -234,7 +217,7 @@ export class ChatStore {
 
   @action async sendMessage(text: string): Promise<void> {
     if (!this.activeChat) {
-      throw new Error("No user selected");
+      throw new Error("Select chat room");
     }
 
     const { data, error } = await this.rootStore.urqlClient
@@ -259,6 +242,5 @@ export class ChatStore {
     await this.subscribeMessages();
     await this.fetchFirstMessages();
     this.setChatroom();
-    await this.fetchChatMessages(this.activeChat);
   }
 }

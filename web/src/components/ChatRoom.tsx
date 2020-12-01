@@ -7,7 +7,7 @@ import { MyScrollbar } from "../utils/Scrollbar";
 export const ChatRoom = observer(() => {
   const rootStore = useRootStore();
 
-  if (!rootStore.chatStore.messagesInRoom) {
+  if (!rootStore.chatStore.roomMessages) {
     return <div>loading...</div>;
   }
 
@@ -15,7 +15,7 @@ export const ChatRoom = observer(() => {
     <StyledScrollbar autoHide noScrollX>
       <Container>
         <MessageDate>Dziś</MessageDate>
-        {rootStore.chatStore.messagesInRoom.map((messages) => {
+        {rootStore.chatStore.roomMessages.map((messages) => {
           const sender = rootStore.userStore.uuid === messages[0].sender.uuid;
           return (
             <MessageContainer key={messages[0].uuid} messagesSender={sender}>
