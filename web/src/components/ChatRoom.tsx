@@ -39,6 +39,7 @@ export const ChatRoom = observer(
         <Container>
           <MessageDate>Dziś</MessageDate>
           {rootStore.chatStore.roomMessages.map((messages) => {
+            console.log(scrollbarRef.current);
             const sender = rootStore.userStore.uuid === messages[0].sender.uuid;
             return (
               <MessageContainer key={messages[0].uuid} messagesSender={sender}>
