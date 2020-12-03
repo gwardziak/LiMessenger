@@ -1,13 +1,15 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import { ChatRoom } from "./ChatRoom";
 import { SendMessage } from "./SendMessage";
 
 export const Chat = () => {
+  const [isScrolled, setIsScrolled] = useState<boolean>(false);
+  console.log(isScrolled, "scrollstate");
   return (
     <Container>
-      <ChatRoom />
-      <SendMessage />
+      <ChatRoom isScrolled={isScrolled} setIsScrolled={setIsScrolled} />
+      <SendMessage setIsScrolled={setIsScrolled} />
     </Container>
   );
 };

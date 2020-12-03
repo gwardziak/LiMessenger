@@ -40,6 +40,7 @@ export class MessageService {
       .getMany();
   }
 
+  //   yyy, v,z yy  yyy  yy xxx
   async firstMessages(user: User): Promise<Message[]> {
     return await this.messageRepository
       .createQueryBuilder("messages")

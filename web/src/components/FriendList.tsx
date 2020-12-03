@@ -62,7 +62,6 @@ const Container = styled.div`
   display: grid;
   grid-template-rows: 36px 1fr;
   grid-row-gap: 16px;
-
   @media ${mediaQuery.xs}, ${mediaQuery.sm}, ${mediaQuery.md} {
     grid-template-rows: 64px;
   }
@@ -83,10 +82,8 @@ const Item = styled.li<{ isActive: boolean }>`
   padding: 0 8px;
   align-items: center;
   cursor: pointer;
-
   background-color: ${(props) => props.isActive && "rgba(0, 0, 0, 0.05)"};
   border-radius: ${(props) => props.isActive && "10px"};
-
   @media ${mediaQuery.xs}, ${mediaQuery.sm}, ${mediaQuery.md} {
     grid-template-rows: 64px;
     grid-template-columns: 62.2px;
@@ -107,7 +104,6 @@ const Username = styled.div`
   white-space: nowrap;
   align-self: flex-end;
   overflow: hidden;
-
   @media ${mediaQuery.xs}, ${mediaQuery.sm}, ${mediaQuery.md} {
     display: none;
   }
@@ -121,7 +117,6 @@ const Message = styled.div`
   text-overflow: ellipsis;
   white-space: nowrap;
   overflow: hidden;
-
   @media ${mediaQuery.xs}, ${mediaQuery.sm}, ${mediaQuery.md} {
     display: none;
   }

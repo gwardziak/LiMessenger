@@ -15,7 +15,11 @@ import { mediaQuery } from "../utils/css/cssMedia";
 import { useMatchesMediaQuery } from "../utils/css/useMatchesMediaQuery";
 import ContentEditable from "../utils/ReactContentEditable";
 
-export const SendMessage = observer(() => {
+type SendMessageProps = {
+  setIsScrolled(val: boolean): void;
+};
+
+export const SendMessage = observer(({ setIsScrolled }: SendMessageProps) => {
   const rootStore = useRootStore();
   const isMobile = useMatchesMediaQuery([
     mediaQuery.xs,
@@ -71,6 +75,7 @@ export const SendMessage = observer(() => {
 
               try {
                 await rootStore.chatStore.sendMessage(input);
+                setIsScrolled(false);
                 setInput("");
               } catch (ex) {
                 throw new Error("Error during sending a message" + ex.message);
