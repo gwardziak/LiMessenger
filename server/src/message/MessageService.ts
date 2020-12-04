@@ -27,18 +27,58 @@ export class MessageService {
     return await this.messageRepository.findOne({ where: { uuid } });
   }
 
-  async getAll(me: User, friendUuid: string): Promise<Message[]> {
-    return await this.messageRepository
+  async getAll(
+    me: User,
+    friendUuid: string,
+    cursor: string | null,
+    limit: number
+  ): Promise<Message[]> {
+    const realLimit = Math.min(50, limit);
+
+    const qb = this.messageRepository
       .createQueryBuilder("messages")
       .leftJoinAndSelect("messages.sender", "sender")
       .leftJoinAndSelect("messages.recipient", "recipient")
       .where(
-        `(sender.id = :senderId AND recipient.uuid = :recipientUuid) OR
-          (sender.uuid = :recipientUuid AND recipient.id = :senderId)`,
-        { senderId: me.id, recipientUuid: friendUuid }
+        "sender.uuid = :recipientUuid AND recipient.id = :senderId OR sender.id = :senderId AND recipient.uuid = :recipientUuid",
+        {
+          senderId: me.id,
+          recipientUuid: friendUuid,
+        }
       )
-      .getMany();
+      .orderBy("messages.createdAt", "DESC")
+      .take(realLimit);
+    if (cursor) {
+      qb.andWhere("DATETIME(messages.createdAt) < DATETIME(:cursor)", {
+        cursor,
+      });
+    }
+
+    return await qb.getMany();
   }
+  // const messages = await this.messageRepository
+  //   .createQueryBuilder("messages")
+  //   .leftJoinAndSelect("messages.sender", "sender")
+  //   .leftJoinAndSelect("messages.recipient", "recipient")
+  //   .where("sender.uuid = :recipientUuid AND recipient.id = :senderId", {
+  //     senderId: me.id,
+  //     recipientUuid: friendUuid,
+  //   })
+  //   .orWhere("sender.id = :senderId AND recipient.uuid = :recipientUuid", {
+  //     senderId: me.id,
+  //     recipientUuid: friendUuid,
+  //   })
+  //   .orderBy("messages.createdAt", "DESC")
+  //   .andWhere("DATETIME(messages.createdAt) < DATETIME(:cursor)", {
+  //     cursor: cursorId,
+  //   })
+  //   .take(realLimit)
+  //   .getMany();
+
+  // .where("sender.id = :senderId AND recipient.uuid = :recipientUuid", {
+  //   senderId: me.id,
+  //   recipientUuid: friendUuid,
+  // })
 
   //   yyy, v,z yy  yyy  yy xxx
   async firstMessages(user: User): Promise<Message[]> {

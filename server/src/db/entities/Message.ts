@@ -33,6 +33,7 @@ export class Message implements Message.Options {
   @Column()
   text!: string;
 
+  @Index()
   @CreateDateColumn()
   createdAt!: Date;
 

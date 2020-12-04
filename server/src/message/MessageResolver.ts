@@ -23,9 +23,16 @@ export class MessageResolver {
   @Query(() => [MessageObjectType])
   async messages(
     @Arg("friendUuid") friendUuid: string,
+    @Arg("limit") limit: number,
+    @Arg("cursor", () => String, { nullable: true }) cursor: string | null,
     @Ctx() { authUser }: MyContext
   ): Promise<Message[]> {
-    return await this.messageService.getAll(authUser, friendUuid);
+    return await this.messageService.getAll(
+      authUser,
+      friendUuid,
+      cursor,
+      limit
+    );
   }
 
   @Query(() => [MessageObjectType])
