@@ -34,21 +34,6 @@ export class MessageResolver {
     return await this.messageService.getAll(authUser, options);
   }
 
-  // @Query(() => [MessageObjectType])
-  // async messages(
-  //   @Arg("friendUuid") friendUuid: string,
-  //   @Arg("limit", () => Int) limit: number,
-  //   @Arg("cursor", () => String, { nullable: true }) cursor: string | null,
-  //   @Ctx() { authUser }: MyContext
-  // ): Promise<Message[]> {
-  //   return await this.messageService.getAll(
-  //     authUser,
-  //     friendUuid,
-  //     cursor,
-  //     limit
-  //   );
-  // }
-
   @Query(() => [MessageObjectType])
   async firstMessages(@Ctx() { authUser }: MyContext): Promise<Message[]> {
     return await this.messageService.firstMessages(authUser);
@@ -67,13 +52,11 @@ export class MessageResolver {
 
   @FieldResolver(() => UserMessageObjectType)
   async sender(@Root() message: Message): Promise<UserMessageObjectType> {
-    const user = await this.messageService.sender(message.id);
-    return user;
+    return await this.messageService.sender(message.id);
   }
 
   @FieldResolver(() => UserMessageObjectType)
   async recipient(@Root() message: Message): Promise<UserMessageObjectType> {
-    const user = await this.messageService.recipient(message.id);
-    return user;
+    return await this.messageService.recipient(message.id);
   }
 }

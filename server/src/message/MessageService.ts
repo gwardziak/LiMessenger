@@ -95,19 +95,57 @@ export class MessageService {
 
   //   yyy, v,z yy  yyy  yy xxx
   async firstMessages(user: User): Promise<Message[]> {
-    return await this.messageRepository
-      .createQueryBuilder("messages")
-      .leftJoinAndSelect("messages.sender", "sender")
-      .leftJoinAndSelect("messages.recipient", "recipient")
-      .where(`sender.id = :participantId OR recipient.id = :participantId`, {
-        participantId: user.id,
-      })
-      .groupBy("recipient.id")
-      .addGroupBy("sender.id")
-      .addSelect("MAX(messages.createdAt)")
-      .getMany();
-  }
+    const fetchFirstMessages = await this.messageRepository.query(
+      `SELECT *, MAX(createdAt) as createdAt from
+          (
+            SELECT message.id, message.uuid, message.text, message.createdAt, message.updatedAt, sender.id as participant from message
+              LEFT JOIN
+              user as recipient
+              ON message.recipientId = recipient.id
+              LEFT JOIN
+              user as sender
+              ON message.senderId = sender.id
+              WHERE message.recipientId = @userId
 
+            UNION ALL
+
+            SELECT message.id, message.uuid, message.text, message.createdAt, message.updatedAt, recipient.id as participant from message
+              LEFT JOIN
+              user as recipient
+              ON message.recipientId = recipient.id
+              LEFT JOIN
+              user as sender
+              ON message.senderId = sender.id
+              WHERE message.senderId = @userId
+            )
+            GROUP BY participant
+      `,
+      [user.id]
+    );
+
+    const transformToObj = fetchFirstMessages.map((message: Message) => {
+      return {
+        id: message.id,
+        uuid: message.uuid,
+        text: message.text,
+        createdAt: new Date(message.createdAt),
+        updatedAt: new Date(message.updatedAt),
+      };
+    });
+
+    return transformToObj;
+  }
+  //  return await this.messageRepository
+  //       .createQueryBuilder("messages")
+  //       .leftJoinAndSelect("messages.sender", "sender")
+  //       .leftJoinAndSelect("messages.recipient", "recipient")
+  //       .where(`sender.id = :participantId OR recipient.id = :participantId`, {
+  //         participantId: user.id,
+  //       })
+  //       .groupBy("recipient.id")
+  //       .addGroupBy("sender.id")
+  //       .addSelect("MAX(messages.createdAt)")
+  //       .getMany();
   async sendMessage(
     sender: User,
     options: MessageService.SendMessage
