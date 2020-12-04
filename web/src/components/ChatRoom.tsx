@@ -69,7 +69,7 @@ const Container = styled.div`
   grid-template-rows: 1fr;
   padding: 0 20px 0 12px;
   grid-row-gap: 15px;
-  /* padding-bottom: 34px; */
+  /* padding-bottom: 30px; */
 `;
 
 const GroupMessages = styled.div<{ messagesSender: boolean }>`

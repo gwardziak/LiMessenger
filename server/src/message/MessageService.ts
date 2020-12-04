@@ -11,6 +11,11 @@ export namespace MessageService {
     recipientUuid: string;
     text: string;
   };
+  export type FetchMessages = {
+    friendUuid: string;
+    limit: number;
+    cursor?: string | null;
+  };
 }
 
 @Service()
@@ -29,11 +34,13 @@ export class MessageService {
 
   async getAll(
     me: User,
-    friendUuid: string,
-    cursor: string | null,
-    limit: number
-  ): Promise<Message[]> {
-    const realLimit = Math.min(50, limit);
+    options: MessageService.FetchMessages
+  ): Promise<{
+    messages: Message[];
+    hasMore: boolean;
+  }> {
+    const realLimit = Math.min(50, options.limit);
+    const realLimitPlusOne = realLimit + 1;
 
     const qb = this.messageRepository
       .createQueryBuilder("messages")
@@ -43,19 +50,25 @@ export class MessageService {
         "sender.uuid = :recipientUuid AND recipient.id = :senderId OR sender.id = :senderId AND recipient.uuid = :recipientUuid",
         {
           senderId: me.id,
-          recipientUuid: friendUuid,
+          recipientUuid: options.friendUuid,
         }
       )
       .orderBy("messages.createdAt", "DESC")
-      .take(realLimit);
-    if (cursor) {
+      .take(realLimitPlusOne);
+    if (options.cursor) {
       qb.andWhere("DATETIME(messages.createdAt) < DATETIME(:cursor)", {
-        cursor,
+        cursor: options.cursor,
       });
     }
 
-    return await qb.getMany();
+    const messages = await qb.getMany();
+
+    return {
+      messages: messages.slice(0, realLimit),
+      hasMore: messages.length === realLimitPlusOne,
+    };
   }
+
   // const messages = await this.messageRepository
   //   .createQueryBuilder("messages")
   //   .leftJoinAndSelect("messages.sender", "sender")

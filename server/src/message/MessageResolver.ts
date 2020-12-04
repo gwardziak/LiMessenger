@@ -12,28 +12,42 @@ import { MyContext } from "../models/MyContext";
 import { MessageInput } from "./dto/MessageInput";
 import {
   MessageObjectType,
+  PaginatedMessagesObjectType,
   UserMessageObjectType,
 } from "./dto/MessageObjectType";
+import { MessagesArgs } from "./dto/MessagesArgs";
 import { MessageService } from "./MessageService";
 
 @Resolver(MessageObjectType)
 export class MessageResolver {
   private constructor(private readonly messageService: MessageService) {}
 
-  @Query(() => [MessageObjectType])
+  @Query(() => PaginatedMessagesObjectType)
   async messages(
-    @Arg("friendUuid") friendUuid: string,
-    @Arg("limit") limit: number,
-    @Arg("cursor", () => String, { nullable: true }) cursor: string | null,
+    @Arg("options")
+    options: MessagesArgs,
     @Ctx() { authUser }: MyContext
-  ): Promise<Message[]> {
-    return await this.messageService.getAll(
-      authUser,
-      friendUuid,
-      cursor,
-      limit
-    );
+  ): Promise<{
+    messages: Message[];
+    hasMore: boolean;
+  }> {
+    return await this.messageService.getAll(authUser, options);
   }
+
+  // @Query(() => [MessageObjectType])
+  // async messages(
+  //   @Arg("friendUuid") friendUuid: string,
+  //   @Arg("limit", () => Int) limit: number,
+  //   @Arg("cursor", () => String, { nullable: true }) cursor: string | null,
+  //   @Ctx() { authUser }: MyContext
+  // ): Promise<Message[]> {
+  //   return await this.messageService.getAll(
+  //     authUser,
+  //     friendUuid,
+  //     cursor,
+  //     limit
+  //   );
+  // }
 
   @Query(() => [MessageObjectType])
   async firstMessages(@Ctx() { authUser }: MyContext): Promise<Message[]> {
@@ -50,17 +64,6 @@ export class MessageResolver {
     await this.messageService.sendMessage(authUser, options);
     return true;
   }
-
-  // @Authorized()
-  // @Mutation(() => Boolean)
-  // async sendMessage(
-  //   @Arg("message") message: string,
-  //   @Arg("recipentUuid") uuid: string,
-  //   @Ctx() { authUser }: MyContext
-  // ): Promise<boolean> {
-  //   await this.messageService.sendMessage(authUser, message, uuid);
-  //   return true;
-  // }
 
   @FieldResolver(() => UserMessageObjectType)
   async sender(@Root() message: Message): Promise<UserMessageObjectType> {
