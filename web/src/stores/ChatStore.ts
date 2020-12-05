@@ -154,7 +154,7 @@ export class ChatStore {
       .query<MessagesQuery, MessagesQueryVariables>(MessagesDocument, {
         options: {
           friendUuid: this.activeChat,
-          limit: 25,
+          limit: 30,
         },
       })
       .toPromise();
@@ -172,8 +172,7 @@ export class ChatStore {
       if (!this.messages.has(this.activeChat)) {
         this.messages.set(this.activeChat, []);
       }
-      this.messages.get(this.activeChat)!.push(...data.messages.messages);
-      console.log(data.messages.messages);
+      this.messages.get(this.activeChat)!.unshift(...data.messages.messages);
     });
   }
 
@@ -245,6 +244,6 @@ export class ChatStore {
   @action async subscribeAndFetch(): Promise<void> {
     await this.subscribeMessages();
     await this.fetchFirstMessages();
-    // this.setChatroom();
+    this.setChatroom();
   }
 }
