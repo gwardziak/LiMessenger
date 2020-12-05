@@ -5,7 +5,7 @@ import { SendMessage } from "./SendMessage";
 
 export const Chat = () => {
   const [isScrolled, setIsScrolled] = useState<boolean>(false);
-  console.log(isScrolled, "scrollstate");
+
   return (
     <Container>
       <ChatRoom isScrolled={isScrolled} setIsScrolled={setIsScrolled} />

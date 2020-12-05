@@ -1,5 +1,5 @@
 import { observer } from "mobx-react-lite";
-import React, { useRef } from "react";
+import React, { useLayoutEffect, useRef } from "react";
 import { Scrollbar } from "react-scrollbars-custom";
 import styled, { css } from "styled-components";
 import { useRootStore } from "../stores/RootStore";
@@ -15,6 +15,10 @@ export const ChatRoom = observer(
   ({ isScrolled, setIsScrolled }: ChatRoomProps) => {
     const rootStore = useRootStore();
     const scrollbarRef = useRef<Scrollbar>(null);
+
+    useLayoutEffect(() => {
+      scrollbarRef.current?.scrollToBottom();
+    });
 
     if (!rootStore.chatStore.roomMessages) {
       return <div>loading...</div>;
@@ -39,7 +43,6 @@ export const ChatRoom = observer(
         <Container>
           <MessageDate>Dziś</MessageDate>
           {rootStore.chatStore.roomMessages.map((messages) => {
-            console.log(scrollbarRef.current);
             const sender = rootStore.userStore.uuid === messages[0].sender.uuid;
             return (
               <MessageContainer key={messages[0].uuid} messagesSender={sender}>

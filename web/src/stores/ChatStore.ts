@@ -3,7 +3,7 @@ import {
   computed,
   makeObservable,
   observable,
-  runInAction,
+  runInAction
 } from "mobx";
 import { OperationResult } from "urql";
 import { pipe, subscribe } from "wonka";
@@ -19,7 +19,7 @@ import {
   MessagesQueryVariables,
   SendMessageDocument,
   SendMessageMutation,
-  SendMessageMutationVariables,
+  SendMessageMutationVariables
 } from "../generated/graphql";
 import { RootStore } from "./RootStore";
 
@@ -41,10 +41,19 @@ export type Message = {
   recipient: Recipient;
 };
 
+export type MessageInfo = {
+  hasMore: boolean;
+};
+
 export class ChatStore {
   @observable public readonly messages: Map<
     string,
     Message[]
+  > = observable.map();
+
+  @observable public readonly messagesInfo: Map<
+    string,
+    MessageInfo
   > = observable.map();
 
   @observable activeChat: string | null = null;
@@ -85,7 +94,7 @@ export class ChatStore {
 
     for (const key of keys) {
       const messages = this.messages.get(key);
-      firstMessages.push(messages![messages!.length - 1]);
+      firstMessages.push(messages![0]);
     }
 
     return this.sortMessages(firstMessages);
@@ -141,6 +150,7 @@ export class ChatStore {
         const key: string = this.roomId(message);
 
         this.addMessage(key, message);
+        this.setRoomHasMore(key, true);
       }
     });
   }
@@ -150,11 +160,13 @@ export class ChatStore {
       throw new Error("Select a chatroom");
     }
 
+    const chatroom = this.messages.get(this.activeChat);
     const { data, error } = await this.rootStore.urqlClient
       .query<MessagesQuery, MessagesQueryVariables>(MessagesDocument, {
         options: {
           friendUuid: this.activeChat,
           limit: 30,
+          cursor: chatroom ? chatroom[chatroom.length - 1]?.createdAt : null,
         },
       })
       .toPromise();
@@ -172,7 +184,12 @@ export class ChatStore {
       if (!this.messages.has(this.activeChat)) {
         this.messages.set(this.activeChat, []);
       }
-      this.messages.get(this.activeChat)!.unshift(...data.messages.messages);
+      this.messages.get(this.activeChat)!.push(...data.messages.messages);
+
+      if(!data.messages.hasMore) {
+        this.setRoomHasMore(this.activeChat, false)
+      }
+      
     });
   }
 
@@ -182,6 +199,7 @@ export class ChatStore {
 
       this.activeChat = this.roomId(latestMessage);
       this.fetchChatMessages();
+
       return;
     }
 
@@ -191,6 +209,10 @@ export class ChatStore {
 
     this.activeChat = uuid;
     this.fetchChatMessages();
+  }
+
+  @action setRoomHasMore(uuid: string, hasMore: boolean): void {
+    this.messagesInfo.set(uuid, { hasMore });
   }
 
   @action async subscribeMessages(): Promise<void> {
@@ -211,7 +233,6 @@ export class ChatStore {
 
         return runInAction(() => {
           const key: string = this.roomId(data.chatroomSubscription);
-          console.log(data.chatroomSubscription, "from sub");
           this.addMessage(key, data.chatroomSubscription);
         });
       })
