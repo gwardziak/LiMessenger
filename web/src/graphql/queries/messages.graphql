@@ -1,15 +1,18 @@
-query Messages($uuid: String!) {
-  messages(friendUuid: $uuid) {
-    uuid
-    text
-    createdAt
-    sender {
+query Messages($options: MessagesInput!) {
+  messages(options: $options) {
+    hasMore
+    messages {
       uuid
-      username
-    }
-    recipient {
-      uuid
-      username
+      text
+      createdAt
+      sender {
+        uuid
+        username
+      }
+      recipient {
+        uuid
+        username
+      }
     }
   }
 }

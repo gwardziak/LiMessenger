@@ -1,6 +1,6 @@
 import {
+  BeforeInsert,
   Column,
-  CreateDateColumn,
   Entity,
   Generated,
   Index,
@@ -34,8 +34,13 @@ export class Message implements Message.Options {
   text!: string;
 
   @Index()
-  @CreateDateColumn()
+  @Column()
   createdAt!: Date;
+
+  @BeforeInsert()
+  private setCreateDate(): void {
+    this.createdAt = new Date();
+  }
 
   @UpdateDateColumn()
   updatedAt!: Date;

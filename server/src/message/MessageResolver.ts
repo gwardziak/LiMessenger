@@ -15,7 +15,7 @@ import {
   PaginatedMessagesObjectType,
   UserMessageObjectType,
 } from "./dto/MessageObjectType";
-import { MessagesArgs } from "./dto/MessagesArgs";
+import { MessagesInput } from "./dto/MessagesInput";
 import { MessageService } from "./MessageService";
 
 @Resolver(MessageObjectType)
@@ -25,7 +25,7 @@ export class MessageResolver {
   @Query(() => PaginatedMessagesObjectType)
   async messages(
     @Arg("options")
-    options: MessagesArgs,
+    options: MessagesInput,
     @Ctx() { authUser }: MyContext
   ): Promise<{
     messages: Message[];

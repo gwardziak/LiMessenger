@@ -124,12 +124,15 @@ export class MessageService {
     );
 
     const transformToObj = fetchFirstMessages.map((message: Message) => {
+      const created = message.createdAt.toString().replace(" ", "T") + "Z";
+      const updated = message.updatedAt.toString().replace(" ", "T") + "Z";
+
       return {
         id: message.id,
         uuid: message.uuid,
         text: message.text,
-        createdAt: new Date(message.createdAt),
-        updatedAt: new Date(message.updatedAt),
+        createdAt: new Date(created),
+        updatedAt: new Date(updated),
       };
     });
 

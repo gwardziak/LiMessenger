@@ -16,14 +16,26 @@ export type Scalars = {
 
 export type Query = {
   __typename?: 'Query';
-  messages: Array<Message>;
+  messages: PaginatedMessages;
   firstMessages: Array<Message>;
   me?: Maybe<User>;
 };
 
 
 export type QueryMessagesArgs = {
+  options: MessagesInput;
+};
+
+export type MessagesInput = {
   friendUuid: Scalars['String'];
+  limit: Scalars['Int'];
+  cursor?: Maybe<Scalars['String']>;
+};
+
+export type PaginatedMessages = {
+  __typename?: 'PaginatedMessages';
+  messages: Array<Message>;
+  hasMore: Scalars['Boolean'];
 };
 
 export type Message = {
@@ -145,23 +157,27 @@ export type MeQuery = (
 );
 
 export type MessagesQueryVariables = Exact<{
-  uuid: Scalars['String'];
+  options: MessagesInput;
 }>;
 
 
 export type MessagesQuery = (
   { __typename?: 'Query' }
-  & { messages: Array<(
-    { __typename?: 'Message' }
-    & Pick<Message, 'uuid' | 'text' | 'createdAt'>
-    & { sender: (
-      { __typename?: 'UserMessage' }
-      & Pick<UserMessage, 'uuid' | 'username'>
-    ), recipient: (
-      { __typename?: 'UserMessage' }
-      & Pick<UserMessage, 'uuid' | 'username'>
-    ) }
-  )> }
+  & { messages: (
+    { __typename?: 'PaginatedMessages' }
+    & Pick<PaginatedMessages, 'hasMore'>
+    & { messages: Array<(
+      { __typename?: 'Message' }
+      & Pick<Message, 'uuid' | 'text' | 'createdAt'>
+      & { sender: (
+        { __typename?: 'UserMessage' }
+        & Pick<UserMessage, 'uuid' | 'username'>
+      ), recipient: (
+        { __typename?: 'UserMessage' }
+        & Pick<UserMessage, 'uuid' | 'username'>
+      ) }
+    )> }
+  ) }
 );
 
 export type ChatroomSubscriptionVariables = Exact<{ [key: string]: never; }>;
@@ -238,18 +254,21 @@ export function useMeQuery(options: Omit<Urql.UseQueryArgs<MeQueryVariables>, 'q
   return Urql.useQuery<MeQuery>({ query: MeDocument, ...options });
 };
 export const MessagesDocument = gql`
-    query Messages($uuid: String!) {
-  messages(friendUuid: $uuid) {
-    uuid
-    text
-    createdAt
-    sender {
+    query Messages($options: MessagesInput!) {
+  messages(options: $options) {
+    hasMore
+    messages {
       uuid
-      username
-    }
-    recipient {
-      uuid
-      username
+      text
+      createdAt
+      sender {
+        uuid
+        username
+      }
+      recipient {
+        uuid
+        username
+      }
     }
   }
 }
