@@ -28,10 +28,13 @@ export const FriendList = observer(() => {
                 isActive={rootStore.chatStore.activeChat === friendUuid}
                 key={friendUuid}
                 onClick={(e) => {
-                  try {
-                    rootStore.chatStore.setChatroom(friendUuid);
-                  } catch (ex) {
-                    console.log("Error during selecting a chat", ex.message);
+                  if (rootStore.chatStore.activeChat !== friendUuid) {
+                    try {
+                      rootStore.chatStore.setChatroom(friendUuid);
+                      rootStore.chatStore.setPrevChatScrollHeight(0);
+                    } catch (ex) {
+                      console.log("Error during selecting a chat", ex.message);
+                    }
                   }
                 }}
               >

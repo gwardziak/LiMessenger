@@ -58,8 +58,14 @@ export class ChatStore {
 
   @observable activeChat: string | null = null;
 
+  @observable prevChatScrollHeight: number = 0;
+
   constructor(private readonly rootStore: RootStore) {
     makeObservable(this);
+  }
+
+  @action setPrevChatScrollHeight(position: number): void {
+    this.prevChatScrollHeight = position;
   }
 
   @action private addMessage(key: string, data: Message): void {
