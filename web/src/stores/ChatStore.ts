@@ -3,7 +3,7 @@ import {
   computed,
   makeObservable,
   observable,
-  runInAction
+  runInAction,
 } from "mobx";
 import { OperationResult } from "urql";
 import { pipe, subscribe } from "wonka";
@@ -19,7 +19,7 @@ import {
   MessagesQueryVariables,
   SendMessageDocument,
   SendMessageMutation,
-  SendMessageMutationVariables
+  SendMessageMutationVariables,
 } from "../generated/graphql";
 import { RootStore } from "./RootStore";
 
@@ -186,10 +186,9 @@ export class ChatStore {
       }
       this.messages.get(this.activeChat)!.push(...data.messages.messages);
 
-      if(!data.messages.hasMore) {
-        this.setRoomHasMore(this.activeChat, false)
+      if (!data.messages.hasMore) {
+        this.setRoomHasMore(this.activeChat, false);
       }
-      
     });
   }
 
@@ -208,7 +207,15 @@ export class ChatStore {
     }
 
     this.activeChat = uuid;
-    this.fetchChatMessages();
+
+    const messages = this.messages.get(this.activeChat);
+
+    if (
+      (messages?.length ?? 0) < 25 &&
+      this.messagesInfo.get(this.activeChat)?.hasMore
+    ) {
+      this.fetchChatMessages();
+    }
   }
 
   @action setRoomHasMore(uuid: string, hasMore: boolean): void {
