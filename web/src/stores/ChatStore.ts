@@ -155,7 +155,10 @@ export class ChatStore {
       for (const message of data.firstMessages) {
         const key: string = this.roomId(message);
 
-        this.addMessage(key, message);
+        if (!this.messages.has(key)) {
+          this.messages.set(key, []);
+        }
+        this.messages.get(key)!.unshift(message);
         this.setRoomHasMore(key, true);
       }
     });
@@ -213,15 +216,6 @@ export class ChatStore {
     }
 
     this.activeChat = uuid;
-
-    const messages = this.messages.get(this.activeChat);
-
-    if (
-      (messages?.length ?? 0) < 25 &&
-      this.messagesInfo.get(this.activeChat)?.hasMore
-    ) {
-      this.fetchChatMessages();
-    }
   }
 
   @action setRoomHasMore(uuid: string, hasMore: boolean): void {
