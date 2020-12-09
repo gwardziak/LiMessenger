@@ -1,22 +1,24 @@
 import { Picker, PickerProps } from "emoji-mart";
-import React from "react";
+import React, { forwardRef } from "react";
 import styled from "styled-components";
 
-export const EmojiPicker = (props: PickerProps) => {
-  return (
-    <Wrapper>
-      <Picker
-        set="facebook"
-        emojiSize={32}
-        perLine={6}
-        emojiTooltip={true}
-        showPreview={false}
-        showSkinTones={false}
-        {...props}
-      />
-    </Wrapper>
-  );
-};
+export const EmojiPicker = forwardRef<HTMLDivElement, PickerProps>(
+  (props, ref) => {
+    return (
+      <Wrapper ref={ref}>
+        <Picker
+          set="facebook"
+          emojiSize={32}
+          perLine={6}
+          emojiTooltip={true}
+          showPreview={false}
+          showSkinTones={false}
+          {...props}
+        />
+      </Wrapper>
+    );
+  }
+);
 
 const Wrapper = styled.div`
   position: absolute;

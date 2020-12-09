@@ -16,6 +16,7 @@ import { useRootStore } from "../stores/RootStore";
 import { mediaQuery } from "../utils/css/cssMedia";
 import { useMatchesMediaQuery } from "../utils/css/useMatchesMediaQuery";
 import ContentEditable from "../utils/ReactContentEditable";
+import { useIsVisible } from "../utils/useIsVisible";
 import { EmojiPicker } from "./EmojiPicker";
 
 type SendMessageProps = {
@@ -32,8 +33,8 @@ export const SendMessage = observer(({ setIsScrolled }: SendMessageProps) => {
   const defaultInput = "Wpisz wiadomość...";
   const [toggle, setToggle] = useState<boolean>(false);
   const [input, setInput] = useState<string>("");
-  const [show, setShow] = useState<boolean>(false);
-  const [emojiinput, setEmojiInput] = useState<any>("ab");
+  const [emoji, setEmoji] = useState<EmojiData | null>(null);
+  const { ref, isVisible, setIsVisible } = useIsVisible(false);
 
   return (
     <Container isToggle={toggle}>
@@ -88,10 +89,21 @@ export const SendMessage = observer(({ setIsScrolled }: SendMessageProps) => {
               }
             }
           }}
-        ></Input>
-        <SmileIcon viewBox="0 0 26 26" onClick={() => setShow(!show)} />
-        {show && (
-          <EmojiPicker onSelect={(emoji: EmojiData) => console.log(emoji)} />
+        />
+
+        <SmileIcon
+          viewBox="0 0 26 26"
+          onClick={() => setIsVisible(!isVisible)}
+        />
+        {isVisible && (
+          <EmojiPicker
+            ref={ref}
+            onSelect={(emoji: EmojiData) => {
+              setEmoji(emoji);
+              setIsVisible(false);
+              console.log(emoji);
+            }}
+          />
         )}
       </MessageContainer>
       <LikeIcon viewBox="0 1 36 36" />
