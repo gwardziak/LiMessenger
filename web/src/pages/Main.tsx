@@ -39,6 +39,6 @@ const Container = styled.div`
     "friendList chat chatRoomOptions";
 
   @media ${mediaQuery.xs}, ${mediaQuery.sm}, ${mediaQuery.md} {
-    grid-template-columns: 80px 2fr 1fr;
+    grid-template-columns: 80px 1fr 1fr;
   }
 `;

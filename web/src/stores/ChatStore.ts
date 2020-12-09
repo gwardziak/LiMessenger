@@ -240,7 +240,11 @@ export class ChatStore {
 
         return runInAction(() => {
           const key: string = this.roomId(data.chatroomSubscription);
-          this.addMessage(key, data.chatroomSubscription);
+
+          if (!this.messages.has(key)) {
+            this.messages.set(key, []);
+          }
+          this.messages.get(key)!.unshift(data.chatroomSubscription);
         });
       })
     );

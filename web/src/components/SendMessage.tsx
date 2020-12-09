@@ -1,3 +1,5 @@
+import { EmojiData } from "emoji-mart";
+import "emoji-mart/css/emoji-mart.css";
 import { observer } from "mobx-react-lite";
 import React, { useState } from "react";
 import styled from "styled-components";
@@ -14,6 +16,7 @@ import { useRootStore } from "../stores/RootStore";
 import { mediaQuery } from "../utils/css/cssMedia";
 import { useMatchesMediaQuery } from "../utils/css/useMatchesMediaQuery";
 import ContentEditable from "../utils/ReactContentEditable";
+import { EmojiPicker } from "./EmojiPicker";
 
 type SendMessageProps = {
   setIsScrolled(val: boolean): void;
@@ -29,6 +32,8 @@ export const SendMessage = observer(({ setIsScrolled }: SendMessageProps) => {
   const defaultInput = "Wpisz wiadomość...";
   const [toggle, setToggle] = useState<boolean>(false);
   const [input, setInput] = useState<string>("");
+  const [show, setShow] = useState<boolean>(false);
+  const [emojiinput, setEmojiInput] = useState<any>("ab");
 
   return (
     <Container isToggle={toggle}>
@@ -48,6 +53,7 @@ export const SendMessage = observer(({ setIsScrolled }: SendMessageProps) => {
           )}
           <GifIcon viewBox="0 0 36 36" />
           <EmojiIcon viewBox="0 0 36 36" />
+
           <AttachmentIcon viewBox="0 0 36 36" />
         </>
       )}
@@ -82,9 +88,11 @@ export const SendMessage = observer(({ setIsScrolled }: SendMessageProps) => {
               }
             }
           }}
-        />
-
-        <SmileIcon viewBox="0 0 26 26" />
+        ></Input>
+        <SmileIcon viewBox="0 0 26 26" onClick={() => setShow(!show)} />
+        {show && (
+          <EmojiPicker onSelect={(emoji: EmojiData) => console.log(emoji)} />
+        )}
       </MessageContainer>
       <LikeIcon viewBox="0 1 36 36" />
     </Container>

@@ -64,7 +64,6 @@ export const Login = () => {
 const Input = styled.input`
   &:focus {
     outline: none;
-
     ::placeholder,
     ::-webkit-input-placeholder {
       color: #bec3c9;
@@ -73,7 +72,6 @@ const Input = styled.input`
       color: #bec3c9;
     }
   }
-
   border-radius: 6px;
   font-size: 17px;
   padding: 14px 16px;
@@ -87,7 +85,6 @@ const BlueButton = styled.button`
   &:focus {
     outline: none;
   }
-
   background-color: #1877f2;
   border: none;
   border-radius: 6px;
@@ -116,7 +113,6 @@ const BoxWithLine = styled(Box)`
 
 const BlueLinkButton = styled(StyledLink)`
   color: #1877f2;
-
   font-weight: 500;
 `;
 
@@ -125,12 +121,10 @@ const GreenLinkButton = styled(StyledLink)`
     text-decoration: none;
     background-color: #36a420;
   }
-
   :active {
     text-decoration: none;
     background-color: #2b9217;
   }
-
   color: #fff;
   font-weight: bold;
   border: none;
@@ -149,7 +143,7 @@ const BoldLink = styled(StyledLink)`
 `;
 
 const FormContainer = styled.form`
-  dipslay: block;
+  display: block;
   -webkit-align-items: center;
   -webkit-box-align: center;
   -ms-flex-align: center;
@@ -160,7 +154,6 @@ const FormContainer = styled.form`
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1), 0 8px 16px rgba(0, 0, 0, 0.1);
   box-sizing: border-box;
   margin: 40px 0 0;
-
   padding: 10px 0 28px;
   padding-bottom: 10px;
   margin-bottom: 20px;
