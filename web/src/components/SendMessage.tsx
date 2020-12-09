@@ -34,7 +34,7 @@ export const SendMessage = observer(({ setIsScrolled }: SendMessageProps) => {
   const [toggle, setToggle] = useState<boolean>(false);
   const [input, setInput] = useState<string>("");
   const [emoji, setEmoji] = useState<EmojiData | null>(null);
-  const { ref, isVisible, setIsVisible } = useIsVisible(false);
+  const { ref, isVisible, setIsVisible, handlerRef } = useIsVisible(false);
 
   return (
     <Container isToggle={toggle}>
@@ -92,6 +92,7 @@ export const SendMessage = observer(({ setIsScrolled }: SendMessageProps) => {
         />
 
         <SmileIcon
+          ref={handlerRef}
           viewBox="0 0 26 26"
           onClick={() => setIsVisible(!isVisible)}
         />
