@@ -38,7 +38,11 @@ const Container = styled.div`
     "userOptions nav nav"
     "friendList chat chatRoomOptions";
 
-  @media ${mediaQuery.xs}, ${mediaQuery.sm}, ${mediaQuery.md} {
+  @media ${mediaQuery.md} {
+    grid-template-columns: 80px 2fr 1fr;
+  }
+
+  @media ${mediaQuery.xs}, ${mediaQuery.sm} {
     grid-template-columns: 80px 1fr 1fr;
   }
 `;

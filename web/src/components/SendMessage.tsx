@@ -125,6 +125,7 @@ const Container = styled.div<{ isToggle: boolean }>`
   border-left: 1px solid rgba(0, 0, 0, 0.1);
   box-sizing: border-box;
   margin-bottom: 8px;
+  position: relative;
 
   @media ${mediaQuery.xs}, ${mediaQuery.sm}, ${mediaQuery.md} {
     grid-template-columns: ${(props) => props.isToggle && "28px 1fr 36px"};

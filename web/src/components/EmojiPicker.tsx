@@ -1,6 +1,7 @@
 import { Picker, PickerProps } from "emoji-mart";
 import React, { forwardRef } from "react";
 import styled from "styled-components";
+import { mediaQuery } from "../utils/css/cssMedia";
 
 export const EmojiPicker = forwardRef<HTMLDivElement, PickerProps>(
   (props, ref) => {
@@ -23,11 +24,17 @@ export const EmojiPicker = forwardRef<HTMLDivElement, PickerProps>(
 const Wrapper = styled.div`
   position: absolute;
   bottom: 60px;
-  //right 450px
   z-index: 999;
+  right: 55px;
+
+  @media ${mediaQuery.xs}, ${mediaQuery.sm} {
+    left: 50%;
+  }
 
   .emoji-mart {
     display: grid;
+    border-radius: 6px;
+    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.1), 0 1px 10px rgba(0, 0, 0, 0.35);
   }
 
   .emoji-mart-search {
