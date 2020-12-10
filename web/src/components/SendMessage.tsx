@@ -38,6 +38,7 @@ export const SendMessage = observer(({ setIsScrolled }: SendMessageProps) => {
 
   return (
     <Container isToggle={toggle}>
+      {console.log(input)}
       <PlusIcon
         onClick={() => setToggle(!toggle)}
         isToggle={toggle}
@@ -73,7 +74,7 @@ export const SendMessage = observer(({ setIsScrolled }: SendMessageProps) => {
         <Input
           ref={inputRef}
           placeholder={defaultInput}
-          html={input}
+          html={`${input}`}
           onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
             setInput(e.target.value)
           }
@@ -82,7 +83,9 @@ export const SendMessage = observer(({ setIsScrolled }: SendMessageProps) => {
               e.preventDefault();
 
               try {
-                await rootStore.chatStore.sendMessage(input);
+                await rootStore.chatStore.sendMessage(
+                  input.replace(/&nbsp;/g, " ")
+                );
                 setIsScrolled(false);
                 setInput("");
               } catch (ex) {
