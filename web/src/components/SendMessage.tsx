@@ -1,7 +1,7 @@
-import { EmojiData } from "emoji-mart";
+import { BaseEmoji } from "emoji-mart";
 import "emoji-mart/css/emoji-mart.css";
 import { observer } from "mobx-react-lite";
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import styled from "styled-components";
 import { Attachment } from "../Icons/Attachment";
 import { Camera } from "../Icons/Camera";
@@ -15,7 +15,7 @@ import { Smile } from "../Icons/Smile";
 import { useRootStore } from "../stores/RootStore";
 import { mediaQuery } from "../utils/css/cssMedia";
 import { useMatchesMediaQuery } from "../utils/css/useMatchesMediaQuery";
-import ContentEditable from "../utils/ReactContentEditable";
+import { ContentEditable } from "../utils/ReactContentEditable";
 import { useIsVisible } from "../utils/useIsVisible";
 import { EmojiPicker } from "./EmojiPicker";
 
@@ -33,8 +33,8 @@ export const SendMessage = observer(({ setIsScrolled }: SendMessageProps) => {
   const defaultInput = "Wpisz wiadomość...";
   const [toggle, setToggle] = useState<boolean>(false);
   const [input, setInput] = useState<string>("");
-  const [emoji, setEmoji] = useState<EmojiData | null>(null);
   const { ref, isVisible, setIsVisible, handlerRef } = useIsVisible(false);
+  const inputRef = useRef<HTMLElement>(null);
 
   return (
     <Container isToggle={toggle}>
@@ -71,6 +71,7 @@ export const SendMessage = observer(({ setIsScrolled }: SendMessageProps) => {
 
       <MessageContainer isToggle={toggle}>
         <Input
+          ref={inputRef}
           placeholder={defaultInput}
           html={input}
           onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
@@ -99,10 +100,11 @@ export const SendMessage = observer(({ setIsScrolled }: SendMessageProps) => {
         {isVisible && (
           <EmojiPicker
             ref={ref}
-            onSelect={(emoji: EmojiData) => {
-              setEmoji(emoji);
+            onSelect={(emoji: BaseEmoji) => {
+              setInput(input + emoji.native);
               setIsVisible(false);
-              console.log(emoji);
+
+              inputRef.current && inputRef.current.focus();
             }}
           />
         )}
