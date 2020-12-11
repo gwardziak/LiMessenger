@@ -1,4 +1,4 @@
-import { BaseEmoji } from "emoji-mart";
+import { BaseEmoji, EmojiData, emojiIndex } from "emoji-mart";
 import "emoji-mart/css/emoji-mart.css";
 import { observer } from "mobx-react-lite";
 import React, { useRef, useState } from "react";
@@ -35,10 +35,18 @@ export const SendMessage = observer(({ setIsScrolled }: SendMessageProps) => {
   const [input, setInput] = useState<string>("");
   const { ref, isVisible, setIsVisible, handlerRef } = useIsVisible(false);
   const inputRef = useRef<HTMLElement>(null);
+  const [emojiStartPosition, setEmojiStartPosition] = useState<number>(-1);
+  const emojiStartingChars: string[] = [":", ";", "="];
+
+  const pasteAsPlainText = (event: ClipboardEvent) => {
+    event.preventDefault();
+
+    const text = event.clipboardData?.getData("text/plain");
+    document.execCommand("insertHTML", false, text);
+  };
 
   return (
     <Container isToggle={toggle}>
-      {console.log(input)}
       <PlusIcon
         onClick={() => setToggle(!toggle)}
         isToggle={toggle}
@@ -75,10 +83,33 @@ export const SendMessage = observer(({ setIsScrolled }: SendMessageProps) => {
           ref={inputRef}
           placeholder={defaultInput}
           html={`${input}`}
+          onPaste={pasteAsPlainText}
           onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
             setInput(e.target.value)
           }
           onKeyDown={async (e: KeyboardEvent) => {
+            if (emojiStartingChars.includes(e.key)) {
+              setEmojiStartPosition(input.replace(/&nbsp;/g, " ").length);
+            }
+
+            if (e.key === " " && emojiStartPosition !== -1) {
+              const emojiString = input.substring(emojiStartPosition);
+              const emojis: EmojiData[] | null = emojiIndex.search(emojiString);
+
+              if (
+                emojis === null ||
+                emojis.length === 0 ||
+                !emojis[0].hasOwnProperty("native")
+              ) {
+                setEmojiStartPosition(-1);
+              } else {
+                setInput(
+                  input.substr(0, emojiStartPosition) +
+                    (emojis[0] as BaseEmoji).native
+                );
+                setEmojiStartPosition(-1);
+              }
+            }
             if (e.keyCode === 13) {
               e.preventDefault();
 
@@ -102,11 +133,11 @@ export const SendMessage = observer(({ setIsScrolled }: SendMessageProps) => {
         />
         {isVisible && (
           <EmojiPicker
+            native={true}
             ref={ref}
             onSelect={(emoji: BaseEmoji) => {
               setInput(input + emoji.native);
               setIsVisible(false);
-
               inputRef.current && inputRef.current.focus();
             }}
           />
