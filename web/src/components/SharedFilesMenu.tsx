@@ -61,9 +61,12 @@ const HeaderText = styled.div`
 `;
 
 const HeaderIcon = styled.div<{ isToggle: boolean }>`
-  background-color: red;
-  transition: transform 0.1s ease-out;
-  transform: ${(props) => props.isToggle && "rotate(45deg)"};
+  background-image: url("assets/staticImages.png");
+  background-size: 52px 718px;
+  background-repeat: no-repeat;
+
+  background-position: ${(props) =>
+    props.isToggle ? "-22px -336px" : "0 -314px"};
 `;
 
 const List = styled.ul`

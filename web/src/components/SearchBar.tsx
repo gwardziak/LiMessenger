@@ -20,8 +20,12 @@ const MagnifierImg = styled.div`
   width: 16px;
   top: 10px;
   left: 12px;
-  background: red;
   position: absolute;
+
+  background-position: 0 -668px;
+  background-image: url("assets/staticImages.png");
+  background-size: 52px 718px;
+  background-repeat: no-repeat;
 `;
 
 const SearchBarInput = styled.input`
