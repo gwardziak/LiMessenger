@@ -1,0 +1,3 @@
+mutation UploadAttachment($files: [Upload!]!) {
+  uploadAttachment(attachments: $files)
+}

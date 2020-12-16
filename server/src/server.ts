@@ -3,11 +3,13 @@ import cookieParser from "cookie-parser";
 import cors from "cors";
 import "dotenv/config";
 import express from "express";
+import { graphqlUploadExpress } from "graphql-upload";
 import http from "http";
 import "reflect-metadata";
 import { buildSchema, useContainer } from "type-graphql";
 import { Container } from "typedi";
 import { createConnection } from "typeorm";
+import { AttachmentResolver } from "./attachment/AttachmentResolver";
 import { ChatroomResolver } from "./chatroom/ChatroomResolver";
 import { MessageResolver } from "./message/MessageResolver";
 import { UserResolver } from "./user/UserResolver";
@@ -22,7 +24,12 @@ const main = async () => {
   await createConnection();
 
   const schema = await buildSchema({
-    resolvers: [MessageResolver, UserResolver, ChatroomResolver],
+    resolvers: [
+      MessageResolver,
+      UserResolver,
+      ChatroomResolver,
+      AttachmentResolver,
+    ],
     pubSub,
     authChecker,
   });
@@ -36,11 +43,13 @@ const main = async () => {
       credentials: true,
     })
   );
-
+  app.use(graphqlUploadExpress({ maxFileSize: 10000000, maxFiles: 10 }));
   // Create GraphQL server
+
   const server = new ApolloServer({
     schema,
     playground: true,
+    uploads: false,
 
     context: async ({ req, res, connection }) => {
       if (connection) return connection.context;

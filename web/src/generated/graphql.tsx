@@ -12,6 +12,8 @@ export type Scalars = {
   Float: number;
   /** The javascript `Date` as string. Type represents date and time as the ISO Date string. */
   DateTime: any;
+  /** The `Upload` scalar type represents a file upload. */
+  Upload: any;
 };
 
 export type Query = {
@@ -66,9 +68,15 @@ export type User = {
 
 export type Mutation = {
   __typename?: 'Mutation';
+  uploadAttachment: Scalars['Boolean'];
   sendMessage: Scalars['Boolean'];
   signUp: Scalars['Boolean'];
   signIn: Scalars['Boolean'];
+};
+
+
+export type MutationUploadAttachmentArgs = {
+  attachments: Array<Scalars['Upload']>;
 };
 
 
@@ -85,6 +93,7 @@ export type MutationSignUpArgs = {
 export type MutationSignInArgs = {
   options: SignInInput;
 };
+
 
 export type MessageInput = {
   recipientUuid: Scalars['String'];
@@ -125,6 +134,16 @@ export type SignInMutationVariables = Exact<{
 export type SignInMutation = (
   { __typename?: 'Mutation' }
   & Pick<Mutation, 'signIn'>
+);
+
+export type UploadAttachmentMutationVariables = Exact<{
+  files: Array<Scalars['Upload']>;
+}>;
+
+
+export type UploadAttachmentMutation = (
+  { __typename?: 'Mutation' }
+  & Pick<Mutation, 'uploadAttachment'>
 );
 
 export type FirstMessagesQueryVariables = Exact<{ [key: string]: never; }>;
@@ -216,6 +235,15 @@ export const SignInDocument = gql`
 
 export function useSignInMutation() {
   return Urql.useMutation<SignInMutation, SignInMutationVariables>(SignInDocument);
+};
+export const UploadAttachmentDocument = gql`
+    mutation UploadAttachment($files: [Upload!]!) {
+  uploadAttachment(attachments: $files)
+}
+    `;
+
+export function useUploadAttachmentMutation() {
+  return Urql.useMutation<UploadAttachmentMutation, UploadAttachmentMutationVariables>(UploadAttachmentDocument);
 };
 export const FirstMessagesDocument = gql`
     query FirstMessages {

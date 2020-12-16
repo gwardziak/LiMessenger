@@ -1,3 +1,4 @@
+import { multipartFetchExchange } from "@urql/exchange-multipart-fetch";
 import React, { createContext } from "react";
 import ReactDOM from "react-dom";
 import { BrowserRouter as Router } from "react-router-dom";
@@ -28,13 +29,6 @@ body {
 
 const url = "http://localhost:4000/graphql";
 
-// const subscriptionClient = new SubscriptionClient(
-//   "ws://localhost:4000/graphql",
-//   {
-//     reconnect: true,
-//   }
-// );
-
 const subscriptionClient = new SubscriptionClient(
   url.replace("https://", "wss://").replace("http://", "ws://"),
   {
@@ -52,30 +46,13 @@ const client = createClient({
   exchanges: [
     dedupExchange,
     cacheExchange,
+    multipartFetchExchange,
     subscriptionExchange({
       forwardSubscription: (operation) => subscriptionClient.request(operation),
       enableAllOperations: true,
     }),
   ],
 });
-
-// const client = createClient({
-//   url,
-//   requestPolicy: "cache-and-network",
-//   fetchOptions: {
-//     credentials: "include",
-//     mode: "cors",
-//   },
-//   exchanges: [
-//     ...defaultExchanges,
-//     subscriptionExchange({
-//       forwardSubscription(operation) {
-//         console.log(operation);
-//         return subscriptionClient.request(operation);
-//       },
-//     }),
-//   ],
-// });
 
 export const StoreContext = createContext<RootStore>(new RootStore(client));
 
