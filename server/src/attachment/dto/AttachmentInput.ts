@@ -3,7 +3,7 @@ import { Field, InputType } from "type-graphql";
 
 export namespace IAttachmentInput {
   export type AttachmentOptions = {
-    createReadStream: Stream;
+    // createReadStream: Stream;
     filename: string;
     mimetype: string;
     encoding: string;

@@ -7,15 +7,15 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from "typeorm";
-import { Message } from "./Message";
 import { User } from "./User";
 
 export namespace Attachment {
   export type Options = {
-    attachment: string;
+    name: string;
+    attachment: Buffer;
     participantA: User;
     participantB: User;
-    message: Message;
+    // message: Message;
   };
 }
 
@@ -28,8 +28,11 @@ export class Attachment implements Attachment.Options {
   @Generated("uuid")
   uuid!: string;
 
+  @Column()
+  name!: string;
+
   @Column({ type: "blob" })
-  attachment!: string;
+  attachment!: Buffer;
 
   @Column()
   createdAt!: Date;
@@ -42,13 +45,13 @@ export class Attachment implements Attachment.Options {
   @UpdateDateColumn()
   updatedAt!: Date;
 
-  @ManyToOne(() => Message)
-  message!: Message;
+  // @ManyToOne(() => Message)
+  // message!: Message;
 
-  @ManyToOne(() => User, {
-    nullable: false,
-  })
-  public readonly recipient!: User;
+  // @ManyToOne(() => User, {
+  //   nullable: false,
+  // })
+  // public readonly recipient!: User;
 
   @ManyToOne(() => User, {
     nullable: false,
@@ -73,5 +76,6 @@ export class Attachment implements Attachment.Options {
 
       Object.assign(this, { ...options, participantA, participantB });
     }
+    Object.assign(this, options);
   }
 }

@@ -76,7 +76,7 @@ export type Mutation = {
 
 
 export type MutationUploadAttachmentArgs = {
-  attachments: Array<Scalars['Upload']>;
+  file: Scalars['Upload'];
 };
 
 
@@ -137,7 +137,7 @@ export type SignInMutation = (
 );
 
 export type UploadAttachmentMutationVariables = Exact<{
-  files: Array<Scalars['Upload']>;
+  file: Scalars['Upload'];
 }>;
 
 
@@ -237,8 +237,8 @@ export function useSignInMutation() {
   return Urql.useMutation<SignInMutation, SignInMutationVariables>(SignInDocument);
 };
 export const UploadAttachmentDocument = gql`
-    mutation UploadAttachment($files: [Upload!]!) {
-  uploadAttachment(attachments: $files)
+    mutation UploadAttachment($file: Upload!) {
+  uploadAttachment(file: $file)
 }
     `;
 

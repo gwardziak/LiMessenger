@@ -8,9 +8,10 @@ import http from "http";
 import "reflect-metadata";
 import { buildSchema, useContainer } from "type-graphql";
 import { Container } from "typedi";
-import { createConnection } from "typeorm";
+import { createConnection, getRepository } from "typeorm";
 import { AttachmentResolver } from "./attachment/AttachmentResolver";
 import { ChatroomResolver } from "./chatroom/ChatroomResolver";
+import { Attachment } from "./db/entities/Attachment";
 import { MessageResolver } from "./message/MessageResolver";
 import { UserResolver } from "./user/UserResolver";
 import { authChecker } from "./utils/authChecker";
@@ -36,6 +37,37 @@ const main = async () => {
 
   const app = express();
   const httpServer = http.createServer(app);
+
+  app.get(
+    "/image/:senderOrRecipientUuid/:imageUuid",
+    async function (req, res) {
+      console.log(req.params);
+      const image = await getRepository(Attachment)
+        .createQueryBuilder("file")
+        .leftJoinAndSelect("file.participantA", "participantA")
+        .leftJoinAndSelect("file.participantB", "participantB")
+        .where(
+          `(participantA.uuid = :participant AND file.uuid = :image) OR
+      (participantB.uuid = :participant AND file.uuid = :image)`,
+          {
+            participant: req.params.senderOrRecipientUuid,
+            image: req.params.imageUuid,
+          }
+        )
+        .getOne();
+
+      res.set("Content-Type", "text");
+      res.send(image?.attachment);
+    }
+  );
+
+  app.get("/4", async function (req, res) {
+    const blob: any = await getRepository(Attachment).find();
+    console.log(blob);
+    res.set("Content-Type", "text");
+
+    res.send(blob[blob.length - 1].attachment);
+  });
 
   app.use(
     cors({

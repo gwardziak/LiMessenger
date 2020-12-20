@@ -46,7 +46,7 @@ export const SendMessage = observer(
     const [, upload] = useUploadAttachmentMutation();
     const handleUploadSubmit = async () => {
       const response = await upload({
-        files: uploadFiles,
+        file: uploadFiles[0],
       });
       console.log(response, "img sent");
     };
@@ -116,7 +116,6 @@ export const SendMessage = observer(
             <CameraIcon viewBox="0 0 36 36" />
           </MobileIconsContainer>
         )}
-
         <MessageContainer isToggle={toggle} hasFile={uploadFiles?.length > 0}>
           <UploadFiles
             multiple
@@ -228,6 +227,7 @@ export const SendMessage = observer(
           )}
         </MessageContainer>
         <input value="elo" onClick={() => handleUploadSubmit()} />
+        <img src="http://localhost:4000/3" alt="alternate" />
         <LikeIcon viewBox="0 1 36 36" />
       </Container>
     );
