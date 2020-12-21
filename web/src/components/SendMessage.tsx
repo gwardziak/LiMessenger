@@ -196,7 +196,8 @@ export const SendMessage = observer(
 
                 try {
                   await rootStore.chatStore.sendMessage(
-                    input.replace(/&nbsp;/g, " ")
+                    input.replace(/&nbsp;/g, " "),
+                    uploadFiles[0]
                   );
                   setIsScrolled(false);
                   setInput("");
@@ -226,8 +227,8 @@ export const SendMessage = observer(
             />
           )}
         </MessageContainer>
-        <input value="elo" onClick={() => handleUploadSubmit()} />
-        <img src="http://localhost:4000/3" alt="alternate" />
+        {/* <input value="elo" onClick={() => handleUploadSubmit()} />
+        <img src="http://localhost:4000/3" alt="alternate" /> */}
         <LikeIcon viewBox="0 1 36 36" />
       </Container>
     );

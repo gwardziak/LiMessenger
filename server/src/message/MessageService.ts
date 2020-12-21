@@ -1,6 +1,8 @@
 import { PubSubEngine } from "type-graphql";
 import { Inject, Service } from "typedi";
 import { getRepository } from "typeorm";
+import { AttachmentService } from "../attachment/AttachmentService";
+import { Attachment } from "../db/entities/Attachment";
 import { Message } from "../db/entities/Message";
 import { User } from "../db/entities/User";
 import { ChatroomService } from "./../chatroom/ChatroomService";
@@ -22,11 +24,13 @@ export namespace MessageService {
 export class MessageService {
   private constructor(
     @Inject("PUB_SUB") private readonly pubSub: PubSubEngine,
-    private readonly chatroomService: ChatroomService
+    private readonly chatroomService: ChatroomService,
+    private readonly attachmentService: AttachmentService
   ) {}
   private messageRepository = getRepository(Message);
   private userRepository = getRepository(User);
   private chatroomRepository = getRepository(Chatroom);
+  private attachmentRepository = getRepository(Attachment);
 
   async getOne(uuid: string): Promise<Message | undefined> {
     return await this.messageRepository.findOne({ where: { uuid } });
@@ -69,31 +73,6 @@ export class MessageService {
     };
   }
 
-  // const messages = await this.messageRepository
-  //   .createQueryBuilder("messages")
-  //   .leftJoinAndSelect("messages.sender", "sender")
-  //   .leftJoinAndSelect("messages.recipient", "recipient")
-  //   .where("sender.uuid = :recipientUuid AND recipient.id = :senderId", {
-  //     senderId: me.id,
-  //     recipientUuid: friendUuid,
-  //   })
-  //   .orWhere("sender.id = :senderId AND recipient.uuid = :recipientUuid", {
-  //     senderId: me.id,
-  //     recipientUuid: friendUuid,
-  //   })
-  //   .orderBy("messages.createdAt", "DESC")
-  //   .andWhere("DATETIME(messages.createdAt) < DATETIME(:cursor)", {
-  //     cursor: cursorId,
-  //   })
-  //   .take(realLimit)
-  //   .getMany();
-
-  // .where("sender.id = :senderId AND recipient.uuid = :recipientUuid", {
-  //   senderId: me.id,
-  //   recipientUuid: friendUuid,
-  // })
-
-  //   yyy, v,z yy  yyy  yy xxx
   async firstMessages(user: User): Promise<Message[]> {
     const fetchFirstMessages = await this.messageRepository.query(
       `SELECT *, MAX(createdAt) as createdAt from
@@ -138,20 +117,11 @@ export class MessageService {
 
     return transformToObj;
   }
-  //  return await this.messageRepository
-  //       .createQueryBuilder("messages")
-  //       .leftJoinAndSelect("messages.sender", "sender")
-  //       .leftJoinAndSelect("messages.recipient", "recipient")
-  //       .where(`sender.id = :participantId OR recipient.id = :participantId`, {
-  //         participantId: user.id,
-  //       })
-  //       .groupBy("recipient.id")
-  //       .addGroupBy("sender.id")
-  //       .addSelect("MAX(messages.createdAt)")
-  //       .getMany();
+
   async sendMessage(
     sender: User,
-    options: MessageService.SendMessage
+    options: MessageService.SendMessage,
+    file: AttachmentService.upload
   ): Promise<void> {
     let room = await this.chatroomRepository
       .createQueryBuilder("chatroom")
@@ -173,17 +143,36 @@ export class MessageService {
       room = await this.chatroomService.createChatroom(user, sender);
     }
 
+    const recipient =
+      room.participantA.id === sender.id
+        ? room.participantB
+        : room.participantA;
+
+    let attachment;
+    if (file) {
+      try {
+        attachment = await this.attachmentService.upload(
+          sender,
+          recipient,
+          file
+        );
+      } catch (err) {
+        throw new Error(err);
+      }
+    }
+
     const message = new Message({
       text: options.text,
       sender,
       room,
-      recipient:
-        room.participantA.id === sender.id
-          ? room.participantB
-          : room.participantA,
+      recipient,
     });
 
-    await this.messageRepository.insert(message);
+    if (file) {
+      message.attachments = [attachment, attachment] as any;
+    }
+
+    await this.messageRepository.save(message);
     await this.pubSub.publish("NEW_MESSAGE", message);
   }
 
@@ -201,5 +190,14 @@ export class MessageService {
       relations: ["recipient"],
     });
     return message!.recipient;
+  }
+
+  async attachments(messageId: number): Promise<Attachment[]> {
+    const message = await this.messageRepository.findOne({
+      where: { id: messageId },
+      relations: ["attachments"],
+    });
+
+    return message?.attachments || [];
   }
 }

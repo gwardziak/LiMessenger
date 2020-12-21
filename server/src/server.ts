@@ -8,13 +8,13 @@ import http from "http";
 import "reflect-metadata";
 import { buildSchema, useContainer } from "type-graphql";
 import { Container } from "typedi";
-import { createConnection, getRepository } from "typeorm";
+import { createConnection } from "typeorm";
 import { AttachmentResolver } from "./attachment/AttachmentResolver";
 import { ChatroomResolver } from "./chatroom/ChatroomResolver";
-import { Attachment } from "./db/entities/Attachment";
 import { MessageResolver } from "./message/MessageResolver";
 import { UserResolver } from "./user/UserResolver";
 import { authChecker } from "./utils/authChecker";
+import { FileServerService } from "./utils/FileServerService";
 import { verifyUserToken } from "./utils/verifyUserToken";
 
 useContainer(Container);
@@ -36,37 +36,28 @@ const main = async () => {
   });
 
   const app = express();
+
   const httpServer = http.createServer(app);
 
-  app.get(
-    "/image/:senderOrRecipientUuid/:imageUuid",
-    async function (req, res) {
-      console.log(req.params);
-      const image = await getRepository(Attachment)
-        .createQueryBuilder("file")
-        .leftJoinAndSelect("file.participantA", "participantA")
-        .leftJoinAndSelect("file.participantB", "participantB")
-        .where(
-          `(participantA.uuid = :participant AND file.uuid = :image) OR
-      (participantB.uuid = :participant AND file.uuid = :image)`,
-          {
-            participant: req.params.senderOrRecipientUuid,
-            image: req.params.imageUuid,
-          }
-        )
-        .getOne();
+  const fileServerService = Container.get(FileServerService);
+  app.get("/attachment/:participantUuid/:imageUuid", async (req, res) => {
+    const file = await fileServerService.getOne(
+      req.params.participantUuid,
+      req.params.imageUuid
+    );
 
-      res.set("Content-Type", "text");
-      res.send(image?.attachment);
+    if (!file) {
+      return res.status(404).end();
     }
-  );
 
-  app.get("/4", async function (req, res) {
-    const blob: any = await getRepository(Attachment).find();
-    console.log(blob);
-    res.set("Content-Type", "text");
+    res.setHeader("Content-Type", file.mimetype);
 
-    res.send(blob[blob.length - 1].attachment);
+    if (file.mimetype.includes("image")) {
+      return res.send(file.attachment);
+    }
+
+    res.setHeader("Content-disposition", "attachment; filename=" + file.name);
+    return res.send(file.attachment);
   });
 
   app.use(
@@ -75,6 +66,7 @@ const main = async () => {
       credentials: true,
     })
   );
+
   app.use(graphqlUploadExpress({ maxFileSize: 10000000, maxFiles: 10 }));
   // Create GraphQL server
 
@@ -107,6 +99,7 @@ const main = async () => {
   });
 
   app.use(cookieParser());
+
   server.installSubscriptionHandlers(httpServer);
   server.applyMiddleware({ app, path: "/", cors: false });
 

@@ -3,7 +3,8 @@ import { Field, ObjectType } from "type-graphql";
 namespace AttachmentObjectType {
   export type Options = {
     uuid: string;
-    attachment: string;
+    name: string;
+
     createdAt: Date;
     updatedAt: Date;
   };
@@ -15,7 +16,7 @@ export class AttachmentObjectType implements AttachmentObjectType.Options {
   uuid!: string;
 
   @Field()
-  attachment!: string;
+  name!: string;
 
   @Field((type) => Date)
   createdAt!: Date;

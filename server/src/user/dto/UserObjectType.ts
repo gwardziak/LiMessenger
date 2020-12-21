@@ -1,4 +1,4 @@
-import { Field, ObjectType } from "type-graphql";
+import { Field, InputType, ObjectType } from "type-graphql";
 
 namespace UserObjectType {
   export type Options = {
@@ -7,10 +7,10 @@ namespace UserObjectType {
     password: string;
     email: string;
     accountVerified: boolean;
-    // friends: Friends[];
   };
 }
 
+@InputType("UserInput")
 @ObjectType("User")
 export class UserObjectType implements UserObjectType.Options {
   @Field(() => String)
@@ -27,14 +27,4 @@ export class UserObjectType implements UserObjectType.Options {
 
   @Field(() => Boolean)
   accountVerified!: boolean;
-
-  /*
-  @Field(() => [Friends])
-  friends: Friends[];
-*/
 }
-
-/*
-  @Field((type) => [Message])
-  messages!: Message[];
-*/

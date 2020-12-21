@@ -5,9 +5,11 @@ import {
   Generated,
   Index,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from "typeorm";
+import { Attachment } from "./Attachment";
 import { Chatroom } from "./Chatroom";
 import { User } from "./User";
 
@@ -17,6 +19,7 @@ export namespace Message {
     room: Chatroom;
     sender: User;
     recipient: User;
+    attachments?: Attachment[];
   };
 }
 
@@ -57,6 +60,11 @@ export class Message implements Message.Options {
     nullable: false,
   })
   public readonly room!: Chatroom;
+
+  @OneToMany(() => Attachment, (attachment) => attachment.message, {
+    cascade: true,
+  })
+  public attachments?: Attachment[];
 
   constructor(options: Message.Options) {
     if (options) {

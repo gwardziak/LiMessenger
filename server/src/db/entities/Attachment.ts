@@ -7,6 +7,7 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from "typeorm";
+import { Message } from "./Message";
 import { User } from "./User";
 
 export namespace Attachment {
@@ -15,7 +16,8 @@ export namespace Attachment {
     attachment: Buffer;
     participantA: User;
     participantB: User;
-    // message: Message;
+    mimetype: string;
+    message?: Message;
   };
 }
 
@@ -35,6 +37,9 @@ export class Attachment implements Attachment.Options {
   attachment!: Buffer;
 
   @Column()
+  mimetype!: string;
+
+  @Column()
   createdAt!: Date;
 
   @BeforeInsert()
@@ -45,13 +50,10 @@ export class Attachment implements Attachment.Options {
   @UpdateDateColumn()
   updatedAt!: Date;
 
-  // @ManyToOne(() => Message)
-  // message!: Message;
-
-  // @ManyToOne(() => User, {
-  //   nullable: false,
-  // })
-  // public readonly recipient!: User;
+  @ManyToOne(() => Message, (message) => message.attachments, {
+    nullable: false,
+  })
+  message!: Message;
 
   @ManyToOne(() => User, {
     nullable: false,

@@ -3,7 +3,7 @@ import { Field, InputType } from "type-graphql";
 
 export namespace IAttachmentInput {
   export type AttachmentOptions = {
-    // createReadStream: Stream;
+    createReadStream: () => Stream;
     filename: string;
     mimetype: string;
     encoding: string;
@@ -13,7 +13,7 @@ export namespace IAttachmentInput {
 @InputType()
 export class AttachmentInput implements IAttachmentInput.AttachmentOptions {
   @Field(() => Stream)
-  createReadStream!: Stream;
+  createReadStream!: () => Stream;
 
   @Field()
   filename!: string;

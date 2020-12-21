@@ -1,12 +1,16 @@
-import { Query, Resolver } from "type-graphql";
+import { GraphQLUpload } from "graphql-upload";
+import { Resolver } from "type-graphql";
 import {
   Arg,
   Authorized,
   Ctx,
   FieldResolver,
   Mutation,
+  Query,
   Root,
 } from "type-graphql/decorators";
+import { AttachmentInput } from "../attachment/dto/AttachmentInput";
+import { AttachmentObjectType } from "../attachment/dto/AttachmentObjectType";
 import { Message } from "../db/entities/Message";
 import { MyContext } from "../models/MyContext";
 import { MessageInput } from "./dto/MessageInput";
@@ -44,9 +48,11 @@ export class MessageResolver {
   async sendMessage(
     @Arg("options")
     options: MessageInput,
+    @Arg("file", () => GraphQLUpload, { nullable: true })
+    file: AttachmentInput,
     @Ctx() { authUser }: MyContext
   ): Promise<boolean> {
-    await this.messageService.sendMessage(authUser, options);
+    await this.messageService.sendMessage(authUser, options, file);
     return true;
   }
 
@@ -58,5 +64,10 @@ export class MessageResolver {
   @FieldResolver(() => UserMessageObjectType)
   async recipient(@Root() message: Message): Promise<UserMessageObjectType> {
     return await this.messageService.recipient(message.id);
+  }
+
+  @FieldResolver(() => [AttachmentObjectType])
+  async attachments(@Root() message: Message): Promise<AttachmentObjectType[]> {
+    return await this.messageService.attachments(message.id);
   }
 }

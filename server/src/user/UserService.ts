@@ -4,7 +4,6 @@ import * as crypto from "crypto";
 import { Service } from "typedi";
 import { getRepository } from "typeorm";
 import { User } from "../db/entities/User";
-import { IUser } from "../models/User";
 import { isDuplicateError } from "../utils/isDuplicateError";
 
 export namespace UserService {
@@ -17,7 +16,7 @@ export namespace UserService {
     login: string;
     password: string;
   };
-  export type Token = IUser["authToken"];
+  export type Token = string;
 }
 
 @Service()

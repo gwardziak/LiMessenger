@@ -81,6 +81,7 @@ export type MutationUploadAttachmentArgs = {
 
 
 export type MutationSendMessageArgs = {
+  file?: Maybe<Scalars['Upload']>;
   options: MessageInput;
 };
 
@@ -118,6 +119,7 @@ export type Subscription = {
 
 export type SendMessageMutationVariables = Exact<{
   options: MessageInput;
+  file?: Maybe<Scalars['Upload']>;
 }>;
 
 
@@ -219,8 +221,8 @@ export type ChatroomSubscription = (
 
 
 export const SendMessageDocument = gql`
-    mutation SendMessage($options: MessageInput!) {
-  sendMessage(options: $options)
+    mutation SendMessage($options: MessageInput!, $file: Upload) {
+  sendMessage(options: $options, file: $file)
 }
     `;
 
