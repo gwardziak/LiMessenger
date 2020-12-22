@@ -48,11 +48,11 @@ export class MessageResolver {
   async sendMessage(
     @Arg("options")
     options: MessageInput,
-    @Arg("file", () => GraphQLUpload, { nullable: true })
-    file: AttachmentInput,
+    @Arg("files", () => [GraphQLUpload], { nullable: true })
+    files: AttachmentInput[],
     @Ctx() { authUser }: MyContext
   ): Promise<boolean> {
-    await this.messageService.sendMessage(authUser, options, file);
+    await this.messageService.sendMessage(authUser, options, files);
     return true;
   }
 

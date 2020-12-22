@@ -3,7 +3,7 @@ import "emoji-mart/css/emoji-mart.css";
 import { observer } from "mobx-react-lite";
 import React, { useRef, useState } from "react";
 import styled from "styled-components";
-import { useUploadAttachmentMutation } from "../generated/graphql";
+// import { useUploadAttachmentMutation } from "../generated/graphql";
 import { Attachment } from "../Icons/Attachment";
 import { Camera } from "../Icons/Camera";
 import { EmojiFolder } from "../Icons/EmojiFolder";
@@ -42,14 +42,6 @@ export const SendMessage = observer(
     const [emojiStartPosition, setEmojiStartPosition] = useState<number>(-1);
     const emojiStartingChars: string[] = [":", ";", "="];
     const uploadFilesRef = useRef<HTMLInputElement>(null);
-
-    const [, upload] = useUploadAttachmentMutation();
-    const handleUploadSubmit = async () => {
-      const response = await upload({
-        file: uploadFiles[0],
-      });
-      console.log(response, "img sent");
-    };
 
     const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
       const { files } = event.target;
@@ -197,7 +189,7 @@ export const SendMessage = observer(
                 try {
                   await rootStore.chatStore.sendMessage(
                     input.replace(/&nbsp;/g, " "),
-                    uploadFiles[0]
+                    uploadFiles
                   );
                   setIsScrolled(false);
                   setInput("");
@@ -227,8 +219,6 @@ export const SendMessage = observer(
             />
           )}
         </MessageContainer>
-        {/* <input value="elo" onClick={() => handleUploadSubmit()} />
-        <img src="http://localhost:4000/3" alt="alternate" /> */}
         <LikeIcon viewBox="0 1 36 36" />
       </Container>
     );

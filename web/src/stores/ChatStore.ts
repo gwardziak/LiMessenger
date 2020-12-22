@@ -250,7 +250,7 @@ export class ChatStore {
     );
   }
 
-  @action async sendMessage(text: string, file: File): Promise<void> {
+  @action async sendMessage(text: string, files: File[]): Promise<void> {
     if (!this.activeChat) {
       throw new Error("Select chat room");
     }
@@ -260,7 +260,7 @@ export class ChatStore {
         SendMessageDocument,
         {
           options: { recipientUuid: this.activeChat, text },
-          file: file ?? null,
+          files: files ?? null,
         }
       )
       .toPromise();

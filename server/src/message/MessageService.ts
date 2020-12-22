@@ -2,6 +2,7 @@ import { PubSubEngine } from "type-graphql";
 import { Inject, Service } from "typedi";
 import { getRepository } from "typeorm";
 import { AttachmentService } from "../attachment/AttachmentService";
+import { AttachmentInput } from "../attachment/dto/AttachmentInput";
 import { Attachment } from "../db/entities/Attachment";
 import { Message } from "../db/entities/Message";
 import { User } from "../db/entities/User";
@@ -121,7 +122,7 @@ export class MessageService {
   async sendMessage(
     sender: User,
     options: MessageService.SendMessage,
-    file: AttachmentService.upload
+    files: AttachmentService.upload[]
   ): Promise<void> {
     let room = await this.chatroomRepository
       .createQueryBuilder("chatroom")
@@ -148,19 +149,6 @@ export class MessageService {
         ? room.participantB
         : room.participantA;
 
-    let attachment;
-    if (file) {
-      try {
-        attachment = await this.attachmentService.upload(
-          sender,
-          recipient,
-          file
-        );
-      } catch (err) {
-        throw new Error(err);
-      }
-    }
-
     const message = new Message({
       text: options.text,
       sender,
@@ -168,9 +156,24 @@ export class MessageService {
       recipient,
     });
 
-    if (file) {
-      message.attachments = [attachment, attachment] as any;
+    let attachments: Attachment[] = [];
+
+    if (files && files.length !== 0) {
+      const resolvedFiles: AttachmentInput[] = [];
+
+      for (const file of files) {
+        const result = await Promise.resolve(file);
+        resolvedFiles.push(result);
+      }
+
+      attachments = await this.attachmentService.upload(
+        sender,
+        recipient,
+        resolvedFiles
+      );
     }
+
+    message.attachments = [...attachments];
 
     await this.messageRepository.save(message);
     await this.pubSub.publish("NEW_MESSAGE", message);

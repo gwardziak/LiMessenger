@@ -1,3 +1,3 @@
-mutation SendMessage($options: MessageInput!, $file: Upload) {
-  sendMessage(options: $options, file: $file)
+mutation SendMessage($options: MessageInput!, $files: [Upload!]) {
+  sendMessage(options: $options, files: $files)
 }

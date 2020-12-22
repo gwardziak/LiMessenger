@@ -17,7 +17,7 @@ export namespace AttachmentService {
 export class AttachmentService {
   private attachmentRepository = getRepository(Attachment);
 
-  async upload(
+  async uploadSingle(
     sender: User,
     recipient: User,
     { createReadStream, filename, mimetype }: AttachmentService.upload
@@ -32,6 +32,7 @@ export class AttachmentService {
         file = "";
         return reject(err);
       });
+
       readStream.on("data", (chunk) => (file += chunk));
       readStream.on("end", async () => {
         const attachment = new Attachment({
@@ -47,6 +48,18 @@ export class AttachmentService {
         // return resolve(Buffer.from(data, "binary"));
       });
     });
+  }
+
+  async upload(
+    sender: User,
+    recipient: User,
+    files: AttachmentService.upload[]
+  ): Promise<Attachment[]> {
+    return Promise.all(
+      files.map(async (file) => {
+        return await this.uploadSingle(sender, recipient, file);
+      })
+    );
   }
 
   async link(id: number): Promise<string> {

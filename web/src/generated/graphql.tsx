@@ -48,6 +48,7 @@ export type Message = {
   updatedAt: Scalars['DateTime'];
   sender: UserMessage;
   recipient: UserMessage;
+  attachments: Array<Attachment>;
 };
 
 
@@ -55,6 +56,15 @@ export type UserMessage = {
   __typename?: 'UserMessage';
   uuid: Scalars['String'];
   username: Scalars['String'];
+};
+
+export type Attachment = {
+  __typename?: 'Attachment';
+  uuid: Scalars['String'];
+  name: Scalars['String'];
+  createdAt: Scalars['DateTime'];
+  updatedAt: Scalars['DateTime'];
+  link: Scalars['String'];
 };
 
 export type User = {
@@ -68,20 +78,14 @@ export type User = {
 
 export type Mutation = {
   __typename?: 'Mutation';
-  uploadAttachment: Scalars['Boolean'];
   sendMessage: Scalars['Boolean'];
   signUp: Scalars['Boolean'];
   signIn: Scalars['Boolean'];
 };
 
 
-export type MutationUploadAttachmentArgs = {
-  file: Scalars['Upload'];
-};
-
-
 export type MutationSendMessageArgs = {
-  file?: Maybe<Scalars['Upload']>;
+  files?: Maybe<Array<Scalars['Upload']>>;
   options: MessageInput;
 };
 
@@ -119,7 +123,7 @@ export type Subscription = {
 
 export type SendMessageMutationVariables = Exact<{
   options: MessageInput;
-  file?: Maybe<Scalars['Upload']>;
+  files?: Maybe<Array<Scalars['Upload']>>;
 }>;
 
 
@@ -136,16 +140,6 @@ export type SignInMutationVariables = Exact<{
 export type SignInMutation = (
   { __typename?: 'Mutation' }
   & Pick<Mutation, 'signIn'>
-);
-
-export type UploadAttachmentMutationVariables = Exact<{
-  file: Scalars['Upload'];
-}>;
-
-
-export type UploadAttachmentMutation = (
-  { __typename?: 'Mutation' }
-  & Pick<Mutation, 'uploadAttachment'>
 );
 
 export type FirstMessagesQueryVariables = Exact<{ [key: string]: never; }>;
@@ -221,8 +215,8 @@ export type ChatroomSubscription = (
 
 
 export const SendMessageDocument = gql`
-    mutation SendMessage($options: MessageInput!, $file: Upload) {
-  sendMessage(options: $options, file: $file)
+    mutation SendMessage($options: MessageInput!, $files: [Upload!]) {
+  sendMessage(options: $options, files: $files)
 }
     `;
 
@@ -237,15 +231,6 @@ export const SignInDocument = gql`
 
 export function useSignInMutation() {
   return Urql.useMutation<SignInMutation, SignInMutationVariables>(SignInDocument);
-};
-export const UploadAttachmentDocument = gql`
-    mutation UploadAttachment($file: Upload!) {
-  uploadAttachment(file: $file)
-}
-    `;
-
-export function useUploadAttachmentMutation() {
-  return Urql.useMutation<UploadAttachmentMutation, UploadAttachmentMutationVariables>(UploadAttachmentDocument);
 };
 export const FirstMessagesDocument = gql`
     query FirstMessages {
