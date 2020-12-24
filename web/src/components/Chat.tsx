@@ -10,7 +10,6 @@ export const Chat = () => {
   const onDrop = useCallback(
     (acceptedFiles: File[]) => {
       // Do something with the files
-
       setUploadFiles([...uploadFiles, ...acceptedFiles]);
     },
     [uploadFiles]

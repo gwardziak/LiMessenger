@@ -62,6 +62,7 @@ export type Attachment = {
   __typename?: 'Attachment';
   uuid: Scalars['String'];
   name: Scalars['String'];
+  mimetype: Scalars['String'];
   createdAt: Scalars['DateTime'];
   updatedAt: Scalars['DateTime'];
   link: Scalars['String'];
@@ -156,7 +157,10 @@ export type FirstMessagesQuery = (
     ), recipient: (
       { __typename?: 'UserMessage' }
       & Pick<UserMessage, 'uuid' | 'username'>
-    ) }
+    ), attachments: Array<(
+      { __typename?: 'Attachment' }
+      & Pick<Attachment, 'uuid' | 'name' | 'mimetype' | 'link'>
+    )> }
   )> }
 );
 
@@ -190,7 +194,10 @@ export type MessagesQuery = (
       ), recipient: (
         { __typename?: 'UserMessage' }
         & Pick<UserMessage, 'uuid' | 'username'>
-      ) }
+      ), attachments: Array<(
+        { __typename?: 'Attachment' }
+        & Pick<Attachment, 'uuid' | 'name' | 'mimetype' | 'link'>
+      )> }
     )> }
   ) }
 );
@@ -209,7 +216,10 @@ export type ChatroomSubscription = (
     ), recipient: (
       { __typename?: 'UserMessage' }
       & Pick<UserMessage, 'uuid' | 'username'>
-    ) }
+    ), attachments: Array<(
+      { __typename?: 'Attachment' }
+      & Pick<Attachment, 'uuid' | 'name' | 'mimetype' | 'link'>
+    )> }
   ) }
 );
 
@@ -245,6 +255,12 @@ export const FirstMessagesDocument = gql`
     recipient {
       uuid
       username
+    }
+    attachments {
+      uuid
+      name
+      mimetype
+      link
     }
   }
 }
@@ -284,6 +300,12 @@ export const MessagesDocument = gql`
         uuid
         username
       }
+      attachments {
+        uuid
+        name
+        mimetype
+        link
+      }
     }
   }
 }
@@ -306,6 +328,12 @@ export const ChatroomDocument = gql`
     recipient {
       uuid
       username
+    }
+    attachments {
+      uuid
+      name
+      mimetype
+      link
     }
   }
 }

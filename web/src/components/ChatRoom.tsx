@@ -83,10 +83,31 @@ export const ChatRoom = observer(
               <MessageContainer key={messages[0].uuid} messagesSender={sender}>
                 <GroupMessages messagesSender={sender}>
                   {messages.map((message) => {
+                    const files = [];
+                    const images = [];
+
+                    if (message.attachments!.length !== 0) {
+                      for (const attachment of message.attachments!) {
+                        attachment.mimetype.includes("image")
+                          ? images.push(attachment)
+                          : files.push(attachment);
+                      }
+                    }
+
                     return (
-                      <Message key={message.uuid} sender={sender}>
-                        {message.text}
-                      </Message>
+                      <React.Fragment key={message.uuid}>
+                        {message.text === "" &&
+                        message.attachments?.length !== 0 ? null : (
+                          <Message key={message.uuid} sender={sender}>
+                            {message.text}
+                          </Message>
+                        )}
+                        {/* {files.length !== 0 && (
+                          <Files files={files} sender={sender} />
+                        )} */}
+
+                        {/* {images.length !== 0 && <Images images={images} />} */}
+                      </React.Fragment>
                     );
                   })}
                 </GroupMessages>

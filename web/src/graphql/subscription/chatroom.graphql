@@ -12,5 +12,11 @@ subscription Chatroom {
       uuid
       username
     }
+    attachments {
+      uuid
+      name
+      mimetype
+      link
+    }
   }
 }

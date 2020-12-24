@@ -33,12 +33,20 @@ export type Sender = {
   username: string;
 };
 
+export type Attachment = {
+  uuid: string;
+  link: string;
+  name: string;
+  mimetype: string;
+};
+
 export type Message = {
   uuid: string;
   text: string;
   createdAt: string;
   sender: Sender;
   recipient: Recipient;
+  attachments?: Attachment[];
 };
 
 export type MessageInfo = {
@@ -189,6 +197,8 @@ export class ChatStore {
     }
 
     return runInAction(() => {
+      console.log(data);
+
       if (!this.activeChat) return;
       if (!this.messages.has(this.activeChat)) {
         this.messages.set(this.activeChat, []);

@@ -45,23 +45,15 @@ export const SendMessage = observer(
 
     const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
       const { files } = event.target;
+
       if (files && files.length) {
-        const transform = Array.from(uploadFiles);
-
-        // const filename = files[0].name;
-        // const parts = filename.split(".");
-        // const fileType = parts[parts.length - 1];
-        // console.log("fileType", fileType); //ex: zip, rar, jpg, svg etc.
-        // //filter jpg/ jpeg/ png
-
-        setUploadFiles([...files, ...transform]);
+        setUploadFiles([...uploadFiles, ...files]);
       }
+      event.target.value = "";
     };
 
-    const handleRemoveFile = (id: number) => {
-      const filter = uploadFiles.filter(
-        (file) => file.size + file.lastModified !== id
-      );
+    const handleRemoveFile = (key: number) => {
+      const filter = uploadFiles.filter((file, i) => key !== i);
       setUploadFiles(filter);
     };
 
@@ -119,8 +111,8 @@ export const SendMessage = observer(
           {uploadFiles.length > 0 && (
             <>
               <Files>
-                {uploadFiles.map((file: File) => (
-                  <FileContainer key={file.lastModified + file.size}>
+                {uploadFiles.map((file: File, i) => (
+                  <FileContainer key={i}>
                     {file.type.includes("image") ? (
                       <UploadImg src={URL.createObjectURL(file)}></UploadImg>
                     ) : (
@@ -131,11 +123,7 @@ export const SendMessage = observer(
                         <UploadFilename>{file.name}</UploadFilename>
                       </UploadFile>
                     )}
-                    <CloseFile
-                      onClick={() =>
-                        handleRemoveFile(file.lastModified + file.size)
-                      }
-                    >
+                    <CloseFile onClick={() => handleRemoveFile(i)}>
                       <CloseFileImg />
                     </CloseFile>
                   </FileContainer>
@@ -193,6 +181,7 @@ export const SendMessage = observer(
                   );
                   setIsScrolled(false);
                   setInput("");
+                  setUploadFiles([]);
                 } catch (ex) {
                   throw new Error(
                     "Error during sending a message" + ex.message
@@ -398,6 +387,7 @@ const UploadImg = styled.img`
   width: 48px;
 `;
 
+//DUPLICATE IN CHATROOM
 const UploadFile = styled.div`
   display: grid;
   grid-template-columns: 24px 1fr;

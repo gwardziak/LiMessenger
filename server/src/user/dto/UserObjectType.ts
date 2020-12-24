@@ -1,4 +1,4 @@
-import { Field, InputType, ObjectType } from "type-graphql";
+import { Field, ObjectType } from "type-graphql";
 
 namespace UserObjectType {
   export type Options = {
@@ -10,7 +10,6 @@ namespace UserObjectType {
   };
 }
 
-@InputType("UserInput")
 @ObjectType("User")
 export class UserObjectType implements UserObjectType.Options {
   @Field(() => String)

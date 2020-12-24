@@ -4,6 +4,7 @@ namespace AttachmentObjectType {
   export type Options = {
     uuid: string;
     name: string;
+    mimetype: string;
 
     createdAt: Date;
     updatedAt: Date;
@@ -17,6 +18,9 @@ export class AttachmentObjectType implements AttachmentObjectType.Options {
 
   @Field()
   name!: string;
+
+  @Field()
+  mimetype!: string;
 
   @Field((type) => Date)
   createdAt!: Date;

@@ -171,9 +171,9 @@ export class MessageService {
         recipient,
         resolvedFiles
       );
-    }
 
-    message.attachments = [...attachments];
+      message.attachments = [...attachments];
+    }
 
     await this.messageRepository.save(message);
     await this.pubSub.publish("NEW_MESSAGE", message);

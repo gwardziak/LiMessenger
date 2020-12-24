@@ -11,5 +11,11 @@ query FirstMessages {
       uuid
       username
     }
+    attachments {
+      uuid
+      name
+      mimetype
+      link
+    }
   }
 }
