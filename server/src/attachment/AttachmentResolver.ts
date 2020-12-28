@@ -1,11 +1,28 @@
-import { FieldResolver, Resolver, Root } from "type-graphql";
+import { Arg, Ctx, FieldResolver, Query, Resolver, Root } from "type-graphql";
 import { Attachment } from "../db/entities/Attachment";
+import { MyContext } from "../models/MyContext";
 import { AttachmentService } from "./AttachmentService";
-import { AttachmentObjectType } from "./dto/AttachmentObjectType";
+import {
+  AttachmentObjectType,
+  PaginatedAttachmentObjectType,
+} from "./dto/AttachmentObjectType";
+import { AttachmentPaginationInput } from "./dto/AttachmentPaginationInput";
 
 @Resolver(AttachmentObjectType)
 export class AttachmentResolver {
   private constructor(private readonly attachmentService: AttachmentService) {}
+
+  @Query(() => PaginatedAttachmentObjectType)
+  async attachments(
+    @Arg("options")
+    options: AttachmentPaginationInput,
+    @Ctx() { authUser }: MyContext
+  ): Promise<{
+    attachments: Attachment[];
+    hasMore: boolean;
+  }> {
+    return await this.attachmentService.getAll(authUser, options);
+  }
 
   @FieldResolver(() => String)
   async link(@Root() attachment: Attachment): Promise<string> {

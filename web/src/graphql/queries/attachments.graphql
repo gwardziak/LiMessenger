@@ -1,0 +1,12 @@
+query Attachments($options: AttachmentPaginationInput!) {
+  attachments(options: $options) {
+    hasMore
+    attachments {
+      uuid
+      name
+      mimetype
+      link
+      createdAt
+    }
+  }
+}

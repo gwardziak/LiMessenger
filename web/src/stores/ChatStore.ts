@@ -38,6 +38,7 @@ export type Attachment = {
   link: string;
   name: string;
   mimetype: string;
+  createdAt: string;
 };
 
 export type Message = {
@@ -96,6 +97,18 @@ export class ChatStore {
     return userUuid === message.sender.uuid
       ? message.recipient.uuid
       : message.sender.uuid;
+  }
+
+  @computed get recipientName(): string {
+    if (!this.activeChat) {
+      return "";
+    }
+
+    const message = this.messages.get(this.activeChat)![0];
+
+    return message.recipient.username === this.rootStore.userStore.username
+      ? message.sender.username
+      : message.recipient.username;
   }
 
   @computed get firstMessages(): Message[] {
@@ -197,8 +210,6 @@ export class ChatStore {
     }
 
     return runInAction(() => {
-      console.log(data);
-
       if (!this.activeChat) return;
       if (!this.messages.has(this.activeChat)) {
         this.messages.set(this.activeChat, []);
@@ -217,7 +228,8 @@ export class ChatStore {
 
       this.activeChat = this.roomId(latestMessage);
       this.fetchChatMessages();
-
+      this.rootStore.attachmentsStore.fetchAttachments(false);
+      this.rootStore.attachmentsStore.fetchAttachments(true);
       return;
     }
 
@@ -226,6 +238,13 @@ export class ChatStore {
     }
 
     this.activeChat = uuid;
+    if (
+      this.rootStore.attachmentsStore.filesInfo.get(this.activeChat) ===
+      undefined
+    ) {
+      this.rootStore.attachmentsStore.fetchAttachments(false);
+      this.rootStore.attachmentsStore.fetchAttachments(true);
+    }
   }
 
   @action setRoomHasMore(uuid: string, hasMore: boolean): void {
@@ -250,11 +269,37 @@ export class ChatStore {
 
         return runInAction(() => {
           const key: string = this.roomId(data.chatroomSubscription);
+          const files = [];
+          const images = [];
 
           if (!this.messages.has(key)) {
             this.messages.set(key, []);
           }
+
           this.messages.get(key)!.unshift(data.chatroomSubscription);
+
+          if (data.chatroomSubscription.attachments.length !== 0) {
+            for (const attachment of data.chatroomSubscription.attachments!) {
+              attachment.mimetype.includes("image")
+                ? images.push(attachment)
+                : files.push(attachment);
+            }
+
+            if (files.length !== 0) {
+              if (!this.rootStore.attachmentsStore.files.has(key)) {
+                this.rootStore.attachmentsStore.files.set(key, []);
+              }
+              this.rootStore.attachmentsStore.files.get(key)!.push(...files);
+            }
+
+            if (images.length !== 0) {
+              if (!this.rootStore.attachmentsStore.images.has(key)) {
+                this.rootStore.attachmentsStore.images.set(key, []);
+              }
+
+              this.rootStore.attachmentsStore.images.get(key)!.push(...images);
+            }
+          }
         });
       })
     );

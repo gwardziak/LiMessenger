@@ -1,29 +1,34 @@
-import React, { useState } from "react";
+import { observer } from "mobx-react-lite";
+import React from "react";
 import styled from "styled-components";
+import { useRootStore } from "../stores/RootStore";
 
-export const SharedPhotosMenu = () => {
-  const [toggle, setToggle] = useState<boolean>(false);
+type FileProps = {
+  isOpen: boolean;
+  setIsOpen(val: boolean): void;
+};
+
+export const SharedPhotosMenu = observer(({ isOpen, setIsOpen }: FileProps) => {
+  const rootStore = useRootStore();
 
   return (
-    <Container isToggle={toggle}>
-      <Header isToggle={toggle} onClick={() => setToggle(!toggle)}>
+    <Container isToggle={isOpen}>
+      <Header isToggle={isOpen} onClick={() => setIsOpen(!isOpen)}>
         <HeaderText>Udostępnione zdjęcia</HeaderText>
-        <HeaderIcon isToggle={toggle} />
+        <HeaderIcon isToggle={isOpen} />
       </Header>
-
-      {toggle && (
+      {isOpen && (
         <Photos>
-          <Photo>a</Photo>
-          <Photo>a</Photo>
-          <Photo>a</Photo>
-          <Photo>a</Photo>
-          <Photo>a</Photo>
-          <Photo>a</Photo>
+          {rootStore.attachmentsStore.imageAttachments.map((image) => (
+            <PhotoContainer key={image.uuid}>
+              <Photo src={`http://localhost:4000/${image.link}`} />
+            </PhotoContainer>
+          ))}
         </Photos>
       )}
     </Container>
   );
-};
+});
 
 const Container = styled.div<{ isToggle: boolean }>`
   grid-area: sharedPhotosMenu;
@@ -32,7 +37,7 @@ const Container = styled.div<{ isToggle: boolean }>`
   grid-template-columns: 1fr;
   border-top: 1px solid rgba(0, 0, 0, 0.1);
   width: 100%;
-  cursor: pointer;
+
   margin-bottom: ${(props) => (props.isToggle ? "16px" : "0")};
 `;
 
@@ -41,7 +46,7 @@ const Header = styled.div<{ isToggle: boolean }>`
   grid-template-rows: 20px;
   grid-template-columns: 1fr 20px;
   padding: 14px;
-
+  cursor: pointer;
   &:hover {
     background-color: rgba(0, 0, 0, 0.05);
   }
@@ -66,18 +71,37 @@ const HeaderIcon = styled.div<{ isToggle: boolean }>`
 const Photos = styled.div`
   display: grid;
   grid-template-rows: 1fr;
-  grid-template-columns: auto auto auto;
+  grid-template-columns: 1fr 1fr 1fr;
   padding: 0 12px;
-  align-items: center;
-  grid-gap: 3px 3px;
+  grid-gap: 4px 4px;
+  box-sizing: border-box;
 `;
 
-const Photo = styled.div`
-  background-color: red;
+const PhotoContainer = styled.div`
+  display: block;
+  padding-top: 100%;
+  cursor: pointer;
+  position: relative;
+  width: 100%;
 
-  &:before {
-    content: "";
-    float: left;
-    padding-top: 100%;
+  &:hover {
+    background-color: rgba(0, 0, 0);
+    opacity: 0.95;
+  }
+`;
+
+const Photo = styled.img`
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+
+  &:hover {
+    opacity: 0.95;
   }
 `;

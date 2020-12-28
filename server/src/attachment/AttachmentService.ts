@@ -11,6 +11,12 @@ export namespace AttachmentService {
     mimetype: string;
     encoding: string;
   };
+  export type PaginateAttachments = {
+    friendUuid: string;
+    limit: number;
+    cursor?: string | null;
+    isImage: boolean;
+  };
 }
 
 @Service()
@@ -48,6 +54,69 @@ export class AttachmentService {
         // return resolve(Buffer.from(data, "binary"));
       });
     });
+  }
+
+  async getAll(
+    me: User,
+    options: AttachmentService.PaginateAttachments
+  ): Promise<{
+    attachments: Attachment[];
+    hasMore: boolean;
+  }> {
+    const realLimit = Math.min(50, options.limit);
+    const realLimitPlusOne = realLimit + 1;
+
+    let has = "LIKE";
+    if (!options.isImage) {
+      has = "NOT LIKE";
+    }
+
+    const qb = this.attachmentRepository
+      .createQueryBuilder("attachments")
+      .leftJoinAndSelect("attachments.participantA", "participantA")
+      .leftJoinAndSelect("attachments.participantB", "participantB")
+      .orderBy("attachments.createdAt", "DESC")
+      .take(realLimitPlusOne);
+
+    if (options.cursor) {
+      qb.where(
+        `
+          (
+            (participantA.uuid = :recipientUuid AND participantB.id = :senderId)
+            OR
+            (participantA.id = :senderId AND participantB.uuid = :recipientUuid)
+          )
+          AND
+          (DATETIME(attachments.createdAt) < DATETIME(:cursor) AND attachments.mimetype ${has} "%image%")
+        `,
+        {
+          senderId: me.id,
+          recipientUuid: options.friendUuid,
+          cursor: options.cursor,
+        }
+      );
+    } else {
+      qb.where(
+        `
+          (
+            (participantA.uuid = :recipientUuid AND participantB.id = :senderId)
+            OR
+            (participantA.id = :senderId AND participantB.uuid = :recipientUuid)
+          ) AND attachments.mimetype ${has} "%image%"
+        `,
+        {
+          senderId: me.id,
+          recipientUuid: options.friendUuid,
+        }
+      );
+    }
+
+    const attachments = await qb.getMany();
+
+    return {
+      attachments: attachments.slice(0, realLimit),
+      hasMore: attachments.length === realLimitPlusOne,
+    };
   }
 
   async upload(

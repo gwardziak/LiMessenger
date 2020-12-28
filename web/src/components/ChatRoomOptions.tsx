@@ -1,5 +1,8 @@
-import React from "react";
+import { observer } from "mobx-react-lite";
+import React, { useRef, useState } from "react";
+import Scrollbar from "react-scrollbars-custom";
 import styled from "styled-components";
+import { useRootStore } from "../stores/RootStore";
 import { Avatar as DefaultAvatar } from "../ui/Avatar";
 import { MyScrollbar } from "../utils/Scrollbar";
 import { PrivacyMenu } from "./PrivacyMenu";
@@ -7,21 +10,65 @@ import { SettingsMenu } from "./SettingsMenu";
 import { SharedFilesMenu } from "./SharedFilesMenu";
 import { SharedPhotosMenu } from "./SharedPhotosMenu";
 
-export const ChatRoomOptions = () => {
+export const ChatRoomOptions = observer(() => {
+  const rootStore = useRootStore();
+  const scrollbarRef = useRef<Scrollbar>(null);
+  const [isFetching, setIsFetching] = useState<boolean>(false);
+  const [isOpen, setIsOpen] = useState<boolean>(false);
+  const activeChat = rootStore.chatStore.activeChat!;
+
+  const handleLoadMore = async () => {
+    const scroll = scrollbarRef.current;
+    const roomId = rootStore.chatStore.activeChat;
+    const room = rootStore.attachmentsStore.imagesInfo.get(roomId ?? "");
+
+    if (!scroll || !room) {
+      return;
+    }
+
+    const { scrollTop, scrollHeight, clientHeight } = scroll;
+
+    if (
+      isOpen &&
+      scrollTop / (scrollHeight - clientHeight) > 1 &&
+      !isFetching &&
+      room.hasMore
+    ) {
+      console.log("Fetching new images");
+      try {
+        setIsFetching(true);
+        await rootStore.attachmentsStore.fetchAttachments(true);
+        setIsFetching(false);
+        console.log("Done fetching");
+      } catch (ex) {
+        console.log("Error during fetching messages", ex.message);
+      }
+    }
+  };
+
   return (
-    <StyledScrollbar autoHide noScrollX>
+    <StyledScrollbar
+      autoHide
+      noScrollX
+      elementRef={scrollbarRef}
+      onUpdate={(e: React.ChangeEvent<HTMLInputElement>) => handleLoadMore()}
+    >
       <Container>
         <Avatar src="https://scontent-frt3-1.xx.fbcdn.net/v/t1.30497-1/c29.0.100.100a/p100x100/84241059_189132118950875_4138507100605120512_n.jpg?_nc_cat=1&_nc_sid=7206a8&_nc_ohc=zLcWETlL6TIAX95SnPH&_nc_ht=scontent-frt3-1.xx&_nc_tp=27&oh=062a10092c5cb258d651a46799cf7c89&oe=5FA0C29E" />
-        <Username>Tomasz </Username>
+        <Username>{rootStore.chatStore.recipientName}</Username>
         <Activity>Aktywny(a) 1 godz. temu</Activity>
         <SettingsMenu />
         <PrivacyMenu />
-        <SharedFilesMenu />
-        <SharedPhotosMenu />
+        {rootStore.attachmentsStore.files.get(activeChat)?.length! > 0 && (
+          <SharedFilesMenu />
+        )}
+        {rootStore.attachmentsStore.images.get(activeChat)?.length! > 0 && (
+          <SharedPhotosMenu setIsOpen={setIsOpen} isOpen={isOpen} />
+        )}
       </Container>
     </StyledScrollbar>
   );
-};
+});
 
 const Container = styled.div`
   grid-area: chatRoomOptions;

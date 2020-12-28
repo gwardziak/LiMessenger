@@ -1,7 +1,7 @@
 import { Field, InputType, Int } from "type-graphql";
 
-export namespace IMessagesInput {
-  export type MessagesOptions = {
+export namespace IAttachmentPaginationInput {
+  export type FilesOptions = {
     friendUuid: string;
     limit: number;
     cursor?: string | null;
@@ -9,7 +9,8 @@ export namespace IMessagesInput {
 }
 
 @InputType()
-export class MessagesInput implements IMessagesInput.MessagesOptions {
+export class AttachmentPaginationInput
+  implements IAttachmentPaginationInput.FilesOptions {
   @Field()
   public readonly friendUuid!: string;
 
@@ -18,4 +19,7 @@ export class MessagesInput implements IMessagesInput.MessagesOptions {
 
   @Field(() => String, { nullable: true })
   public readonly cursor!: string | null;
+
+  @Field()
+  public readonly isImage!: boolean;
 }

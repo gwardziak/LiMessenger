@@ -4,14 +4,15 @@ import { Attachment } from "../stores/ChatStore";
 
 type ImagesProps = {
   images: Attachment[];
+  elementsInCol?: number;
 };
 
-export const Images = ({ images }: ImagesProps) => {
+export const Images = ({ images, elementsInCol }: ImagesProps) => {
   return (
     <Container imagesCount={images.length}>
       {images.map((image) => (
         <Image
-          imagesCount={images.length}
+          imagesCount={elementsInCol ? elementsInCol : images.length}
           key={image.uuid}
           src={`http://localhost:4000/${image.link}`}
         />

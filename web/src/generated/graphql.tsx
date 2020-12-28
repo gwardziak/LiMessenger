@@ -18,17 +18,47 @@ export type Scalars = {
 
 export type Query = {
   __typename?: 'Query';
+  attachments: PaginatedAttachments;
   messages: PaginatedMessages;
   firstMessages: Array<Message>;
   me?: Maybe<User>;
 };
 
 
-export type QueryMessagesArgs = {
-  options: MessagesInput;
+export type QueryAttachmentsArgs = {
+  options: AttachmentPaginationInput;
 };
 
-export type MessagesInput = {
+
+export type QueryMessagesArgs = {
+  options: MessagePaginationInput;
+};
+
+export type AttachmentPaginationInput = {
+  friendUuid: Scalars['String'];
+  limit: Scalars['Int'];
+  cursor?: Maybe<Scalars['String']>;
+  isImage: Scalars['Boolean'];
+};
+
+export type PaginatedAttachments = {
+  __typename?: 'PaginatedAttachments';
+  attachments: Array<Attachment>;
+  hasMore: Scalars['Boolean'];
+};
+
+export type Attachment = {
+  __typename?: 'Attachment';
+  uuid: Scalars['String'];
+  name: Scalars['String'];
+  mimetype: Scalars['String'];
+  createdAt: Scalars['DateTime'];
+  updatedAt: Scalars['DateTime'];
+  link: Scalars['String'];
+};
+
+
+export type MessagePaginationInput = {
   friendUuid: Scalars['String'];
   limit: Scalars['Int'];
   cursor?: Maybe<Scalars['String']>;
@@ -51,21 +81,10 @@ export type Message = {
   attachments: Array<Attachment>;
 };
 
-
 export type UserMessage = {
   __typename?: 'UserMessage';
   uuid: Scalars['String'];
   username: Scalars['String'];
-};
-
-export type Attachment = {
-  __typename?: 'Attachment';
-  uuid: Scalars['String'];
-  name: Scalars['String'];
-  mimetype: Scalars['String'];
-  createdAt: Scalars['DateTime'];
-  updatedAt: Scalars['DateTime'];
-  link: Scalars['String'];
 };
 
 export type User = {
@@ -143,6 +162,23 @@ export type SignInMutation = (
   & Pick<Mutation, 'signIn'>
 );
 
+export type AttachmentsQueryVariables = Exact<{
+  options: AttachmentPaginationInput;
+}>;
+
+
+export type AttachmentsQuery = (
+  { __typename?: 'Query' }
+  & { attachments: (
+    { __typename?: 'PaginatedAttachments' }
+    & Pick<PaginatedAttachments, 'hasMore'>
+    & { attachments: Array<(
+      { __typename?: 'Attachment' }
+      & Pick<Attachment, 'uuid' | 'name' | 'mimetype' | 'link' | 'createdAt'>
+    )> }
+  ) }
+);
+
 export type FirstMessagesQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -159,7 +195,7 @@ export type FirstMessagesQuery = (
       & Pick<UserMessage, 'uuid' | 'username'>
     ), attachments: Array<(
       { __typename?: 'Attachment' }
-      & Pick<Attachment, 'uuid' | 'name' | 'mimetype' | 'link'>
+      & Pick<Attachment, 'uuid' | 'name' | 'mimetype' | 'link' | 'createdAt'>
     )> }
   )> }
 );
@@ -176,7 +212,7 @@ export type MeQuery = (
 );
 
 export type MessagesQueryVariables = Exact<{
-  options: MessagesInput;
+  options: MessagePaginationInput;
 }>;
 
 
@@ -196,7 +232,7 @@ export type MessagesQuery = (
         & Pick<UserMessage, 'uuid' | 'username'>
       ), attachments: Array<(
         { __typename?: 'Attachment' }
-        & Pick<Attachment, 'uuid' | 'name' | 'mimetype' | 'link'>
+        & Pick<Attachment, 'uuid' | 'name' | 'mimetype' | 'link' | 'createdAt'>
       )> }
     )> }
   ) }
@@ -218,7 +254,7 @@ export type ChatroomSubscription = (
       & Pick<UserMessage, 'uuid' | 'username'>
     ), attachments: Array<(
       { __typename?: 'Attachment' }
-      & Pick<Attachment, 'uuid' | 'name' | 'mimetype' | 'link'>
+      & Pick<Attachment, 'uuid' | 'name' | 'mimetype' | 'link' | 'createdAt'>
     )> }
   ) }
 );
@@ -242,6 +278,24 @@ export const SignInDocument = gql`
 export function useSignInMutation() {
   return Urql.useMutation<SignInMutation, SignInMutationVariables>(SignInDocument);
 };
+export const AttachmentsDocument = gql`
+    query Attachments($options: AttachmentPaginationInput!) {
+  attachments(options: $options) {
+    hasMore
+    attachments {
+      uuid
+      name
+      mimetype
+      link
+      createdAt
+    }
+  }
+}
+    `;
+
+export function useAttachmentsQuery(options: Omit<Urql.UseQueryArgs<AttachmentsQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<AttachmentsQuery>({ query: AttachmentsDocument, ...options });
+};
 export const FirstMessagesDocument = gql`
     query FirstMessages {
   firstMessages {
@@ -261,6 +315,7 @@ export const FirstMessagesDocument = gql`
       name
       mimetype
       link
+      createdAt
     }
   }
 }
@@ -285,7 +340,7 @@ export function useMeQuery(options: Omit<Urql.UseQueryArgs<MeQueryVariables>, 'q
   return Urql.useQuery<MeQuery>({ query: MeDocument, ...options });
 };
 export const MessagesDocument = gql`
-    query Messages($options: MessagesInput!) {
+    query Messages($options: MessagePaginationInput!) {
   messages(options: $options) {
     hasMore
     messages {
@@ -305,6 +360,7 @@ export const MessagesDocument = gql`
         name
         mimetype
         link
+        createdAt
       }
     }
   }
@@ -334,6 +390,7 @@ export const ChatroomDocument = gql`
       name
       mimetype
       link
+      createdAt
     }
   }
 }

@@ -5,6 +5,8 @@ import styled, { css } from "styled-components";
 import { useRootStore } from "../stores/RootStore";
 import { Avatar as DefaultAvatar } from "../ui/Avatar";
 import { MyScrollbar } from "../utils/Scrollbar";
+import { Files } from "./Files";
+import { Images } from "./Images";
 
 type ChatRoomProps = {
   isScrolled: boolean;
@@ -20,6 +22,7 @@ export const ChatRoom = observer(
     useLayoutEffect(() => {
       if (rootStore.chatStore.prevChatScrollHeight === 0) {
         scrollbarRef.current?.scrollToBottom();
+        // console.log(scrollbarRef.current, "before load");
       }
     });
 
@@ -28,13 +31,17 @@ export const ChatRoom = observer(
     }
 
     const handleScrollUpdate = () => {
-      if (!isScrolled) {
-        scrollbarRef.current?.scrollToBottom();
-        setIsScrolled(true);
-      }
+      console.log(scrollbarRef!.current!.scrollTop, " before");
+      console.log(scrollbarRef!.current!, "WHERE");
+      scrollbarRef.current?.scrollToBottom();
+      console.log(scrollbarRef!.current!.scrollTop, "after");
+      console.log(scrollbarRef!.current!, "WHERE after");
+      setIsScrolled(true);
     };
 
     const handleLoadMore = async () => {
+      //TRIGERS TOO OFTEN I GUESS
+      // console.log(scrollbarRef.current, "Load more");
       const scroll = scrollbarRef.current;
       const roomId = rootStore.chatStore.activeChat;
       const room = rootStore.chatStore.messagesInfo.get(roomId ?? "");
@@ -47,7 +54,11 @@ export const ChatRoom = observer(
         rootStore.chatStore.setPrevChatScrollHeight(scroll.scrollHeight);
       }
 
-      if (scroll.scrollTop === 0 && !isFetching && room.hasMore) {
+      if (
+        scroll.scrollHeight - scroll.clientHeight === scroll.scrollTop &&
+        !isFetching &&
+        room.hasMore
+      ) {
         try {
           setIsFetching(true);
           await rootStore.chatStore.fetchChatMessages();
@@ -102,11 +113,11 @@ export const ChatRoom = observer(
                             {message.text}
                           </Message>
                         )}
-                        {/* {files.length !== 0 && (
+                        {files.length !== 0 && (
                           <Files files={files} sender={sender} />
-                        )} */}
+                        )}
 
-                        {/* {images.length !== 0 && <Images images={images} />} */}
+                        {images.length !== 0 && <Images images={images} />}
                       </React.Fragment>
                     );
                   })}

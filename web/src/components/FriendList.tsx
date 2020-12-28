@@ -32,6 +32,7 @@ export const FriendList = observer(() => {
                     try {
                       rootStore.chatStore.setPrevChatScrollHeight(0);
                       rootStore.chatStore.setChatroom(friendUuid);
+                      console.log("Change room");
                     } catch (ex) {
                       console.log("Error during selecting a chat", ex.message);
                     }

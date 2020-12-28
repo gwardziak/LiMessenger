@@ -17,6 +17,7 @@ subscription Chatroom {
       name
       mimetype
       link
+      createdAt
     }
   }
 }

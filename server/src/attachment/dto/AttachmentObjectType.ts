@@ -1,13 +1,17 @@
 import { Field, ObjectType } from "type-graphql";
+import { Attachment } from "../../db/entities/Attachment";
 
 namespace AttachmentObjectType {
   export type Options = {
     uuid: string;
     name: string;
     mimetype: string;
-
     createdAt: Date;
     updatedAt: Date;
+  };
+  export type Pagination = {
+    attachments: Attachment[];
+    hasMore: boolean;
   };
 }
 
@@ -27,4 +31,14 @@ export class AttachmentObjectType implements AttachmentObjectType.Options {
 
   @Field((type) => Date)
   updatedAt!: Date;
+}
+
+@ObjectType("PaginatedAttachments")
+export class PaginatedAttachmentObjectType
+  implements AttachmentObjectType.Pagination {
+  @Field(() => [AttachmentObjectType])
+  attachments!: Attachment[];
+
+  @Field()
+  hasMore!: boolean;
 }

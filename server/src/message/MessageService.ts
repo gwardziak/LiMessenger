@@ -14,7 +14,7 @@ export namespace MessageService {
     recipientUuid: string;
     text: string;
   };
-  export type FetchMessages = {
+  export type PaginateMessages = {
     friendUuid: string;
     limit: number;
     cursor?: string | null;
@@ -39,31 +39,82 @@ export class MessageService {
 
   async getAll(
     me: User,
-    options: MessageService.FetchMessages
+    options: MessageService.PaginateMessages
   ): Promise<{
     messages: Message[];
     hasMore: boolean;
   }> {
     const realLimit = Math.min(50, options.limit);
     const realLimitPlusOne = realLimit + 1;
+    // OR
+    //
+
+    //   const qb = this.messageRepository
+    //   .createQueryBuilder("messages")
+    //   .leftJoinAndSelect("messages.sender", "sender")
+    //   .leftJoinAndSelect("messages.recipient", "recipient")
+    //   .where(
+    //     "(sender.uuid = :recipientUuid AND recipient.id = :senderId) OR (sender.id = :senderId AND recipient.uuid = :recipientUuid)AND DATETIME(messages.createdAt) < DATETIME(:cursor)",
+    //     {
+    //       senderId: me.id,
+    //       recipientUuid: options.friendUuid,
+    //       cursor: options.cursor,
+    //     }
+    //   )
+    //   .orWhere(
+    //     "(sender.id = :senderId AND recipient.uuid = :recipientUuid) AND DATETIME(messages.createdAt) < DATETIME(:cursor)",
+    //     {
+    //       senderId: me.id,
+    //       recipientUuid: options.friendUuid,
+    //       cursor: options.cursor,
+    //     }
+    //   )
+    //   .orderBy("messages.createdAt", "DESC")
+    //   .take(realLimitPlusOne);
+    // // if (options.cursor) {
+    // //   qb.andWhere("DATETIME(messages.createdAt) < DATETIME(:cursor)", {
+
+    // //   });
+    // // }
 
     const qb = this.messageRepository
       .createQueryBuilder("messages")
       .leftJoinAndSelect("messages.sender", "sender")
       .leftJoinAndSelect("messages.recipient", "recipient")
-      .where(
-        "sender.uuid = :recipientUuid AND recipient.id = :senderId OR sender.id = :senderId AND recipient.uuid = :recipientUuid",
+      .orderBy("messages.createdAt", "DESC")
+      .take(realLimitPlusOne);
+
+    if (options.cursor) {
+      qb.where(
+        `
+          (
+            (sender.uuid = :recipientUuid AND recipient.id = :senderId) 
+            OR 
+            (sender.id = :senderId AND recipient.uuid = :recipientUuid)
+          ) 
+          AND 
+          DATETIME(messages.createdAt) < DATETIME(:cursor)
+        `,
+        {
+          senderId: me.id,
+          recipientUuid: options.friendUuid,
+          cursor: options.cursor,
+        }
+      );
+    } else {
+      qb.where(
+        `
+          (
+            (sender.uuid = :recipientUuid AND recipient.id = :senderId) 
+            OR 
+            (sender.id = :senderId AND recipient.uuid = :recipientUuid)
+          )
+        `,
         {
           senderId: me.id,
           recipientUuid: options.friendUuid,
         }
-      )
-      .orderBy("messages.createdAt", "DESC")
-      .take(realLimitPlusOne);
-    if (options.cursor) {
-      qb.andWhere("DATETIME(messages.createdAt) < DATETIME(:cursor)", {
-        cursor: options.cursor,
-      });
+      );
     }
 
     const messages = await qb.getMany();
