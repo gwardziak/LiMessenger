@@ -22,6 +22,7 @@ export type Query = {
   messages: PaginatedMessages;
   firstMessages: Array<Message>;
   me?: Maybe<User>;
+  findUser: Array<UserMessage>;
 };
 
 
@@ -32,6 +33,11 @@ export type QueryAttachmentsArgs = {
 
 export type QueryMessagesArgs = {
   options: MessagePaginationInput;
+};
+
+
+export type QueryFindUserArgs = {
+  phase: Scalars['String'];
 };
 
 export type AttachmentPaginationInput = {
@@ -179,6 +185,19 @@ export type AttachmentsQuery = (
   ) }
 );
 
+export type FindUserQueryVariables = Exact<{
+  phase: Scalars['String'];
+}>;
+
+
+export type FindUserQuery = (
+  { __typename?: 'Query' }
+  & { findUser: Array<(
+    { __typename?: 'UserMessage' }
+    & Pick<UserMessage, 'username' | 'uuid'>
+  )> }
+);
+
 export type FirstMessagesQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -295,6 +314,18 @@ export const AttachmentsDocument = gql`
 
 export function useAttachmentsQuery(options: Omit<Urql.UseQueryArgs<AttachmentsQueryVariables>, 'query'> = {}) {
   return Urql.useQuery<AttachmentsQuery>({ query: AttachmentsDocument, ...options });
+};
+export const FindUserDocument = gql`
+    query FindUser($phase: String!) {
+  findUser(phase: $phase) {
+    username
+    uuid
+  }
+}
+    `;
+
+export function useFindUserQuery(options: Omit<Urql.UseQueryArgs<FindUserQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<FindUserQuery>({ query: FindUserDocument, ...options });
 };
 export const FirstMessagesDocument = gql`
     query FirstMessages {

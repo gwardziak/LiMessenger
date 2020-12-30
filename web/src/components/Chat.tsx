@@ -5,7 +5,7 @@ import { ChatRoom } from "./ChatRoom";
 import { SendMessage } from "./SendMessage";
 
 export const Chat = () => {
-  const [isScrolled, setIsScrolled] = useState<boolean>(false);
+  const [isScrolled, setIsScrolled] = useState<boolean>(true);
   const [uploadFiles, setUploadFiles] = useState<File[]>([]);
   const onDrop = useCallback(
     (acceptedFiles: File[]) => {
@@ -44,7 +44,6 @@ const DropMessage = styled.div`
   justify-content: center;
   flex-direction: column;
   text-align: center;
-
   position: absolute;
   height: 100%;
   width: 100%;

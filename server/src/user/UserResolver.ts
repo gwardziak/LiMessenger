@@ -1,5 +1,6 @@
 import { Arg, Authorized, Ctx, Mutation, Query, Resolver } from "type-graphql";
 import { User } from "../db/entities/User";
+import { UserMessageObjectType } from "../message/dto/MessageObjectType";
 import { MyContext } from "./../models/MyContext";
 import { SignInInput } from "./dto/SignInInput";
 import { SignUpInput } from "./dto/SignUpInput";
@@ -14,6 +15,12 @@ export class UserResolver {
   @Query(() => UserObjectType, { nullable: true })
   me(@Ctx() context: MyContext): User | null {
     return this.userService.authorize(context.authUser);
+  }
+
+  @Query(() => [UserMessageObjectType])
+  async findUser(@Arg("phase") phase: string): Promise<User[]> {
+    console.log(phase, "requstedPhase");
+    return await this.userService.findUsers(phase);
   }
 
   @Mutation(() => Boolean)

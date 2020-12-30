@@ -1,0 +1,6 @@
+query FindUser($phase: String!) {
+  findUser(phase: $phase) {
+    username
+    uuid
+  }
+}

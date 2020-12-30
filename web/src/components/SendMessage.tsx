@@ -228,7 +228,6 @@ const Container = styled.div<{ isToggle: boolean }>`
   box-sizing: border-box;
   margin-bottom: 8px;
   position: relative;
-
   @media ${mediaQuery.xs}, ${mediaQuery.sm}, ${mediaQuery.md} {
     grid-template-columns: ${(props) => props.isToggle && "28px 1fr 36px"};
     grid-template-rows: ${(props) => (props.isToggle ? "52px 1fr" : "1fr")};
@@ -241,13 +240,11 @@ const PlusIcon = styled(Plus)<{ isToggle?: boolean }>`
   width: 24px;
   justify-self: center;
   margin-bottom: 6px;
-
   fill: ${(props) =>
     props.isToggle ? "rgba(134, 142, 153, 0.75)" : "rgb(0, 153, 255)"};
   transition: transform 0.22s cubic-bezier(0.5, 0, 0.4, 1);
   transform: ${(props) => props.isToggle && "rotate(45deg)"};
   cursor: pointer;
-
   @media ${mediaQuery.xs}, ${mediaQuery.sm}, ${mediaQuery.md} {
     grid-row: ${(props) => props.isToggle && 2};
   }
@@ -325,9 +322,7 @@ const MessageContainer = styled.div<{ isToggle: boolean; hasFile: boolean }>`
   align-items: flex-end;
   cursor: context-menu;
   font-size: 14px;
-
   grid-template-rows: ${(props) => props.hasFile && "auto 1fr"};
-
   @media ${mediaQuery.xs}, ${mediaQuery.sm}, ${mediaQuery.md} {
     grid-column: ${(props) => (props.isToggle ? "2/3" : "2/6")};
   }
@@ -340,11 +335,9 @@ const Input = styled(ContentEditable)`
   overflow: hidden;
   max-height: 144px;
   overflow-y: auto;
-
   :empty {
     color: rgba(0, 0, 0, 0.4);
   }
-
   :empty:before {
     cursor: text;
     color: rgba(0, 0, 0, 0.4);
@@ -445,7 +438,6 @@ const CloseFile = styled.div`
   display: grid;
   justify-content: center;
   align-content: center;
-
   :hover {
     background-color: rgb(242, 242, 242);
   }
@@ -473,7 +465,6 @@ const UploadMore = styled.div`
   min-width: 48px;
   margin-bottom: 3px;
   cursor: pointer;
-
   :hover {
     background-color: rgb(205, 207, 211);
   }
@@ -485,7 +476,6 @@ const UploadMoreImg = styled.div`
   align-self: center;
   height: 24px;
   width: 24px;
-
   background-image: url("assets/staticImages2.png");
   background-size: 46px 1934px;
   background-repeat: no-repeat;

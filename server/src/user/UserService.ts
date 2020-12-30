@@ -2,7 +2,7 @@ import { AuthenticationError, UserInputError } from "apollo-server-express";
 import * as bcrypt from "bcrypt";
 import * as crypto from "crypto";
 import { Service } from "typedi";
-import { getRepository } from "typeorm";
+import { getRepository, Like } from "typeorm";
 import { User } from "../db/entities/User";
 import { isDuplicateError } from "../utils/isDuplicateError";
 
@@ -83,5 +83,11 @@ export class UserService {
     }
 */
     return user.authToken;
+  }
+
+  async findUsers(phase: string): Promise<User[]> {
+    return await this.userRepository.find({
+      username: Like(`%${phase}%`),
+    });
   }
 }

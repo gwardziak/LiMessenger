@@ -30,7 +30,7 @@ export const ChatRoomOptions = observer(() => {
 
     if (
       isOpen &&
-      scrollTop / (scrollHeight - clientHeight) > 1 &&
+      scrollTop / (scrollHeight - clientHeight) > 0.95 &&
       !isFetching &&
       room.hasMore
     ) {
@@ -39,7 +39,7 @@ export const ChatRoomOptions = observer(() => {
         setIsFetching(true);
         await rootStore.attachmentsStore.fetchAttachments(true);
         setIsFetching(false);
-        console.log("Done fetching");
+        console.log("Done fetching images");
       } catch (ex) {
         console.log("Error during fetching messages", ex.message);
       }

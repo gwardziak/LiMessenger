@@ -36,7 +36,6 @@ const Container = styled.div<{ imagesCount: number }>`
   display: grid;
   grid-gap: 4px;
   max-width: 75%;
-
   border-radius: ${(props) => (props.imagesCount > 1 ? "4px" : "18px")};
   ${(props) => handleColumnTemplate(props.imagesCount)}
 `;
@@ -58,7 +57,6 @@ const Image = styled.img<{ imagesCount: number }>`
   object-fit: cover;
   border: 1px solid rgba(0, 0, 0, 0.1);
   box-shadow: inset 0 0 1px rgba(0, 0, 0, 0.4);
-
   border-radius: ${(props) => (props.imagesCount > 1 ? "4px" : "18px")};
   width: ${(props) => (props.imagesCount > 1 ? "100%" : "auto")};
   ${(props) => handleImageHeight(props.imagesCount)};
