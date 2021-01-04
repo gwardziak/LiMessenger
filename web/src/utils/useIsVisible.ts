@@ -5,7 +5,14 @@ export const useIsVisible = (initialIsVisible: boolean) => {
   const ref = useRef(null);
   const handlerRef = useRef(null);
 
+  // useKeyPressEvent("Escape", () => {
+  //   setIsVisible(false);
+  //   console.log("click");
+  // });
+
   const handleClickOutside = (event: MouseEvent) => {
+    console.log(ref);
+    console.log("outside click");
     if (
       handlerRef.current &&
       (handlerRef.current! as any).contains(event.target)
@@ -18,12 +25,14 @@ export const useIsVisible = (initialIsVisible: boolean) => {
   };
 
   const handleEscapeKey = (event: KeyboardEvent) => {
+    console.log("KEY CLCIKED");
     if (event.key === "Escape") {
       setIsVisible(false);
     }
   };
 
   useEffect(() => {
+    console.log("Hooks works");
     document.addEventListener("click", handleClickOutside, true);
     document.addEventListener("keyup", handleEscapeKey, true);
     return () => {

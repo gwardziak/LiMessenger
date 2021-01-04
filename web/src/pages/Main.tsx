@@ -3,11 +3,11 @@ import React, { useEffect } from "react";
 import styled from "styled-components";
 import { Chat } from "../components/Chat";
 import { ChatRoomOptions } from "../components/ChatRoomOptions";
-import { FriendList } from "../components/FriendList";
 import { Navbar } from "../components/Navbar";
 import { UserOptions } from "../components/UserOptions";
 import { useRootStore } from "../stores/RootStore";
 import { mediaQuery } from "../utils/css/cssMedia";
+import { FriendList } from "./../components/FriendList";
 
 export const Main = observer(() => {
   const rootStore = useRootStore();

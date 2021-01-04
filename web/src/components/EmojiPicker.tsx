@@ -1,10 +1,19 @@
 import { Picker, PickerProps } from "emoji-mart";
 import React, { forwardRef } from "react";
+import { useKeyPressEvent } from "react-use";
 import styled from "styled-components";
 import { mediaQuery } from "../utils/css/cssMedia";
 
-export const EmojiPicker = forwardRef<HTMLDivElement, PickerProps>(
+type EmojiProps = {
+  setIsVisible(val: boolean): any;
+};
+
+export const EmojiPicker = forwardRef<HTMLDivElement, PickerProps & EmojiProps>(
   (props, ref) => {
+    useKeyPressEvent("Escape", () => {
+      props.setIsVisible(false);
+    });
+
     return (
       <Wrapper ref={ref}>
         <Picker

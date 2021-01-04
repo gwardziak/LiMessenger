@@ -7,28 +7,29 @@ import { User } from "../db/entities/User";
 export class ChatroomService {
   private chatroomRepository = getRepository(Chatroom);
 
-  async createChatroom(
-    participantA: User,
-    participantB: User
-  ): Promise<Chatroom> {
-    if (participantA.id === participantB.id)
+  async createChatroom(userA: User, userB: User): Promise<Chatroom> {
+    if (userA.id === userB.id)
       throw new Error("Unexpected error occured druing creating a chat");
 
     const room = new Chatroom({
-      participantA,
-      participantB,
+      participantA: userA,
+      participantB: userB,
     });
 
-    await this.chatroomRepository.insert(room);
+    const {
+      identifiers: [participantA, participantB],
+    } = await this.chatroomRepository.insert(room);
 
     const chatroom = await this.chatroomRepository
       .createQueryBuilder("chatroom")
       .leftJoinAndSelect("chatroom.participantA", "participantA")
       .leftJoinAndSelect("chatroom.participantB", "participantB")
       .where(
-        `(participantA.id = :participantAId AND participantB.id = :participantBId) OR  
-        (participantA.id = :participantBId AND participantB.id = :participantBId)`,
-        { participantAId: participantA.id, participantBId: participantB.id }
+        `participantA.id = :participantAId AND participantB.id = :participantBId`,
+        {
+          participantAId: participantA.id,
+          participantBId: participantB.id,
+        }
       )
       .getOne();
 

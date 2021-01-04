@@ -67,6 +67,8 @@ export class ChatStore {
 
   @observable activeChat: string | null = null;
 
+  @observable friendName: string | null = null;
+
   @observable prevChatScrollHeight: number = 0;
 
   constructor(private readonly rootStore: RootStore) {
@@ -82,6 +84,10 @@ export class ChatStore {
       this.messages.set(key, []);
     }
     this.messages.get(key)!.push(data);
+  }
+
+  @action setFriendName(name: string): void {
+    this.friendName = name;
   }
 
   private sortMessages(messages: Message[]): Message[] {
@@ -104,11 +110,15 @@ export class ChatStore {
       return "";
     }
 
-    const message = this.messages.get(this.activeChat)![0];
+    const messages = this.messages.get(this.activeChat);
+    if (messages) {
+      const message = messages[0];
+      return message.recipient.username === this.rootStore.userStore.username
+        ? message.sender.username
+        : message.recipient.username;
+    }
 
-    return message.recipient.username === this.rootStore.userStore.username
-      ? message.sender.username
-      : message.recipient.username;
+    return this.friendName!;
   }
 
   @computed get firstMessages(): Message[] {

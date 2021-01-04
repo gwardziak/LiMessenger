@@ -1,43 +1,24 @@
-import React, { useState } from "react";
+import { OperationContext } from "@urql/core";
+import React from "react";
 import styled from "styled-components";
-import { useFindUserQuery } from "../generated/graphql";
 
-export const SearchBar = () => {
-  const [input, setInput] = useState<string>("");
+type SearchBarType = {
+  input: string;
+  setInput(val: string): void;
+  isVisible?: boolean;
+  setIsVisible?: (val: boolean) => void;
+  update(opts?: Partial<OperationContext> | undefined): void;
+};
 
-  const [{ fetching, data, error }, update] = useFindUserQuery({
-    pause: true,
-    variables: { phase: input },
-  });
-
-  // // const [{ fetching, data, error }, getUser] = useFindUserQuery({
-  // //   variables: { phase: input },
-  // // });
-
-  if (fetching) {
-    return (
-      <>
-        <div>loading...</div>
-      </>
-    );
-  }
-
-  if (error) {
-    return <div>{error.message}</div>;
-  }
-
-  // if (!data?.findUser) {
-  //   return (
-  //     <>
-  //       <p>could not find post</p>
-  //     </>
-  //   );
-  // }
-
-  console.log(data, "fetched");
-
-  let timer: number;
+export const SearchBar = ({
+  update,
+  input,
+  setInput,
+  isVisible,
+  setIsVisible,
+}: SearchBarType) => {
   const timeout = 1000;
+  let timer: number;
 
   // // when user is pressing down on keys, clear the timeout
   function handleKeyPress() {
@@ -45,79 +26,42 @@ export const SearchBar = () => {
     console.log("typing..");
   }
 
+  function handleKeyDown() {
+    clearTimeout(timer);
+    console.log("Key down");
+  }
+
   // when the user has stopped pressing on keys, set the timeout
   // if the user presses on keys before the timeout is reached, then this timeout is canceled
-  async function handleKeyUp() {
+  function handleKeyUp() {
     clearTimeout(timer); // prevent errant multiple timeouts from being generated
-    timer = setTimeout(async () => {
+    if (input === "") {
+      console.log("when it fires");
+      setIsVisible!(false);
+      return;
+    }
+
+    timer = setTimeout(() => {
       update({ requestPolicy: "network-only" });
-
-      // console.log(data.data);
+      setIsVisible!(true);
       console.log("Sent Req");
-      // console.log(getUser({ pause: false }));
-      // console.log(data?.findUser);
-      // onFetch();
-
-      // console.log(chuj);
-      // onFetch(async (result: any) => {
-      //   console.log(await result);
-      // });
-      // console.log(chuj);
-
-      // const response = await update({
-      //   options: { variables: { phase: input }, pause: false },
-      // });
-
-      // console.log(response());
-      // console.log(data);
-
-      // console.log(chuj);
-      // if (fetching) {
-      //   console.log(fetching, "fetching");
-      //   // return;
-      // }
-
-      // if (error) {
-      //   console.log("Error");
-      //   // return <div>{error.message}</div>;
-      //   // return;
-      // }
-
-      // if (!data?.findUser) {
-      //   console.log("No data");
-      //   // return;
-      //   // return (
-      //   //   <>
-      //   //     <p>could not find post</p>
-      //   //   </>
-      //   // );
-      // }
-      // console.log(await );
-      // console.log(data?.findUser);
-      // const [{ fetching, data, error }, getUser] = useFindUserQuery({
-      //   variables: { phase: input },
-      // });
-
-      // console.log(data);
-      // const response = getUser({
-      //   variables: { phase: input },
-      // });
-      // console.log(response);
     }, timeout);
   }
-  console.log(data);
+
   return (
     <Container>
       <SearchBarInput
         placeholder="Szukaj w Messengerze"
+        name="SearchInput"
         value={input}
         onChange={(e) => {
           setInput(e.target.value);
         }}
         onKeyUp={handleKeyUp}
         onKeyPress={handleKeyPress}
+        onKeyDown={handleKeyDown}
       />
-      <MagnifierImg />
+      <MagnifierImg title="magnifierImg" />
     </Container>
   );
 };

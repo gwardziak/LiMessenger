@@ -1,5 +1,4 @@
-import { observer } from "mobx-react-lite";
-import React, { useRef, useState } from "react";
+import React, { forwardRef, useRef, useState } from "react";
 import { useClickAway } from "react-use";
 import styled from "styled-components";
 import { useFindUserQuery } from "../generated/graphql";
@@ -10,7 +9,7 @@ import { useMatchesMediaQuery } from "../utils/css/useMatchesMediaQuery";
 import { MyScrollbar } from "../utils/Scrollbar";
 import { SearchBar } from "./SearchBar";
 
-export const FriendList = observer(() => {
+export const SearchList = forwardRef<HTMLDivElement, any>((props, ref) => {
   const rootStore = useRootStore();
   const isBg = useMatchesMediaQuery([mediaQuery.bg]);
   const [input, setInput] = useState<string>("");
@@ -160,134 +159,38 @@ const Message = styled.div`
   }
 `;
 
-// import { observer } from "mobx-react-lite";
-// import React, { useState } from "react";
+// import React, { forwardRef } from "react";
 // import styled from "styled-components";
-// import { useFindUserQuery } from "../generated/graphql";
 // import { useRootStore } from "../stores/RootStore";
 // import { Avatar as DefaultAvatar } from "../ui/Avatar";
 // import { mediaQuery } from "../utils/css/cssMedia";
-// import { useMatchesMediaQuery } from "../utils/css/useMatchesMediaQuery";
-// import { formatDate } from "../utils/formatDate";
-// import { MyScrollbar } from "../utils/Scrollbar";
-// import { useIsVisible } from "../utils/useIsVisible";
-// import { SearchBar } from "./SearchBar";
 
-// export const FriendList = observer(() => {
-//   const isBg = useMatchesMediaQuery([mediaQuery.bg]);
+// export const SearchList = forwardRef<HTMLDivElement, any>((props, ref) => {
 //   const rootStore = useRootStore();
-//   const [input, setInput] = useState<string>("");
-//   const { ref, isVisible, setIsVisible } = useIsVisible(false);
-//   const [{ fetching, data, error }, update] = useFindUserQuery({
-//     variables: { phase: input },
-//     pause: true,
-//   });
-
-//   if (error) {
-//     return <div>Error during searchring for new friends</div>;
-//   }
-
-//   if (data?.findUser.length === 0) {
-//     return <div>No users matching search criteria</div>;
-//   }
-
+//   console.log(ref);
 //   return (
-//     <MyScrollbar autoHide noScrollX>
-//       <Container>
-//         {isBg && (
-//           <SearchBar
-//             update={update}
-//             input={input}
-//             setInput={setInput}
-//             setIsVisible={setIsVisible}
-//             isVisible={isVisible}
-//           />
-//         )}
-
-//         {/* TODO
-//         {data?.findUser.length === 0 && (
-//           <div>No users matching search criteria</div>
-//         )} */}
-
-//         {isVisible ? (
-//           <List ref={ref}>
-//             {data?.findUser.map((user) => (
-//               <Item
-//                 key={user.uuid}
-//                 isSearch={true}
-//                 onClick={() => {
-//                   rootStore.chatStore.setChatroom(user.uuid);
-//                   rootStore.chatStore.setFriendName(user.username);
-//                 }}
-//               >
-//                 <Avatar
-//                   isSearch={true}
-//                   src="https://scontent-frt3-1.xx.fbcdn.net/v/t1.30497-1/cp0/c18.0.60.60a/p60x60/84241059_189132118950875_4138507100605120512_n.jpg?_nc_cat=1&ccb=2&_nc_sid=dbb9e7&_nc_ohc=MptErBC1D4UAX850YxA&_nc_ht=scontent-frt3-1.xx&tp=27&oh=bf4dda367f66a8ea248e026dc05c4c9d&oe=5FDE9C73"
-//                 ></Avatar>
-//                 <Username isSearch={true}>{user.username}</Username>
-//               </Item>
-//             ))}
-//           </List>
-//         ) : (
-//           <List>
-//             {rootStore.chatStore.firstMessages.map((message) => {
-//               const friendUuid =
-//                 rootStore.userStore.uuid === message.sender.uuid
-//                   ? message.recipient.uuid
-//                   : message.sender.uuid;
-//               return (
-//                 <Item
-//                   isActive={rootStore.chatStore.activeChat === friendUuid}
-//                   key={friendUuid}
-//                   onClick={(e) => {
-//                     if (rootStore.chatStore.activeChat !== friendUuid) {
-//                       try {
-//                         rootStore.chatStore.setPrevChatScrollHeight(0);
-//                         rootStore.chatStore.setChatroom(friendUuid);
-//                         console.log("Change room");
-//                       } catch (ex) {
-//                         console.log(
-//                           "Error during selecting a chat",
-//                           ex.message
-//                         );
-//                       }
-//                     }
-//                   }}
-//                 >
-//                   <Avatar src="https://scontent-frt3-1.xx.fbcdn.net/v/t1.30497-1/cp0/c18.0.60.60a/p60x60/84241059_189132118950875_4138507100605120512_n.jpg?_nc_cat=1&ccb=2&_nc_sid=dbb9e7&_nc_ohc=MptErBC1D4UAX850YxA&_nc_ht=scontent-frt3-1.xx&tp=27&oh=bf4dda367f66a8ea248e026dc05c4c9d&oe=5FDE9C73"></Avatar>
-//                   <Username>
-//                     {rootStore.userStore.uuid === message.sender.uuid
-//                       ? message.recipient.username
-//                       : message.sender.username}
-//                   </Username>
-//                   <Message>
-//                     {rootStore.userStore.uuid === message.sender.uuid
-//                       ? "You: "
-//                       : `${message.sender.username}: `}
-//                     {message.text}
-//                     {` · ${formatDate(message.createdAt)}`}
-//                   </Message>
-//                 </Item>
-//               );
-//             })}
-//           </List>
-//         )}
-//       </Container>
-//     </MyScrollbar>
+//     <Container>
+//       {props.data?.findUser.map((user: any) => (
+//         <Item
+//           key={user.uuid}
+//           isSearch={true}
+//           onClick={() => {
+//             rootStore.chatStore.setChatroom(user.uuid);
+//             rootStore.chatStore.setFriendName(user.username);
+//           }}
+//         >
+//           <Avatar
+//             isSearch={true}
+//             src="https://scontent-frt3-1.xx.fbcdn.net/v/t1.30497-1/cp0/c18.0.60.60a/p60x60/84241059_189132118950875_4138507100605120512_n.jpg?_nc_cat=1&ccb=2&_nc_sid=dbb9e7&_nc_ohc=MptErBC1D4UAX850YxA&_nc_ht=scontent-frt3-1.xx&tp=27&oh=bf4dda367f66a8ea248e026dc05c4c9d&oe=5FDE9C73"
+//           ></Avatar>
+//           <Username isSearch={true}>{user.username}</Username>
+//         </Item>
+//       ))}
+//     </Container>
 //   );
 // });
 
-// const Container = styled.div`
-//   grid-area: friendList;
-//   display: grid;
-//   grid-template-rows: 36px 1fr;
-//   grid-row-gap: 16px;
-//   @media ${mediaQuery.xs}, ${mediaQuery.sm}, ${mediaQuery.md} {
-//     grid-template-rows: 64px;
-//   }
-// `;
-
-// const List = styled.ul`
+// const Container = styled.ul`
 //   display: grid;
 //   list-style-type: none;
 //   margin: 0 8px;

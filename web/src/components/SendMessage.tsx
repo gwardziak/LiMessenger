@@ -2,8 +2,8 @@ import { BaseEmoji, EmojiData, emojiIndex } from "emoji-mart";
 import "emoji-mart/css/emoji-mart.css";
 import { observer } from "mobx-react-lite";
 import React, { useRef, useState } from "react";
+import { useClickAway } from "react-use";
 import styled from "styled-components";
-// import { useUploadAttachmentMutation } from "../generated/graphql";
 import { Attachment } from "../Icons/Attachment";
 import { Camera } from "../Icons/Camera";
 import { EmojiFolder } from "../Icons/EmojiFolder";
@@ -17,7 +17,6 @@ import { useRootStore } from "../stores/RootStore";
 import { mediaQuery } from "../utils/css/cssMedia";
 import { useMatchesMediaQuery } from "../utils/css/useMatchesMediaQuery";
 import { ContentEditable } from "../utils/ReactContentEditable";
-import { useIsVisible } from "../utils/useIsVisible";
 import { EmojiPicker } from "./EmojiPicker";
 
 type SendMessageProps = {
@@ -36,12 +35,23 @@ export const SendMessage = observer(
     ]);
     const defaultInput = "Wpisz wiadomość...";
     const [toggle, setToggle] = useState<boolean>(false);
+    const [isEmojiPickerVisible, setIsEmojiPickerVisible] = useState<boolean>(
+      false
+    );
     const [input, setInput] = useState<string>("");
-    const { ref, isVisible, setIsVisible, handlerRef } = useIsVisible(false);
+    const emojiRef = useRef(null);
     const inputRef = useRef<HTMLElement>(null);
     const [emojiStartPosition, setEmojiStartPosition] = useState<number>(-1);
     const emojiStartingChars: string[] = [":", ";", "="];
     const uploadFilesRef = useRef<HTMLInputElement>(null);
+
+    useClickAway(emojiRef, (e: any) => {
+      if (e.srcElement.parentElement.attributes.name?.value === "SmileIcon") {
+        return;
+      }
+
+      setIsEmojiPickerVisible(false);
+    });
 
     const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
       const { files } = event.target;
@@ -192,17 +202,19 @@ export const SendMessage = observer(
           />
 
           <SmileIcon
-            ref={handlerRef}
+            // ref={handlerRef}
+            name="SmileIcon"
             viewBox="0 0 26 26"
-            onClick={() => setIsVisible(!isVisible)}
+            onClick={() => setIsEmojiPickerVisible(!isEmojiPickerVisible)}
           />
-          {isVisible && (
+          {isEmojiPickerVisible && (
             <EmojiPicker
               native={true}
-              ref={ref}
+              ref={emojiRef}
+              setIsVisible={setIsEmojiPickerVisible}
               onSelect={(emoji: BaseEmoji) => {
                 setInput(input + emoji.native);
-                setIsVisible(false);
+                setIsEmojiPickerVisible(false);
                 inputRef.current && inputRef.current.focus();
               }}
             />
@@ -351,7 +363,7 @@ const SmileIcon = styled(Smile)`
   width: 24px;
   fill: #0099ff;
   cursor: pointer;
-  padding-bottom: 7px;
+  margin-bottom: 7px;
 `;
 
 const MobileIconsContainer = styled.div`
