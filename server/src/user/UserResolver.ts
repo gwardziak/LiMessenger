@@ -1,4 +1,4 @@
-import { Arg, Authorized, Ctx, Mutation, Query, Resolver } from "type-graphql";
+import { Arg, Ctx, Mutation, Query, Resolver } from "type-graphql";
 import { User } from "../db/entities/User";
 import { UserMessageObjectType } from "../message/dto/MessageObjectType";
 import { MyContext } from "./../models/MyContext";
@@ -11,15 +11,24 @@ import { UserService } from "./UserService";
 export class UserResolver {
   private constructor(private readonly userService: UserService) {}
 
-  @Authorized()
+  // // @Authorized()
+  // @Query(() => UserObjectType, { nullable: true })
+  // async me(@Ctx() context: MyContext): Promise<User | null> {
+  //   const res = await this.userService.authorize(context.authUser);
+  //   console.log(res)
+  //   return res
+  // }
+
+  // // @Authorized()
   @Query(() => UserObjectType, { nullable: true })
   me(@Ctx() context: MyContext): User | null {
-    return this.userService.authorize(context.authUser);
+    const res = this.userService.authorize(context.authUser);
+    console.log(res);
+    return res;
   }
 
   @Query(() => [UserMessageObjectType])
   async findUser(@Arg("phase") phase: string): Promise<User[]> {
-    console.log(phase, "phase");
     return await this.userService.findUsers(phase);
   }
 
@@ -36,7 +45,6 @@ export class UserResolver {
     @Ctx() context: MyContext
   ): Promise<boolean> {
     const token = await this.userService.login(options);
-
     context.res.cookie("token", token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",

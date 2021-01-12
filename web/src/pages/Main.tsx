@@ -3,17 +3,19 @@ import React, { useEffect } from "react";
 import styled from "styled-components";
 import { Chat } from "../components/Chat";
 import { ChatRoomOptions } from "../components/ChatRoomOptions";
+import { LeftPanel } from "../components/LeftPanel";
 import { Navbar } from "../components/Navbar";
 import { UserOptions } from "../components/UserOptions";
 import { useRootStore } from "../stores/RootStore";
 import { mediaQuery } from "../utils/css/cssMedia";
-import { FriendList } from "./../components/FriendList";
 
 export const Main = observer(() => {
   const rootStore = useRootStore();
 
   useEffect(() => {
-    rootStore.userStore.fetchUser();
+    console.log("Welcome to the chat app");
+
+    rootStore.userStore.fetchMe();
     rootStore.chatStore.subscribeAndFetch();
   }, [rootStore]);
 
@@ -21,7 +23,7 @@ export const Main = observer(() => {
     <Container>
       <Navbar />
       <UserOptions />
-      <FriendList />
+      <LeftPanel />
       <Chat />
       <ChatRoomOptions />
     </Container>
@@ -36,7 +38,7 @@ const Container = styled.div`
 
   grid-template-areas:
     "userOptions nav nav"
-    "friendList chat chatRoomOptions";
+    "leftPanel chat chatRoomOptions";
 
   @media ${mediaQuery.md} {
     grid-template-columns: 80px 2fr 1fr;

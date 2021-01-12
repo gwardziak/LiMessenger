@@ -19,8 +19,6 @@ export const ChatRoom = observer(
     const rootStore = useRootStore();
     const scrollbarRef = useRef<Scrollbar>(null);
     const [isFetching, setIsFetching] = useState<boolean>(false);
-    const [updateAa, setUpdate] = useState<boolean>(false);
-    const [mounted, setMounted] = useState<boolean>(false);
 
     // useEffect(() => {
     //   // console.log("scrollToBottom");
@@ -86,42 +84,6 @@ export const ChatRoom = observer(
       return <div>loading...</div>;
     }
 
-    const handleScrollUpdate = () => {
-      scrollbarRef.current?.scrollToBottom();
-      setIsScrolled(true);
-    };
-
-    const handleLoadMore = async () => {
-      //TRIGERS TOO OFTEN I GUESS
-      // console.log("LoadMore");
-      // console.log(scrollbarRef!.current!.scrollTop);
-      // console.log(scrollbarRef.current, "Load more");
-      // const scroll = scrollbarRef.current;
-      // const roomId = rootStore.chatStore.activeChat;
-      // const room = rootStore.chatStore.messagesInfo.get(roomId ?? "");
-      // if (!scroll || !room) {
-      //   return;
-      // }
-      // if (rootStore.chatStore.prevChatScrollHeight !== scroll.scrollHeight) {
-      //   rootStore.chatStore.setPrevChatScrollHeight(scroll.scrollHeight);
-      // }
-      // if (scroll.scrollTop === 0 && !isFetching && room.hasMore) {
-      //   console.log("kurwa");
-      //   try {
-      //     setIsFetching(true);
-      //     await rootStore.chatStore.fetchChatMessages();
-      //     const scrollPosition =
-      //       scroll.scrollHeight -
-      //       rootStore.chatStore.prevChatScrollHeight -
-      //       scroll.scrollTop;
-      //     scroll.scrollTo(0, scrollPosition);
-      //     setIsFetching(false);
-      //     console.log("Done fetching");
-      //   } catch (ex) {
-      //     console.log("Error during fetching messages", ex.message);
-      //   }
-      // }
-    };
     //isScrolled ? handleLoadMore() : handleScrollUpdate(e);
     return (
       <StyledScrollbar
@@ -188,16 +150,6 @@ export const ChatRoom = observer(
           // scrollValues.scrollHeight > prevScrollValues.scrollHeight + 28
           //   ? handleScrollUpdate()
           //   : handleLoadMore();
-        }}
-        onScroll={(
-          e: React.ChangeEvent<HTMLInputElement>,
-          prev: any,
-          next: any
-        ) => {
-          // console.log(e, "actual");
-          // console.log(prev, "prev");
-          // console.log(scrollbarRef.current);
-          // scrollbarRef.current?.scrollToBottom();
         }}
       >
         <Container>

@@ -38,7 +38,8 @@ const subscriptionClient = new SubscriptionClient(
 
 const client = createClient({
   url,
-  requestPolicy: "cache-and-network",
+  requestPolicy: "network-only",
+  // requestPolicy: "cache-and-network",
   fetchOptions: {
     credentials: "include",
     mode: "cors",
@@ -54,7 +55,9 @@ const client = createClient({
   ],
 });
 
-export const StoreContext = createContext<RootStore>(new RootStore(client));
+export const StoreContext = createContext<RootStore>(
+  new RootStore(client, subscriptionClient)
+);
 
 ReactDOM.render(
   <React.StrictMode>

@@ -78,6 +78,7 @@ const main = async () => {
 
     context: async ({ req, res, connection }) => {
       if (connection) return connection.context;
+
       const authUser = await verifyUserToken(req.cookies.token);
       return { req, res, authUser };
     },

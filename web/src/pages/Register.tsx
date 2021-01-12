@@ -31,6 +31,7 @@ export const Register = () => {
   return (
     <>
       <div>
+        {/* <p>{data.me.username}</p> */}
         <p>Register</p>
       </div>
     </>

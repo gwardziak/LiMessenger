@@ -1,4 +1,5 @@
 import React from "react";
+import { SubscriptionClient } from "subscriptions-transport-ws";
 import { Client } from "urql";
 import { StoreContext } from "..";
 import { AttachmentsStore } from "./AttachmentsStore";
@@ -10,7 +11,10 @@ export class RootStore {
   public readonly chatStore: ChatStore;
   public readonly attachmentsStore: AttachmentsStore;
 
-  constructor(public readonly urqlClient: Client) {
+  constructor(
+    public readonly urqlClient: Client,
+    public readonly subscriptionClient: SubscriptionClient
+  ) {
     this.userStore = new UserStore(this);
     this.chatStore = new ChatStore(this);
     this.attachmentsStore = new AttachmentsStore(this);

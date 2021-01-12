@@ -117,7 +117,7 @@ export class ChatStore {
         ? message.sender.username
         : message.recipient.username;
     }
-
+    console.log(this.rootStore.userStore.isAuthenticated, "AUTH STATE");
     return this.friendName!;
   }
 

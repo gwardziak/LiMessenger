@@ -37,7 +37,7 @@ export class UserService {
   }
 
   authorize(user: User | null): User | null {
-    //console.log(user);
+    // console.log(user, "User ja pierdole");
     // you are not logged in
     if (!user) {
       return null;
