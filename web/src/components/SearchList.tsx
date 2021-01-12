@@ -6,6 +6,7 @@ import { FindUserQuery } from "../generated/graphql";
 import { useRootStore } from "../stores/RootStore";
 import { Avatar as DefaultAvatar } from "../ui/Avatar";
 import { mediaQuery } from "../utils/css/cssMedia";
+import { useMatchesMediaQuery } from "../utils/css/useMatchesMediaQuery";
 
 type SearchListProps = {
   setIsVisible(val: boolean): void;
@@ -16,11 +17,15 @@ type SearchListProps = {
 export const SearchList = forwardRef<HTMLUListElement, SearchListProps>(
   ({ setIsVisible, data, error }, ref) => {
     const rootStore = useRootStore();
+    const isBg = useMatchesMediaQuery([mediaQuery.bg]);
 
     useKeyPressEvent("Escape", () => {
       setIsVisible(false);
     });
 
+    if (!isBg) {
+      setIsVisible(false);
+    }
     /* TODO
         {data?.findUser.length === 0 && (
           <div>No users matching search criteria</div>

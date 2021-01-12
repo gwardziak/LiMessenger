@@ -43,35 +43,3 @@ export const MyScrollbar = ({
     </RSC>
   );
 };
-
-// type Autohide = {
-//   autohide: any;
-// };
-
-// export const MyScrollbar = forwardRef<any, ScrollbarProps & Autohide>(
-//   ({
-//     elementRef,
-
-//     children,
-//     ...props
-//   }: ScrollbarProps & Autohide) => {
-//     const [inUse, setInUse] = useState<boolean>();
-//     const style = {
-//       // style: autoHide && { visibility: inUse ? "visible" : "hidden" },
-//     };
-
-//     return (
-//       <RSC
-//         ref={elementRef}
-//         trackXProps={style}
-//         trackYProps={style}
-//         // onMouseEnter={autoHide && (() => setInUse(true))}
-//         // onMouseLeave={autoHide && (() => setInUse(false))}
-
-//         {...props}
-//       >
-//         {children}
-//       </RSC>
-//     );
-//   }
-// );
