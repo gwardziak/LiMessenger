@@ -22,9 +22,7 @@ export class UserResolver {
   // // @Authorized()
   @Query(() => UserObjectType, { nullable: true })
   me(@Ctx() context: MyContext): User | null {
-    const res = this.userService.authorize(context.authUser);
-    console.log(res);
-    return res;
+    return this.userService.authorize(context.authUser);
   }
 
   @Query(() => [UserMessageObjectType])

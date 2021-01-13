@@ -71,17 +71,26 @@ export class UserService {
     });
 
     if (!user) {
-      throw new UserInputError("No user found with this login credentials.");
+      throw new UserInputError(
+        "The login that you've entered doesn't match any account."
+      );
     }
 
-    if (!this.compareHash(loginOptions.password, user.password)) {
+    const isPasswordSimilar = await this.compareHash(
+      loginOptions.password,
+      user.password
+    );
+
+    if (!isPasswordSimilar) {
       throw new AuthenticationError("Invalid password.");
     }
+
     /*
     if (!user.accountVerified) {
       throw new UserInputError("Account not verified.");
     }
 */
+
     return user.authToken;
   }
 

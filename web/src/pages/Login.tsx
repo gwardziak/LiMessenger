@@ -1,24 +1,44 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import { useHistory } from "react-router-dom";
 import styled from "styled-components";
 import { useSignInMutation } from "../generated/graphql";
 import { useRootStore } from "../stores/RootStore";
 import { Link as StyledLink } from "../ui/Link";
+import { graphQLError } from "../utils/graphQLError";
+
 export const Login = () => {
   const rootStore = useRootStore();
+  const history = useHistory();
   const [loginCredential, setLoginCredential] = useState<string>("");
   const [password, setPassword] = useState<string>("");
+  const [loginError, setLoginError] = useState<null | string>(null);
+  const [passwordError, setPasswordError] = useState<null | string>(null);
+  const loginRef = useRef<HTMLInputElement>(null);
+  const passwordRef = useRef<HTMLInputElement>(null);
 
   const [, login] = useSignInMutation();
-  const history = useHistory();
 
   const handleSubmit = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
+
     const response = await login({
       options: { login: loginCredential, password },
     });
 
     if (response.error) {
+      const loginError = graphQLError(response.error, "login");
+      const passwordError = graphQLError(response.error, "password");
+      setLoginError(loginError);
+      setPasswordError(passwordError);
+
+      if (loginError) {
+        loginRef.current!.focus();
+      }
+
+      if (passwordError) {
+        passwordRef.current!.focus();
+      }
+
       console.log(response.error);
     } else {
       console.log("authorizing");
@@ -33,19 +53,23 @@ export const Login = () => {
 
   return (
     <Container>
-      <FormContainer>
+      <FormContainer loginError={!!loginError} passwordError={!!passwordError}>
         <Input
+          ref={loginRef}
+          loginError={!!loginError}
           type="text"
-          placeholder="Email address or login"
+          placeholder="Login"
           onChange={(e) => setLoginCredential(e.target.value)}
         />
-
+        {loginError && <Error>{loginError}</Error>}
         <Input
+          ref={passwordRef}
+          passwordError={!!passwordError}
           type="password"
           placeholder="Password"
           onChange={(e) => setPassword(e.target.value)}
         />
-
+        {passwordError && <Error>{passwordError}</Error>}
         <BlueButton onClick={(e) => handleSubmit(e)}>Log In</BlueButton>
 
         <BlueLinkButton to="/forgot-password">
@@ -66,15 +90,16 @@ export const Login = () => {
 const Container = styled.div`
   display: grid;
   grid-template-columns: minmax(240px, 396px);
-  grid-template-rows: minmax(1fr, 456px);
   align-self: center;
   justify-self: center;
 `;
 
-const FormContainer = styled.form`
+const FormContainer = styled.form<{
+  loginError: boolean;
+  passwordError: boolean;
+}>`
   display: grid;
   grid-template-columns: 1fr;
-  grid-template-rows: 52px 52px 48px 20px 15px 48px;
   grid-row-gap: 12px;
   justify-items: center;
   background-color: #fff;
@@ -82,21 +107,42 @@ const FormContainer = styled.form`
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1), 0 8px 16px rgba(0, 0, 0, 0.1);
   box-sizing: border-box;
   padding: 24px 16px;
+
+  ${({ loginError, passwordError }) => {
+    switch (true) {
+      case loginError:
+        return `grid-template-rows: 52px auto 52px 48px 20px 15px 48px`;
+      case passwordError:
+        return `grid-template-rows: 52px 52px auto 48px 20px 15px 48px`;
+      default:
+        return `grid-template-rows: 52px 52px  48px 20px 15px 48px`;
+    }
+  }}
 `;
 
-const Input = styled.input`
+const Input = styled.input<{
+  loginError?: boolean;
+  passwordError?: boolean;
+}>`
   width: 100%;
   border-radius: 6px;
   font-size: 17px;
   padding: 14px 16px;
   box-sizing: border-box;
-  border: 1px solid #dddfe2;
+  border: ${(props) =>
+    props.loginError || props.passwordError
+      ? "1px solid #f02849"
+      : "1px solid #dddfe2"};
   color: #1d2129;
 
   &:focus {
     outline: none;
-    border-color: #1877f2;
-    box-shadow: 0 0 0 2px #e7f3ff;
+    border-color: ${(props) =>
+      props.loginError || props.passwordError ? "#f02849" : "#1877f2"};
+    box-shadow: ${(props) =>
+      props.loginError || props.passwordError
+        ? "0 0 0 2px #f8b6c1"
+        : "0 0 0 2px #e7f3ff"};
     caret-color: #1877f2;
   }
 
@@ -167,4 +213,9 @@ const Box = styled.div`
   padding: 6px 0;
   text-align: center;
   margin-top: 20px;
+`;
+
+const Error = styled.div`
+  color: #f02849;
+  font-size: 13px;
 `;
