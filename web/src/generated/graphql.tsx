@@ -107,6 +107,7 @@ export type Mutation = {
   sendMessage: Scalars['Boolean'];
   signUp: Scalars['Boolean'];
   signIn: Scalars['Boolean'];
+  signOut: Scalars['Boolean'];
 };
 
 
@@ -166,6 +167,14 @@ export type SignInMutationVariables = Exact<{
 export type SignInMutation = (
   { __typename?: 'Mutation' }
   & Pick<Mutation, 'signIn'>
+);
+
+export type SignOutMutationVariables = Exact<{ [key: string]: never; }>;
+
+
+export type SignOutMutation = (
+  { __typename?: 'Mutation' }
+  & Pick<Mutation, 'signOut'>
 );
 
 export type AttachmentsQueryVariables = Exact<{
@@ -296,6 +305,15 @@ export const SignInDocument = gql`
 
 export function useSignInMutation() {
   return Urql.useMutation<SignInMutation, SignInMutationVariables>(SignInDocument);
+};
+export const SignOutDocument = gql`
+    mutation SignOut {
+  signOut
+}
+    `;
+
+export function useSignOutMutation() {
+  return Urql.useMutation<SignOutMutation, SignOutMutationVariables>(SignOutDocument);
 };
 export const AttachmentsDocument = gql`
     query Attachments($options: AttachmentPaginationInput!) {

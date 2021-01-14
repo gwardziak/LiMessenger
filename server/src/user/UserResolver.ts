@@ -1,4 +1,4 @@
-import { Arg, Ctx, Mutation, Query, Resolver } from "type-graphql";
+import { Arg, Authorized, Ctx, Mutation, Query, Resolver } from "type-graphql";
 import { User } from "../db/entities/User";
 import { UserMessageObjectType } from "../message/dto/MessageObjectType";
 import { MyContext } from "./../models/MyContext";
@@ -47,6 +47,18 @@ export class UserResolver {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       maxAge: 1000 * 60 * 60 * 24 * 7, // 7 days
+    });
+
+    return true;
+  }
+
+  @Authorized()
+  @Mutation(() => Boolean)
+  async signOut(@Ctx() context: MyContext): Promise<boolean> {
+    context.res.cookie("token", "", {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      expires: new Date("Thu, 01 Jan 1970 00:00:00 GMT"),
     });
 
     return true;

@@ -1,6 +1,8 @@
 import { observer } from "mobx-react-lite";
 import React from "react";
+import { useHistory } from "react-router-dom";
 import styled from "styled-components";
+import { useSignOutMutation } from "../generated/graphql";
 import { Compose } from "../Icons/Compose";
 import { CreateNewRoom } from "../Icons/CreateNewRoom";
 import { Settings } from "../Icons/Settings";
@@ -10,10 +12,22 @@ import { mediaQuery } from "../utils/css/cssMedia";
 
 export const UserOptions = observer(() => {
   const rootStore = useRootStore();
+  const history = useHistory();
+  const [, signOut] = useSignOutMutation();
 
   if (!rootStore.userStore.avatar) {
     return <div>Loading...</div>;
   }
+
+  const logout = async () => {
+    const response = await signOut();
+
+    if (response.error) {
+      console.log(response.error);
+    } else {
+      history.replace("/login");
+    }
+  };
 
   return (
     <Container>
@@ -31,7 +45,13 @@ export const UserOptions = observer(() => {
         />
       </IconContainer>
       <IconMobileAndDesktopContainer>
-        <Compose fill="#000" height="30px" width="30px" viewBox="0 0 36 36" />
+        <Compose
+          fill="#000"
+          height="30px"
+          width="30px"
+          viewBox="0 0 36 36"
+          onClick={() => logout()}
+        />
       </IconMobileAndDesktopContainer>
     </Container>
   );

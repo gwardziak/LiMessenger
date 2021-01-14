@@ -102,7 +102,12 @@ export const SendMessage = observer(
         )}
         {isMobile && toggle && (
           <MobileIconsContainer>
-            <AttachmentIcon viewBox="0 0 36 36" />
+            <AttachmentIcon
+              viewBox="0 0 36 36"
+              onClick={() =>
+                uploadFilesRef.current && uploadFilesRef.current.click()
+              }
+            />
             <EmojiIcon viewBox="0 0 36 36" />
             <GifIcon viewBox="0 0 36 36" />
             <MicrophoneIcon viewBox="0 0 36 36" />
