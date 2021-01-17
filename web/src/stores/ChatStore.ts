@@ -117,7 +117,7 @@ export class ChatStore {
         ? message.sender.username
         : message.recipient.username;
     }
-    console.log(this.rootStore.userStore.isAuthenticated, "AUTH STATE");
+
     return this.friendName!;
   }
 
@@ -236,11 +236,16 @@ export class ChatStore {
     if (!this.activeChat) {
       const latestMessage: Message = this.firstMessages[0];
 
-      this.activeChat = this.roomId(latestMessage);
-      this.fetchChatMessages();
-      this.rootStore.attachmentsStore.fetchAttachments(false);
-      this.rootStore.attachmentsStore.fetchAttachments(true);
-      return;
+      if (latestMessage) {
+        this.activeChat = this.roomId(latestMessage);
+        this.fetchChatMessages();
+        this.rootStore.attachmentsStore.fetchAttachments(false);
+        this.rootStore.attachmentsStore.fetchAttachments(true);
+        return;
+      } else {
+        this.activeChat = " ";
+        return;
+      }
     }
 
     if (!uuid) {
@@ -248,6 +253,7 @@ export class ChatStore {
     }
 
     this.activeChat = uuid;
+
     if (
       this.rootStore.attachmentsStore.filesInfo.get(this.activeChat) ===
       undefined
@@ -256,6 +262,32 @@ export class ChatStore {
       this.rootStore.attachmentsStore.fetchAttachments(true);
     }
   }
+
+  // @action setChatroom(uuid?: string): void {
+  //   if (!this.activeChat) {
+  //     console.log("Setting first room");
+  //     const latestMessage: Message = this.firstMessages[0];
+
+  //     this.activeChat = this.roomId(latestMessage);
+  //     this.fetchChatMessages();
+  //     this.rootStore.attachmentsStore.fetchAttachments(false);
+  //     this.rootStore.attachmentsStore.fetchAttachments(true);
+  //     return;
+  //   }
+
+  //   if (!uuid) {
+  //     throw new Error("Room not found");
+  //   }
+
+  //   this.activeChat = uuid;
+  //   if (
+  //     this.rootStore.attachmentsStore.filesInfo.get(this.activeChat) ===
+  //     undefined
+  //   ) {
+  //     this.rootStore.attachmentsStore.fetchAttachments(false);
+  //     this.rootStore.attachmentsStore.fetchAttachments(true);
+  //   }
+  // }
 
   @action setRoomHasMore(uuid: string, hasMore: boolean): void {
     this.messagesInfo.set(uuid, { hasMore });

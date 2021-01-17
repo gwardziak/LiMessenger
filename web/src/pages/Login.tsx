@@ -38,25 +38,20 @@ export const Login = () => {
       if (passwordError) {
         passwordRef.current!.focus();
       }
-
-      console.log(response.error);
     } else {
       console.log("authorizing");
-
       rootStore.userStore.setIsAuth(true);
-
       console.log("authenticated");
-
       history.replace("/");
     }
   };
 
   return (
     <Container>
-      <FormContainer loginError={!!loginError} passwordError={!!passwordError}>
+      <FormContainer>
         <Input
           ref={loginRef}
-          loginError={!!loginError}
+          error={!!loginError}
           type="text"
           placeholder="Login"
           onChange={(e) => setLoginCredential(e.target.value)}
@@ -64,7 +59,7 @@ export const Login = () => {
         {loginError && <Error>{loginError}</Error>}
         <Input
           ref={passwordRef}
-          passwordError={!!passwordError}
+          error={!!passwordError}
           type="password"
           placeholder="Password"
           onChange={(e) => setPassword(e.target.value)}
@@ -79,10 +74,6 @@ export const Login = () => {
         <Line />
         <GreenLinkButton to="/register">Create New Account</GreenLinkButton>
       </FormContainer>
-      <Box>
-        <BoldLink to="/create-fanpage">Create a Page</BoldLink> for a celebrity,
-        band or business.
-      </Box>
     </Container>
   );
 };
@@ -94,10 +85,7 @@ const Container = styled.div`
   justify-self: center;
 `;
 
-const FormContainer = styled.form<{
-  loginError: boolean;
-  passwordError: boolean;
-}>`
+const FormContainer = styled.form`
   display: grid;
   grid-template-columns: 1fr;
   grid-row-gap: 12px;
@@ -107,42 +95,22 @@ const FormContainer = styled.form<{
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1), 0 8px 16px rgba(0, 0, 0, 0.1);
   box-sizing: border-box;
   padding: 24px 16px;
-
-  ${({ loginError, passwordError }) => {
-    switch (true) {
-      case loginError:
-        return `grid-template-rows: 52px auto 52px 48px 20px 15px 48px`;
-      case passwordError:
-        return `grid-template-rows: 52px 52px auto 48px 20px 15px 48px`;
-      default:
-        return `grid-template-rows: 52px 52px  48px 20px 15px 48px`;
-    }
-  }}
 `;
 
-const Input = styled.input<{
-  loginError?: boolean;
-  passwordError?: boolean;
-}>`
+const Input = styled.input<{ error?: boolean }>`
   width: 100%;
   border-radius: 6px;
   font-size: 17px;
   padding: 14px 16px;
   box-sizing: border-box;
-  border: ${(props) =>
-    props.loginError || props.passwordError
-      ? "1px solid #f02849"
-      : "1px solid #dddfe2"};
+  border: ${({ error }) => (error ? "1px solid #f02849" : "1px solid #dddfe2")};
   color: #1d2129;
 
   &:focus {
     outline: none;
-    border-color: ${(props) =>
-      props.loginError || props.passwordError ? "#f02849" : "#1877f2"};
-    box-shadow: ${(props) =>
-      props.loginError || props.passwordError
-        ? "0 0 0 2px #f8b6c1"
-        : "0 0 0 2px #e7f3ff"};
+    border-color: ${({ error }) => (error ? "#f02849" : "#1877f2")};
+    box-shadow: ${({ error }) =>
+      error ? "0 0 0 2px #f8b6c1" : "0 0 0 2px #e7f3ff"};
     caret-color: #1877f2;
   }
 
@@ -162,6 +130,7 @@ const BlueButton = styled.button`
   color: #fff;
   font-weight: bold;
   cursor: pointer;
+  height: 48px;
 
   &:focus {
     outline: none;
@@ -183,6 +152,9 @@ const GreenLinkButton = styled(StyledLink)`
   justify-content: center;
   padding: 0 16px;
   background-color: #42b72a;
+  cursor: pointer;
+  height: 48px;
+  margin-top: 15px;
 
   :hover {
     text-decoration: none;
@@ -196,23 +168,14 @@ const GreenLinkButton = styled(StyledLink)`
 const BlueLinkButton = styled(StyledLink)`
   color: #1877f2;
   font-weight: 500;
-  height: fit-content;
+  height: 15px;
 `;
 
-const Line = styled.div`
+const Line = styled.hr`
+  border: 0;
   border-bottom: 1px solid #dadde1;
   width: 100%;
-  height: fit-content;
-`;
-
-const BoldLink = styled(StyledLink)`
-  font-weight: 600;
-`;
-
-const Box = styled.div`
-  padding: 6px 0;
-  text-align: center;
-  margin-top: 20px;
+  height: 20px;
 `;
 
 const Error = styled.div`

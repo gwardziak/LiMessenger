@@ -28,7 +28,7 @@ export class User implements User.Options {
   uuid!: string;
 
   @Index()
-  @Column({ unique: true })
+  @Column({ nullable: false, unique: true })
   username!: string;
 
   @Column()

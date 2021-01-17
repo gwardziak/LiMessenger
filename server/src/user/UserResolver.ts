@@ -33,6 +33,7 @@ export class UserResolver {
   @Mutation(() => Boolean)
   async signUp(@Arg("options") options: SignUpInput): Promise<boolean> {
     await this.userService.createUser(options);
+
     return true;
   }
 

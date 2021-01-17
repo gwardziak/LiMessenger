@@ -60,7 +60,6 @@ export class UserService {
       if (isDuplicateError(err, "user.authToken")) {
         this.createUser(user);
       }
-
       throw err;
     }
   }

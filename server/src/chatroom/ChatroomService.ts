@@ -16,23 +16,8 @@ export class ChatroomService {
       participantB: userB,
     });
 
-    const {
-      identifiers: [participantA, participantB],
-    } = await this.chatroomRepository.insert(room);
+    await this.chatroomRepository.insert(room);
 
-    const chatroom = await this.chatroomRepository
-      .createQueryBuilder("chatroom")
-      .leftJoinAndSelect("chatroom.participantA", "participantA")
-      .leftJoinAndSelect("chatroom.participantB", "participantB")
-      .where(
-        `participantA.id = :participantAId AND participantB.id = :participantBId`,
-        {
-          participantAId: participantA.id,
-          participantBId: participantB.id,
-        }
-      )
-      .getOne();
-
-    return chatroom!;
+    return room;
   }
 }

@@ -177,6 +177,16 @@ export type SignOutMutation = (
   & Pick<Mutation, 'signOut'>
 );
 
+export type SignUpMutationVariables = Exact<{
+  options: SignUpInput;
+}>;
+
+
+export type SignUpMutation = (
+  { __typename?: 'Mutation' }
+  & Pick<Mutation, 'signUp'>
+);
+
 export type AttachmentsQueryVariables = Exact<{
   options: AttachmentPaginationInput;
 }>;
@@ -314,6 +324,15 @@ export const SignOutDocument = gql`
 
 export function useSignOutMutation() {
   return Urql.useMutation<SignOutMutation, SignOutMutationVariables>(SignOutDocument);
+};
+export const SignUpDocument = gql`
+    mutation SignUp($options: SignUpInput!) {
+  signUp(options: $options)
+}
+    `;
+
+export function useSignUpMutation() {
+  return Urql.useMutation<SignUpMutation, SignUpMutationVariables>(SignUpDocument);
 };
 export const AttachmentsDocument = gql`
     query Attachments($options: AttachmentPaginationInput!) {

@@ -4,28 +4,13 @@ import styled from "styled-components";
 export const NotFound = () => {
   console.log("Not found page");
   return (
-    <>
-      <Container>
-        <Input></Input>
-        <Div></Div>
-      </Container>
-    </>
+    <Container>
+      <p>Page doesn't exist</p>
+    </Container>
   );
 };
 
 const Container = styled.div`
-  display: flex;
-  background-color: #fff;
-  min-width: 500px;
-`;
-
-const Input = styled.input`
-  background-color: #fff;
-  flex: 1 1;
-  word-break: break-word;
-`;
-
-const Div = styled.div`
-  background-color: red;
-  width: 20px;
+  display: grid;
+  justify-content: center;
 `;
