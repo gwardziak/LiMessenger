@@ -79,7 +79,7 @@ export const SendMessage = observer(
         <PlusIcon
           onClick={() => setToggle(!toggle)}
           isToggle={toggle}
-          viewBox="0 0 24 24"
+          viewBox="30 30 448 448"
         />
         {!isMobile && (
           <>
@@ -87,7 +87,7 @@ export const SendMessage = observer(
               <>
                 <CameraIcon viewBox="0 0 36 36" />
                 <GamePadIcon viewBox="0 0 36 36" />
-                <MicrophoneIcon viewBox="0 0 36 36" />
+                <MicrophoneIcon viewBox="-95 0 680 450" />
               </>
             )}
             <GifIcon viewBox="0 0 36 36" />
@@ -207,9 +207,8 @@ export const SendMessage = observer(
           />
 
           <SmileIcon
-            // ref={handlerRef}
             name="SmileIcon"
-            viewBox="0 0 26 26"
+            viewBox="80 80 850 850"
             onClick={() => setIsEmojiPickerVisible(!isEmojiPickerVisible)}
           />
           {isEmojiPickerVisible && (
@@ -225,7 +224,7 @@ export const SendMessage = observer(
             />
           )}
         </MessageContainer>
-        <LikeIcon viewBox="0 1 36 36" />
+        <LikeIcon viewBox="-90 -70 700 700" />
       </Container>
     );
   }
@@ -422,12 +421,10 @@ const UploadFileImgContainer = styled.div`
 `;
 
 const UploadFileImg = styled.div`
-  background-image: url("assets/staticImages2.png");
-  background-size: 46px 1934px;
+  background-image: url("assets/textFile.png");
   background-repeat: no-repeat;
   width: 16px;
   height: 16px;
-  background-position: -26px -528px;
 `;
 const UploadFilename = styled.div`
   overflow: hidden;
@@ -465,10 +462,9 @@ const CloseFileImg = styled.div`
   justify-self: center;
   height: 12px;
   width: 12px;
-  background-image: url("assets/staticImages.png");
-  background-size: 52px 718px;
+  background-image: url("assets/closeImage.png");
+  background-size: contain;
   background-repeat: no-repeat;
-  background-position: -36px -662px;
 `;
 
 const UploadMore = styled.div`
@@ -493,8 +489,7 @@ const UploadMoreImg = styled.div`
   align-self: center;
   height: 24px;
   width: 24px;
-  background-image: url("assets/staticImages2.png");
-  background-size: 46px 1934px;
+  background-image: url("assets/uploadFiles.png");
+  background-size: cover;
   background-repeat: no-repeat;
-  background-position: 0 -1100px;
 `;

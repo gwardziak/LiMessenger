@@ -58,13 +58,12 @@ const ImageContainer = styled.div`
 `;
 
 const Image = styled.div`
-  background-image: url("assets/staticImages2.png");
-  background-size: 46px 1934px;
+  background-image: url("assets/textFile.png");
   background-repeat: no-repeat;
   width: 16px;
   height: 16px;
-  background-position: -26px -528px;
 `;
+
 const Filename = styled.div`
   display: grid;
   overflow: hidden;

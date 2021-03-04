@@ -18,13 +18,13 @@ export const SettingsMenu = () => {
           <Item>
             <ItemText>Szukaj w konwersacji</ItemText>
             <GrayIconBackground>
-              <MagnifierIcon viewBox="0 0 36 36" />
+              <MagnifierIcon viewBox="-7 -7 45 45" />
             </GrayIconBackground>
           </Item>
           <Item>
             <ItemText>Edytuj nicki</ItemText>
             <GrayIconBackground>
-              <PencilUnderlineIcon viewBox="0 0 36 36" />
+              <PencilUnderlineIcon viewBox="-100 0 750 500" />
             </GrayIconBackground>
           </Item>
           <Item>
@@ -35,7 +35,7 @@ export const SettingsMenu = () => {
           </Item>
           <Item>
             <ItemText>Zmień ikonę emoji</ItemText>
-            <LikeIcon viewBox="0 1 36 36" />
+            <LikeIcon viewBox="-90 -70 700 700" />
           </Item>
         </>
       )}
@@ -74,13 +74,20 @@ const HeaderText = styled.div`
 `;
 
 const HeaderIcon = styled.div<{ isToggle: boolean }>`
-  background-image: url("assets/staticImages.png");
-  background-size: 52px 718px;
+  /* background-image: url("assets/up-arrow.png"); */
+  /* background-size: 52px 718px; */
   background-repeat: no-repeat;
 
-  background-position: ${(props) =>
-    props.isToggle ? "-22px -336px" : "0 -314px"};
+  background-image: ${(props) =>
+    props.isToggle ? "url(assets/up-arrow.png)" : "url(assets/down-arrow.png)"};
 `;
+/* background-position: ${(props) =>
+    props.isToggle ? "-22px -336px" : "0 -314px"}; */
+
+// const HeaderIcon = styled.div<{ isToggle: boolean }>`
+// background-image: url("assets/up-arrow.png");
+// /* background-size: 52px 718px; */
+// background-repeat: no-repeat;
 
 const Item = styled.div`
   display: grid;

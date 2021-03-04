@@ -34,7 +34,12 @@ export const UserOptions = observer(() => {
       <Avatar src={rootStore.userStore.avatar} />
       <ListName>Czaty</ListName>
       <IconContainer>
-        <Settings fill="#000" height="30px" width="30px" viewBox="0 0 36 36" />
+        <Settings
+          fill="#000"
+          height="30px"
+          width="30px"
+          viewBox="-25 -25 175 175"
+        />
       </IconContainer>
       <IconContainer>
         <CreateNewRoom

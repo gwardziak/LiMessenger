@@ -178,12 +178,10 @@ const Close = styled.div`
   justify-self: end;
   position: absolute;
   margin: 16px;
-  height: 24px;
-  width: 24px;
-  background-image: url(assets/staticImages.png);
-  background-size: 52px 718px;
+  height: 16px;
+  width: 16px;
+  background-image: url(assets/close.png);
   background-repeat: no-repeat;
-  background-position: 2px -422px;
   cursor: pointer;
 `;
 

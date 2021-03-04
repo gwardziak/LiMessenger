@@ -82,12 +82,9 @@ const HeaderText = styled.div`
 `;
 
 const HeaderIcon = styled.div<{ isToggle: boolean }>`
-  background-image: url("assets/staticImages.png");
-  background-size: 52px 718px;
   background-repeat: no-repeat;
-
-  background-position: ${(props) =>
-    props.isToggle ? "-22px -336px" : "0 -314px"};
+  background-image: ${(props) =>
+    props.isToggle ? "url(assets/up-arrow.png)" : "url(assets/down-arrow.png)"};
 `;
 
 const List = styled.ul`
@@ -114,12 +111,10 @@ const Item = styled.a`
 
 const ItemIcon = styled.div`
   margin-left: 8px;
-  background-image: url("assets/staticImages2.png");
-  background-size: 46px 1934px;
+  background-image: url("assets/textFile.png");
   background-repeat: no-repeat;
   width: 16px;
   height: 16px;
-  background-position: -26px -528px;
 `;
 
 const ItemText = styled.div`

@@ -77,10 +77,7 @@ const MagnifierImg = styled.div`
   top: 10px;
   left: 12px;
   position: absolute;
-
-  background-position: 0 -668px;
-  background-image: url("assets/staticImages.png");
-  background-size: 52px 718px;
+  background-image: url("assets/magnifier.png");
   background-repeat: no-repeat;
 `;
 

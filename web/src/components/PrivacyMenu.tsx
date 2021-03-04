@@ -26,13 +26,13 @@ export const PrivacyMenu = () => {
           <Item>
             <ItemText>Ignoruj wiadomości</ItemText>
             <GrayIconBackground>
-              <MessageCrossIcon viewBox="0 0 36 36" />
+              <MessageCrossIcon viewBox="-120 0 750 500" />
             </GrayIconBackground>
           </Item>
           <Item>
             <ItemText>Blokuj wiadomości</ItemText>
             <GrayIconBackground>
-              <MinusCircleIcon viewBox="0 0 36 36" />
+              <MinusCircleIcon viewBox="-15 -15 127 127" />
             </GrayIconBackground>
           </Item>
           <ItemWithExtraText>
@@ -79,12 +79,10 @@ const HeaderText = styled.div`
 `;
 
 const HeaderIcon = styled.div<{ isToggle: boolean }>`
-  background-image: url("assets/staticImages.png");
-  background-size: 52px 718px;
   background-repeat: no-repeat;
 
-  background-position: ${(props) =>
-    props.isToggle ? "-22px -336px" : "0 -314px"};
+  background-image: ${(props) =>
+    props.isToggle ? "url(assets/up-arrow.png)" : "url(assets/down-arrow.png)"};
 `;
 
 const Item = styled.div`

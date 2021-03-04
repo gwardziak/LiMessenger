@@ -60,12 +60,9 @@ const HeaderText = styled.div`
 `;
 
 const HeaderIcon = styled.div<{ isToggle: boolean }>`
-  background-image: url("assets/staticImages.png");
-  background-size: 52px 718px;
   background-repeat: no-repeat;
-
-  background-position: ${(props) =>
-    props.isToggle ? "-22px -336px" : "0 -314px"};
+  background-image: ${(props) =>
+    props.isToggle ? "url(assets/up-arrow.png)" : "url(assets/down-arrow.png)"};
 `;
 
 const Photos = styled.div`

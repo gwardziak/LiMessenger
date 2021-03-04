@@ -11,7 +11,7 @@ export const Navbar = () => {
       <Avatar src="https://scontent-frt3-1.xx.fbcdn.net/v/t1.30497-1/c29.0.100.100a/p100x100/84241059_189132118950875_4138507100605120512_n.jpg?_nc_cat=1&_nc_sid=7206a8&_nc_ohc=zLcWETlL6TIAX95SnPH&_nc_ht=scontent-frt3-1.xx&_nc_tp=27&oh=062a10092c5cb258d651a46799cf7c89&oe=5FA0C29E" />
       <Username>Filip</Username>
       <Activity>Aktywny(a) przez: Messenger</Activity>
-      <PhoneIcon viewBox="0 0 36 36" />
+      <PhoneIcon viewBox="-100 -300 2200 2200" />
       <CamcorderIcon viewBox="0 0 36 36" />
       <IconHelper>
         <InfoIcon viewBox="0 0 36 36" />

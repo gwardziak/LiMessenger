@@ -310,6 +310,7 @@ export class ChatStore {
         }
 
         return runInAction(() => {
+          console.log("In");
           const key: string = this.roomId(data.chatroomSubscription);
           const files = [];
           const images = [];
@@ -319,6 +320,8 @@ export class ChatStore {
           }
 
           this.messages.get(key)!.unshift(data.chatroomSubscription);
+
+          console.log(data);
 
           if (data.chatroomSubscription.attachments.length !== 0) {
             for (const attachment of data.chatroomSubscription.attachments!) {
