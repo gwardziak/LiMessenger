@@ -20,7 +20,7 @@ export const PrivacyMenu = () => {
           <Item>
             <ItemText>Powiadomienia</ItemText>
             <GrayIconBackground>
-              <BellIcon viewBox="0 0 36 36" />
+              <BellIcon />
             </GrayIconBackground>
           </Item>
           <Item>

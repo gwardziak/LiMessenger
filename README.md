@@ -1,52 +1,45 @@
 # LiMessenger
 
-LiMessenger is a messenger clone.  
-The app goal is to implement most of the messenger features plus some extra unique functionalities. Actually app is at an early development stage and it offers many basic features such as creating a new room with a user, real time chat, image and file upload, emojis and so on.
+LiMessenger is a [messenger](https://www.messenger.com/) clone. It has most of the messenger features (a, b, c) and I decided to add a few extra ones such as:
 
-<screenshoot>
+- aaa - explaination???
+- aaa - explaination???
+- aaa - explaination???
+- aaa - explaination???
 
-## Installation
+It has been created because I wanted to get familiar with `type-graphql` and `react`.
 
-Use Node manager (https://nodejs.org/en/) to install LiMessenger.
+![app main screen](https://github.com/[gwardziak]/[LiMessenger]/blob/[misc]/appMainScreen.png?raw=true)
 
-### Server
+## How to run
 
-```bash
-$ cd ./server
-$ npm install
-```
+1. Open terminal and execute:
 
-### Client
+   ```bash
+   git clone git@github.com:gwardziak/chatApp.git
+   cd ./chatApp
+   npm --prefix ./server install && npm --prefix ./web install
+   ```
 
-```bash
-$ cd ./web
-$ npm install
-```
+   It's going to clone the repository and install all the required dependencies.
 
-## Usage
+2. In 2 different terminals run:
 
-### Server
+   ```bash
+   npm --prefix ./server run start # to start the server
+   npm --prefix ./web run start # to start the frontend
+   ```
 
-```node
-$ cd ./server
-$ npm run dev
-```
-
-### Client
-
-```node
-$ cd ./web
-$ npm start
-```
+3. Navitage to the `http://localhost:3000` in the browser.
 
 ## Built With
 
-- Typescript
-- React
-- Node
-- TypeGraphql
-- SQLite
+- [Typescript](https://www.typescriptlang.org/)
+- [React](https://reactjs.org/)
+- [Node](https://nodejs.org/en/)
+- [TypeGraphql](https://typegraphql.com/)
+- [SQLite](https://www.sqlite.org/index.html)
 
 ## Contributing
 
-Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
+Pull requests are welcome. Before implementing any major/breaking changes please open an issue and lets discuss it here first.

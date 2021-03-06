@@ -31,7 +31,7 @@ export const UserOptions = observer(() => {
 
   return (
     <Container>
-      <Avatar src={rootStore.userStore.avatar} />
+      <Avatar src="assets/defaultAvatar.svg" />
       <ListName>Czaty</ListName>
       <IconContainer>
         <Settings

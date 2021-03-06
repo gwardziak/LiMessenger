@@ -110,9 +110,9 @@ export const SendMessage = observer(
             />
             <EmojiIcon viewBox="0 0 36 36" />
             <GifIcon viewBox="0 0 36 36" />
-            <MicrophoneIcon viewBox="0 0 36 36" />
+            <MicrophoneIcon viewBox="-95 0 680 450" />
             <GamePadIcon viewBox="0 0 36 36" />
-            <CameraIcon viewBox="0 0 36 36" />
+            <CameraIcon />
           </MobileIconsContainer>
         )}
         <MessageContainer isToggle={toggle} hasFile={uploadFiles?.length > 0}>
