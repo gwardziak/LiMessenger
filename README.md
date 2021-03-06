@@ -1,15 +1,12 @@
 # LiMessenger
 
-LiMessenger is a [messenger](https://www.messenger.com/) clone. It has most of the messenger features (a, b, c) and I decided to add a few extra ones such as:
+LiMessenger is a [messenger](https://www.messenger.com/) clone. It has most of the messenger features.
 
-- aaa - explaination???
-- aaa - explaination???
-- aaa - explaination???
-- aaa - explaination???
+- Real time chat - an online communication channel that allows you to conduct real-time conversations.
+- File upload - a way to share images and files a chat participant
+- Emojis - built with emoji-mart allows to use emojis in chat.
 
 It has been created because I wanted to get familiar with `type-graphql` and `react`.
-
-<!-- ![app main screen](https://github.com/[gwardziak]/[LiMessenger]/blob/[misc]/appMainScreen.png?raw=true) -->
 
 ![app main screen](https://github.com/gwardziak/LiMessenger/blob/master/misc/appMainScreen.png)
 
