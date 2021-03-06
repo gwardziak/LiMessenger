@@ -9,7 +9,9 @@ LiMessenger is a [messenger](https://www.messenger.com/) clone. It has most of t
 
 It has been created because I wanted to get familiar with `type-graphql` and `react`.
 
-![app main screen](https://github.com/[gwardziak]/[LiMessenger]/blob/[misc]/appMainScreen.png?raw=true)
+<!-- ![app main screen](https://github.com/[gwardziak]/[LiMessenger]/blob/[misc]/appMainScreen.png?raw=true) -->
+
+![app main screen](https://github.com/gwardziak/LiMessenger/blob/master/misc/appMainScreen.png)
 
 ## How to run
 
