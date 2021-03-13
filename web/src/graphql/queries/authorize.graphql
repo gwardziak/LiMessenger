@@ -1,0 +1,9 @@
+query Authorize($options: AuthorizeInput!) {
+  authorize(token: $options) {
+    uuid
+    username
+    email
+    password
+    accountVerified
+  }
+}

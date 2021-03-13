@@ -18,7 +18,6 @@ const GlobalStyle = createGlobalStyle`
 html {
   height:100%;
 }
-
 body {
   height:100%;
   margin: 0;
@@ -41,9 +40,13 @@ const client = createClient({
   requestPolicy: "network-only",
   // requestPolicy: "cache-and-network",
   fetchOptions: {
+    headers: {
+      ["auth-token"]: localStorage.getItem("authToken")!,
+    },
     credentials: "include",
     mode: "cors",
   },
+
   exchanges: [
     dedupExchange,
     cacheExchange,

@@ -23,6 +23,7 @@ export type Query = {
   firstMessages: Array<Message>;
   me?: Maybe<User>;
   findUser: Array<UserMessage>;
+  authorize?: Maybe<User>;
 };
 
 
@@ -38,6 +39,11 @@ export type QueryMessagesArgs = {
 
 export type QueryFindUserArgs = {
   phase: Scalars['String'];
+};
+
+
+export type QueryAuthorizeArgs = {
+  token: AuthorizeInput;
 };
 
 export type AttachmentPaginationInput = {
@@ -100,6 +106,10 @@ export type User = {
   email: Scalars['String'];
   password: Scalars['String'];
   accountVerified: Scalars['Boolean'];
+};
+
+export type AuthorizeInput = {
+  token?: Maybe<Scalars['String']>;
 };
 
 export type Mutation = {
@@ -202,6 +212,19 @@ export type AttachmentsQuery = (
       & Pick<Attachment, 'uuid' | 'name' | 'mimetype' | 'link' | 'createdAt'>
     )> }
   ) }
+);
+
+export type AuthorizeQueryVariables = Exact<{
+  options: AuthorizeInput;
+}>;
+
+
+export type AuthorizeQuery = (
+  { __typename?: 'Query' }
+  & { authorize?: Maybe<(
+    { __typename?: 'User' }
+    & Pick<User, 'uuid' | 'username' | 'email' | 'password' | 'accountVerified'>
+  )> }
 );
 
 export type FindUserQueryVariables = Exact<{
@@ -351,6 +374,21 @@ export const AttachmentsDocument = gql`
 
 export function useAttachmentsQuery(options: Omit<Urql.UseQueryArgs<AttachmentsQueryVariables>, 'query'> = {}) {
   return Urql.useQuery<AttachmentsQuery>({ query: AttachmentsDocument, ...options });
+};
+export const AuthorizeDocument = gql`
+    query Authorize($options: AuthorizeInput!) {
+  authorize(token: $options) {
+    uuid
+    username
+    email
+    password
+    accountVerified
+  }
+}
+    `;
+
+export function useAuthorizeQuery(options: Omit<Urql.UseQueryArgs<AuthorizeQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<AuthorizeQuery>({ query: AuthorizeDocument, ...options });
 };
 export const FindUserDocument = gql`
     query FindUser($phase: String!) {

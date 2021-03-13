@@ -210,7 +210,6 @@ const Input = styled.input<{ error?: boolean }>`
   box-sizing: border-box;
   border: ${({ error }) => (error ? "1px solid #f02849" : "1px solid #dddfe2")};
   color: #1d2129;
-
   &:focus {
     outline: none;
     border-color: ${({ error }) => (error ? "#f02849" : "#1877f2")};
@@ -218,7 +217,6 @@ const Input = styled.input<{ error?: boolean }>`
       error ? "0 0 0 2px #f8b6c1" : "0 0 0 2px #e7f3ff"};
     caret-color: #1877f2;
   }
-
   &::placeholder {
     color: #bec3c9;
   }
@@ -238,7 +236,6 @@ const GreenLinkButton = styled.button`
   padding: 8px 32px;
   cursor: pointer;
   outline: none;
-
   :hover {
     text-decoration: none;
     background-color: #36a420;

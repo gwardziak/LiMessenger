@@ -11,11 +11,11 @@ import { Container } from "typedi";
 import { createConnection } from "typeorm";
 import { AttachmentResolver } from "./attachment/AttachmentResolver";
 import { ChatroomResolver } from "./chatroom/ChatroomResolver";
+import { GraphQLServer } from "./GraphQLServer";
 import { MessageResolver } from "./message/MessageResolver";
 import { UserResolver } from "./user/UserResolver";
 import { authChecker } from "./utils/authChecker";
 import { FileServerService } from "./utils/FileServerService";
-import { verifyUserToken } from "./utils/verifyUserToken";
 
 useContainer(Container);
 const pubSub = new PubSub();
@@ -69,34 +69,36 @@ const main = async () => {
   );
 
   app.use(graphqlUploadExpress({ maxFileSize: 10000000, maxFiles: 10 }));
-  // Create GraphQL server
 
+  const graphQlServer = new GraphQLServer();
+  // Create GraphQL server
   const server = new ApolloServer({
     schema,
     playground: true,
     uploads: false,
+    context: (...args) => graphQlServer.buildContext(...args),
+    // context: async ({ req, res, connection }) => {
+    //   if (connection) return connection.context;
 
-    context: async ({ req, res, connection }) => {
-      if (connection) return connection.context;
-
-      const authUser = await verifyUserToken(req.cookies.token);
-      return { req, res, authUser };
-    },
+    //   const authUser = await verifyUserToken(req.cookies.token);
+    //   return { req, res, authUser };
+    // },
 
     // you can pass the endpoint path for subscriptions
     // otherwise it will be the same as main graphql endpoint
     // subscriptions: "/subscriptions",
     subscriptions: {
-      onConnect: async (connectionParams, webSocket, context) => {
-        const authUser = await verifyUserToken(
-          context.request.headers.cookie?.substring(6)
-        );
-        return { authUser };
-      },
-
-      onDisconnect: (websocket, context) => {
-        console.log("User dced.");
-      },
+      onConnect: (params, ...args) =>
+        graphQlServer.onSubscriptionConnect(
+          params as GraphQLServer.SubscriptionParams,
+          ...args
+        ),
+      // const authUser = await verifyUserToken(
+      //   context.request.headers.cookie?.substring(6)
+      // );
+      // return { authUser };
+      onDisconnect: (...args) =>
+        graphQlServer.onSubscriptionDisconnect(...args),
     },
   });
 

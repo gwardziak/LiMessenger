@@ -5,4 +5,5 @@ export interface MyContext {
   req: Request;
   res: Response;
   authUser: User;
+  assosiateWithUser: (user: User | null) => void;
 }

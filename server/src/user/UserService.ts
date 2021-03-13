@@ -5,6 +5,7 @@ import { Service } from "typedi";
 import { getRepository, Like } from "typeorm";
 import { User } from "../db/entities/User";
 import { isDuplicateError } from "../utils/isDuplicateError";
+import { MyContext } from "./../models/MyContext";
 
 export namespace UserService {
   export type CreateUser = {
@@ -17,6 +18,9 @@ export namespace UserService {
     password: string;
   };
   export type Token = string;
+  export type Authorize = {
+    token: string | null;
+  };
 }
 
 @Service()
@@ -36,15 +40,45 @@ export class UserService {
     return await bcrypt.compare(password, hash);
   }
 
-  authorize(user: User | null): User | null {
-    // console.log(user, "User ja pierdole");
-    // you are not logged in
-    if (!user) {
-      return null;
+  private async verifyUserToken(
+    token: string | null
+  ): Promise<User | undefined> {
+    if (token) {
+      return await getRepository(User).findOne({
+        where: { authToken: token },
+      });
     }
+    return undefined;
+  }
 
+  async authorize(
+    token: UserService.Authorize,
+    { assosiateWithUser }: MyContext
+  ): Promise<User | undefined> {
+    //@ts-ignore
+    const user = this.verifyUserToken(token);
+    assosiateWithUser(user ? null : user);
     return user;
   }
+
+  // async authorize(
+  //   token: UserService.Authorize,
+  //   { assosiateWithUser }: MyContext
+  // ): Promise<User | undefined> {
+  //   //@ts-ignore
+  //   const user = this.verifyUserToken(token);
+  //   assosiateWithUser(user ? null : user);
+  //   return user;
+  // }
+
+  // authorize(user: User | null): User | null {
+  //   // you are not logged in
+  //   if (!user) {
+  //     return null;
+  //   }
+
+  //   return user;
+  // }
 
   async createUser(options: UserService.CreateUser): Promise<User> {
     const user = new User({
