@@ -265,7 +265,6 @@ export class ChatStore {
   }
 
   @action async subscribeMessages(): Promise<void> {
-    console.log("montuj sie");
     //TODO handle subscription error
     pipe(
       this.rootStore.urqlClient.subscription<
@@ -273,7 +272,6 @@ export class ChatStore {
         ChatroomSubscriptionVariables
       >(ChatroomDocument),
       subscribe(({ data, error }: OperationResult<ChatroomSubscription>) => {
-        console.log("Eska");
         if (error) {
           throw new Error(error.message);
         }
@@ -283,7 +281,6 @@ export class ChatStore {
         }
 
         return runInAction(() => {
-          console.log("In");
           const key: string = this.roomId(data.chatroomSubscription);
           const files = [];
           const images = [];

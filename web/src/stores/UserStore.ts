@@ -21,7 +21,6 @@ export class UserStore {
     this.isAuthenticated = isAuthenticated;
   }
   @action async fetchMe(): Promise<void> {
-    console.log("Fetch Me");
     const { data, error } = await this.rootStore.urqlClient
       .query<AuthorizeQuery, AuthorizeQueryVariables>(AuthorizeDocument, {
         options: {
@@ -40,7 +39,6 @@ export class UserStore {
     }
 
     return runInAction(() => {
-      console.log(data.authorize, "fetch?");
       this.isAuthenticated = true;
       this.uuid = data.authorize!.uuid;
       this.username = data.authorize!.username;
