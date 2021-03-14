@@ -1,7 +1,7 @@
 import { ExpressContext } from "apollo-server-express/dist/ApolloServer";
 import { ConnectionContext } from "subscriptions-transport-ws";
 import { User } from "./db/entities/User";
-import { verifyUserToken } from "./utils/verifyUserToken";
+import { UserService } from "./user/UserService";
 
 import WebSocket = require("ws");
 
@@ -36,7 +36,7 @@ export class GraphQLServer {
   private connectedWebSockets: Set<WebSocket> = new Set();
   private wsToUser = new WeakMap<WebSocket, User>();
 
-  constructor() {} // private readonly authService: AuthService, // @Inject(forwardRef(() => AuthService))
+  constructor(private readonly userService: UserService) {}
 
   public async onSubscriptionConnect(
     params: GraphQLServer.SubscriptionParams,
@@ -63,7 +63,6 @@ export class GraphQLServer {
   ): Promise<GraphQLServer.Context> {
     let authToken: string | null = null;
     let websocketInstance: WebSocket | null = null;
-    let user: User | null = null;
 
     if ("req" in ctx && "res" in ctx) {
       // http
@@ -89,6 +88,8 @@ export class GraphQLServer {
       // ???
     }
 
+    let user: User | null = null;
+
     if (websocketInstance) {
       if (this.wsToUser.has(websocketInstance)) {
         // This should be relatively safe since on auth token change we disassosiate ws with user instance...
@@ -102,7 +103,7 @@ export class GraphQLServer {
 
     if (typeof authToken === "string" && !user) {
       try {
-        user = await verifyUserToken(authToken);
+        user = await this.userService.verifyUserToken(authToken);
       } catch (ex) {}
     }
 
@@ -118,7 +119,6 @@ export class GraphQLServer {
         this.wsToUser.delete(websocketInstance);
       }
     }
-
     return {
       user,
       assosiateWithUser: (user) => {

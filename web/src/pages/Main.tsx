@@ -14,8 +14,6 @@ export const Main = observer(() => {
 
   useEffect(() => {
     console.log("Welcome to the chat app");
-
-    rootStore.userStore.fetchMe();
     rootStore.chatStore.subscribeAndFetch();
   }, [rootStore]);
 

@@ -40,6 +40,8 @@ export const Login = () => {
       }
     } else {
       console.log("authorizing");
+
+      localStorage.setItem("authToken", response.data!.signIn);
       rootStore.userStore.setIsAuth(true);
       console.log("authenticated");
       history.replace("/");

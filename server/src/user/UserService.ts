@@ -40,45 +40,35 @@ export class UserService {
     return await bcrypt.compare(password, hash);
   }
 
-  private async verifyUserToken(
-    token: string | null
-  ): Promise<User | undefined> {
+  async verifyUserToken(token: string | null): Promise<User | null> {
     if (token) {
-      return await getRepository(User).findOne({
+      const user = await getRepository(User).findOne({
         where: { authToken: token },
       });
+
+      return !user ? null : user;
     }
-    return undefined;
+    return null;
   }
 
-  async authorize(
-    token: UserService.Authorize,
-    { assosiateWithUser }: MyContext
-  ): Promise<User | undefined> {
-    //@ts-ignore
-    const user = this.verifyUserToken(token);
-    assosiateWithUser(user ? null : user);
+  async me(user: User | null): Promise<User | null> {
+    if (!user) {
+      return null;
+    }
+
     return user;
   }
 
-  // async authorize(
-  //   token: UserService.Authorize,
-  //   { assosiateWithUser }: MyContext
-  // ): Promise<User | undefined> {
-  //   //@ts-ignore
-  //   const user = this.verifyUserToken(token);
-  //   assosiateWithUser(user ? null : user);
-  //   return user;
-  // }
+  async authorize(
+    options: UserService.Authorize,
+    { assosiateWithUser }: MyContext
+  ): Promise<User | null> {
+    const user = await this.verifyUserToken(options.token);
 
-  // authorize(user: User | null): User | null {
-  //   // you are not logged in
-  //   if (!user) {
-  //     return null;
-  //   }
+    assosiateWithUser(user);
 
-  //   return user;
-  // }
+    return user;
+  }
 
   async createUser(options: UserService.CreateUser): Promise<User> {
     const user = new User({

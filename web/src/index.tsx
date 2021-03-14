@@ -1,4 +1,3 @@
-import { multipartFetchExchange } from "@urql/exchange-multipart-fetch";
 import React, { createContext } from "react";
 import ReactDOM from "react-dom";
 import { BrowserRouter as Router } from "react-router-dom";
@@ -38,19 +37,19 @@ const subscriptionClient = new SubscriptionClient(
 const client = createClient({
   url,
   requestPolicy: "network-only",
-  // requestPolicy: "cache-and-network",
-  fetchOptions: {
-    headers: {
-      ["auth-token"]: localStorage.getItem("authToken")!,
-    },
-    credentials: "include",
-    mode: "cors",
+  fetchOptions: () => {
+    const token = localStorage.getItem("authToken");
+    return {
+      headers: { ["auth-token"]: `${token}` },
+      credentials: "include",
+      mode: "cors",
+    };
   },
 
   exchanges: [
     dedupExchange,
     cacheExchange,
-    multipartFetchExchange,
+    // multipartFetchExchange,
     subscriptionExchange({
       forwardSubscription: (operation) => subscriptionClient.request(operation),
       enableAllOperations: true,

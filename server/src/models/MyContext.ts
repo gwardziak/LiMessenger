@@ -4,6 +4,6 @@ import { User } from "../db/entities/User";
 export interface MyContext {
   req: Request;
   res: Response;
-  authUser: User;
+  user: User;
   assosiateWithUser: (user: User | null) => void;
 }

@@ -116,7 +116,7 @@ export type Mutation = {
   __typename?: 'Mutation';
   sendMessage: Scalars['Boolean'];
   signUp: Scalars['Boolean'];
-  signIn: Scalars['Boolean'];
+  signIn: Scalars['String'];
   signOut: Scalars['Boolean'];
 };
 

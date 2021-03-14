@@ -12,11 +12,10 @@ import { UserService } from "./UserService";
 export class UserResolver {
   private constructor(private readonly userService: UserService) {}
 
-  // // @Authorized()
+  @Authorized()
   @Query(() => UserObjectType, { nullable: true })
-  me(@Ctx() context: MyContext): User | null {
-    // return this.userService.authorize(context.authUser);
-    return null;
+  async me(@Ctx() { user }: MyContext): Promise<User | null> {
+    return await this.userService.me(user);
   }
 
   @Query(() => [UserMessageObjectType])
@@ -24,58 +23,31 @@ export class UserResolver {
     return await this.userService.findUsers(phase);
   }
 
-  // @Query(() => UserObjectType, { nullable: true })
-  // async authorize(
-  //   @Arg("token") token: AuthorizeInput,
-  //   @Ctx() context: MyContext
-  // ): Promise<User | undefined> {
-  //   const user = await this.userService.authorize(token, context);
-  //   return user;
-  // }
-
   @Query(() => UserObjectType, { nullable: true })
   async authorize(
     @Arg("token") token: AuthorizeInput,
     @Ctx() context: MyContext
-  ): Promise<User | undefined> {
-    console.log("Auth");
-    const user = await this.userService.authorize(token, context);
-    return user;
+  ): Promise<User | null> {
+    return await this.userService.authorize(token, context);
   }
 
   @Mutation(() => Boolean)
   async signUp(@Arg("options") options: SignUpInput): Promise<boolean> {
     await this.userService.createUser(options);
-
     return true;
   }
 
-  @Mutation(() => Boolean)
+  @Mutation(() => String)
   async signIn(
     @Arg("options")
-    options: SignInInput,
-    @Ctx() context: MyContext
-  ): Promise<boolean> {
-    console.log(context);
-    const token = await this.userService.login(options);
-    context.res.cookie("token", token, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      maxAge: 1000 * 60 * 60 * 24 * 7, // 7 days
-    });
-
-    return true;
+    options: SignInInput
+  ): Promise<string> {
+    return await this.userService.login(options);
   }
 
   @Authorized()
   @Mutation(() => Boolean)
-  async signOut(@Ctx() context: MyContext): Promise<boolean> {
-    context.res.cookie("token", "", {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      expires: new Date("Thu, 01 Jan 1970 00:00:00 GMT"),
-    });
-
+  async signOut(): Promise<boolean> {
     return true;
   }
 }

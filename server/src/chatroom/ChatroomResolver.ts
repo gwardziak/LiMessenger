@@ -15,8 +15,8 @@ export class ChatroomResolver {
       context,
     }: ResolverFilterData<Message, any, MyContext>) => {
       return (
-        payload.recipient.uuid === context.authUser?.uuid ||
-        payload.sender.id === context.authUser?.id
+        payload.recipient.uuid === context.user?.uuid ||
+        payload.sender.id === context.user?.id
       );
     },
   })

@@ -21,6 +21,7 @@ export class UserStore {
     this.isAuthenticated = isAuthenticated;
   }
   @action async fetchMe(): Promise<void> {
+    console.log("Fetch Me");
     const { data, error } = await this.rootStore.urqlClient
       .query<AuthorizeQuery, AuthorizeQueryVariables>(AuthorizeDocument, {
         options: {
@@ -34,39 +35,16 @@ export class UserStore {
     }
 
     if (!data?.authorize) {
-      console.log("Failed during authorization");
       return;
       // throw new Error("User not found");
     }
 
     return runInAction(() => {
+      console.log(data.authorize, "fetch?");
       this.isAuthenticated = true;
       this.uuid = data.authorize!.uuid;
       this.username = data.authorize!.username;
       this.email = data.authorize!.email;
     });
   }
-
-  // @action async fetchMe(): Promise<void> {
-  //   const { data, error } = await this.rootStore.urqlClient
-  //     .query<MeQuery, MeQueryVariables>(MeDocument, {})
-  //     .toPromise();
-
-  //   if (error) {
-  //     throw new Error(error.message);
-  //   }
-
-  //   if (!data?.me) {
-  //     console.log("Failed during authorization");
-  //     return;
-  //     // throw new Error("User not found");
-  //   }
-
-  //   return runInAction(() => {
-  //     this.isAuthenticated = true;
-  //     this.uuid = data.me!.uuid;
-  //     this.username = data.me!.username;
-  //     this.email = data.me!.email;
-  //   });
-  // }
 }

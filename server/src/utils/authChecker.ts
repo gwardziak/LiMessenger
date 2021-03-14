@@ -8,10 +8,10 @@ export interface Context {
 
 export const authChecker: AuthChecker<MyContext> = ({ context }, roles) => {
   if (roles.length === 0) {
-    return context.authUser !== undefined;
+    return context.user !== undefined;
   }
 
-  if (!context.authUser) {
+  if (!context.user) {
     return false;
   }
   /*ADD ROLES

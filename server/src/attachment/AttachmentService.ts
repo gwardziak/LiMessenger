@@ -48,10 +48,7 @@ export class AttachmentService {
           attachment: Buffer.from(file, "binary"),
           mimetype,
         });
-        // await this.attachmentRepository.insert(attachment);
         return resolve(attachment);
-        // return resolve(true);
-        // return resolve(Buffer.from(data, "binary"));
       });
     });
   }

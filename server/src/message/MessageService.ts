@@ -31,7 +31,6 @@ export class MessageService {
   private messageRepository = getRepository(Message);
   private userRepository = getRepository(User);
   private chatroomRepository = getRepository(Chatroom);
-  private attachmentRepository = getRepository(Attachment);
 
   async getOne(uuid: string): Promise<Message | undefined> {
     return await this.messageRepository.findOne({ where: { uuid } });
@@ -46,36 +45,6 @@ export class MessageService {
   }> {
     const realLimit = Math.min(50, options.limit);
     const realLimitPlusOne = realLimit + 1;
-    // OR
-    //
-
-    //   const qb = this.messageRepository
-    //   .createQueryBuilder("messages")
-    //   .leftJoinAndSelect("messages.sender", "sender")
-    //   .leftJoinAndSelect("messages.recipient", "recipient")
-    //   .where(
-    //     "(sender.uuid = :recipientUuid AND recipient.id = :senderId) OR (sender.id = :senderId AND recipient.uuid = :recipientUuid)AND DATETIME(messages.createdAt) < DATETIME(:cursor)",
-    //     {
-    //       senderId: me.id,
-    //       recipientUuid: options.friendUuid,
-    //       cursor: options.cursor,
-    //     }
-    //   )
-    //   .orWhere(
-    //     "(sender.id = :senderId AND recipient.uuid = :recipientUuid) AND DATETIME(messages.createdAt) < DATETIME(:cursor)",
-    //     {
-    //       senderId: me.id,
-    //       recipientUuid: options.friendUuid,
-    //       cursor: options.cursor,
-    //     }
-    //   )
-    //   .orderBy("messages.createdAt", "DESC")
-    //   .take(realLimitPlusOne);
-    // // if (options.cursor) {
-    // //   qb.andWhere("DATETIME(messages.createdAt) < DATETIME(:cursor)", {
-
-    // //   });
-    // // }
 
     const qb = this.messageRepository
       .createQueryBuilder("messages")
@@ -166,7 +135,6 @@ export class MessageService {
         updatedAt: new Date(updated),
       };
     });
-
     return transformToObj;
   }
 

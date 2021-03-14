@@ -18,7 +18,6 @@ const App = observer(() => {
     rootStore.subscriptionClient.client.addEventListener("open", async () => {
       console.log("Open websocket connection");
       console.log("authorizing");
-      // await rootStore.userStore.fetchMe();
       await rootStore.userStore.fetchMe();
       if (rootStore.userStore.isAuthenticated) {
         history.replace("/");

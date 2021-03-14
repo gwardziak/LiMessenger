@@ -177,15 +177,12 @@ export class ChatStore {
     if (error) {
       throw new Error(error.message);
     }
-
     if (!data?.firstMessages) {
       throw new Error("Data not found");
     }
-
     return runInAction(() => {
       for (const message of data.firstMessages) {
         const key: string = this.roomId(message);
-
         if (!this.messages.has(key)) {
           this.messages.set(key, []);
         }
@@ -263,37 +260,12 @@ export class ChatStore {
     }
   }
 
-  // @action setChatroom(uuid?: string): void {
-  //   if (!this.activeChat) {
-  //     console.log("Setting first room");
-  //     const latestMessage: Message = this.firstMessages[0];
-
-  //     this.activeChat = this.roomId(latestMessage);
-  //     this.fetchChatMessages();
-  //     this.rootStore.attachmentsStore.fetchAttachments(false);
-  //     this.rootStore.attachmentsStore.fetchAttachments(true);
-  //     return;
-  //   }
-
-  //   if (!uuid) {
-  //     throw new Error("Room not found");
-  //   }
-
-  //   this.activeChat = uuid;
-  //   if (
-  //     this.rootStore.attachmentsStore.filesInfo.get(this.activeChat) ===
-  //     undefined
-  //   ) {
-  //     this.rootStore.attachmentsStore.fetchAttachments(false);
-  //     this.rootStore.attachmentsStore.fetchAttachments(true);
-  //   }
-  // }
-
   @action setRoomHasMore(uuid: string, hasMore: boolean): void {
     this.messagesInfo.set(uuid, { hasMore });
   }
 
   @action async subscribeMessages(): Promise<void> {
+    console.log("montuj sie");
     //TODO handle subscription error
     pipe(
       this.rootStore.urqlClient.subscription<
@@ -301,6 +273,7 @@ export class ChatStore {
         ChatroomSubscriptionVariables
       >(ChatroomDocument),
       subscribe(({ data, error }: OperationResult<ChatroomSubscription>) => {
+        console.log("Eska");
         if (error) {
           throw new Error(error.message);
         }
@@ -375,6 +348,7 @@ export class ChatStore {
   }
 
   @action async subscribeAndFetch(): Promise<void> {
+    await this.rootStore.userStore.fetchMe();
     await this.subscribeMessages();
     await this.fetchFirstMessages();
     this.setChatroom();

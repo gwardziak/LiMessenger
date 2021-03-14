@@ -25,6 +25,7 @@ export const UserOptions = observer(() => {
     if (response.error) {
       console.log(response.error);
     } else {
+      localStorage.removeItem("authToken");
       history.replace("/login");
     }
   };

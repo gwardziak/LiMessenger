@@ -68,6 +68,7 @@ export const Register = () => {
       } else {
         console.log("authorizing");
         rootStore.userStore.setIsAuth(true);
+        localStorage.setItem("authToken", response.data?.signIn!);
         console.log("authenticated");
         history.replace("/");
       }

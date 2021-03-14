@@ -16,12 +16,12 @@ export class AttachmentResolver {
   async attachments(
     @Arg("options")
     options: AttachmentPaginationInput,
-    @Ctx() { authUser }: MyContext
+    @Ctx() { user }: MyContext
   ): Promise<{
     attachments: Attachment[];
     hasMore: boolean;
   }> {
-    return await this.attachmentService.getAll(authUser, options);
+    return await this.attachmentService.getAll(user, options);
   }
 
   @FieldResolver(() => String)

@@ -30,17 +30,17 @@ export class MessageResolver {
   async messages(
     @Arg("options")
     options: MessagePaginationInput,
-    @Ctx() { authUser }: MyContext
+    @Ctx() { user }: MyContext
   ): Promise<{
     messages: Message[];
     hasMore: boolean;
   }> {
-    return await this.messageService.getAll(authUser, options);
+    return await this.messageService.getAll(user, options);
   }
 
   @Query(() => [MessageObjectType])
-  async firstMessages(@Ctx() { authUser }: MyContext): Promise<Message[]> {
-    return await this.messageService.firstMessages(authUser);
+  async firstMessages(@Ctx() { user }: MyContext): Promise<Message[]> {
+    return await this.messageService.firstMessages(user);
   }
 
   @Authorized()
@@ -50,9 +50,9 @@ export class MessageResolver {
     options: MessageInput,
     @Arg("files", () => [GraphQLUpload], { nullable: true })
     files: AttachmentInput[],
-    @Ctx() { authUser }: MyContext
+    @Ctx() { user }: MyContext
   ): Promise<boolean> {
-    await this.messageService.sendMessage(authUser, options, files);
+    await this.messageService.sendMessage(user, options, files);
     return true;
   }
 
