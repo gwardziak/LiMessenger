@@ -26,6 +26,11 @@ export const UserOptions = observer(() => {
       console.log(response.error);
     } else {
       localStorage.removeItem("authToken");
+      await rootStore.chatStore.unsubsribeChat();
+      rootStore.userStore.resetStore();
+      rootStore.chatStore.resetStore();
+      rootStore.attachmentsStore.resetStore();
+
       history.replace("/login");
     }
   };

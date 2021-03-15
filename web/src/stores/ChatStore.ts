@@ -55,6 +55,8 @@ export type MessageInfo = {
 };
 
 export class ChatStore {
+  private chatSubscription: { unsubscribe: (_: void) => void } | null = null;
+
   @observable public readonly messages: Map<
     string,
     Message[]
@@ -264,9 +266,16 @@ export class ChatStore {
     this.messagesInfo.set(uuid, { hasMore });
   }
 
+  @action async unsubsribeChat(): Promise<void> {
+    if (this.chatSubscription) {
+      this.chatSubscription.unsubscribe();
+      this.chatSubscription = null;
+    }
+  }
+
   @action async subscribeMessages(): Promise<void> {
     //TODO handle subscription error
-    pipe(
+    this.chatSubscription = pipe(
       this.rootStore.urqlClient.subscription<
         ChatroomSubscription,
         ChatroomSubscriptionVariables
@@ -290,8 +299,6 @@ export class ChatStore {
           }
 
           this.messages.get(key)!.unshift(data.chatroomSubscription);
-
-          console.log(data);
 
           if (data.chatroomSubscription.attachments.length !== 0) {
             for (const attachment of data.chatroomSubscription.attachments!) {
@@ -342,6 +349,14 @@ export class ChatStore {
     if (!data?.sendMessage) {
       throw new Error("Data not found");
     }
+  }
+
+  @action resetStore(): void {
+    this.messages.clear();
+    this.messagesInfo.clear();
+    this.activeChat = null;
+    this.friendName = null;
+    this.prevChatScrollHeight = 0;
   }
 
   @action async subscribeAndFetch(): Promise<void> {

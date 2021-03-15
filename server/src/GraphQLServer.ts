@@ -119,6 +119,7 @@ export class GraphQLServer {
         this.wsToUser.delete(websocketInstance);
       }
     }
+
     return {
       user,
       assosiateWithUser: (user) => {

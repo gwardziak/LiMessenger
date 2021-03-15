@@ -140,4 +140,11 @@ export class AttachmentsStore {
 
     repository.set(uuid, { hasMore });
   }
+
+  @action resetStore(): void {
+    this.files.clear();
+    this.filesInfo.clear();
+    this.images.clear();
+    this.imagesInfo.clear();
+  }
 }

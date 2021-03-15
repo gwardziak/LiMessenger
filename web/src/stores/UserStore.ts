@@ -45,4 +45,12 @@ export class UserStore {
       this.email = data.authorize!.email;
     });
   }
+
+  @action resetStore(): void {
+    this.isAuthenticated = false;
+    this.uuid = null;
+    this.username = null;
+    this.email = null;
+    this.avatar = "#";
+  }
 }

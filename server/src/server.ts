@@ -77,6 +77,7 @@ const main = async () => {
     schema,
     playground: true,
     uploads: false,
+
     context: (...args) => graphQlServer.buildContext(...args),
 
     // you can pass the endpoint path for subscriptions

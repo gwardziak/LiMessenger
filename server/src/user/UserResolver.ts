@@ -47,7 +47,8 @@ export class UserResolver {
 
   @Authorized()
   @Mutation(() => Boolean)
-  async signOut(): Promise<boolean> {
+  async signOut(@Ctx() context: MyContext): Promise<boolean> {
+    context.assosiateWithUser(null);
     return true;
   }
 }
