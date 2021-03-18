@@ -19,8 +19,11 @@ export class UserResolver {
   }
 
   @Query(() => [UserMessageObjectType])
-  async findUser(@Arg("phase") phase: string): Promise<User[]> {
-    return await this.userService.findUsers(phase);
+  async findUser(
+    @Arg("phase") phase: string,
+    @Ctx() { user }: MyContext
+  ): Promise<User[]> {
+    return await this.userService.findUsers(user, phase);
   }
 
   @Query(() => UserObjectType, { nullable: true })

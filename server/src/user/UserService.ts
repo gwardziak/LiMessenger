@@ -117,9 +117,11 @@ export class UserService {
     return user.authToken;
   }
 
-  async findUsers(phase: string): Promise<User[]> {
-    return await this.userRepository.find({
+  async findUsers(user: User, phase: string): Promise<User[]> {
+    const users = await this.userRepository.find({
       username: Like(`%${phase}%`),
     });
+
+    return users.filter((filterUser) => filterUser.id !== user.id);
   }
 }

@@ -13,7 +13,7 @@ export const Navbar = observer(() => {
   return (
     <Container>
       <Avatar src="assets/defaultAvatar.svg" />
-      <Username>{rootStore.userStore.username}</Username>
+      <Username>{rootStore.chatStore.recipientName}</Username>
       <Activity>Aktywny(a) przez: Messenger</Activity>
       <PhoneIcon viewBox="-100 -300 2200 2200" />
       <CamcorderIcon viewBox="0 0 36 36" />

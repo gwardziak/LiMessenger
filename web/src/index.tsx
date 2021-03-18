@@ -40,7 +40,7 @@ const client = createClient({
   fetchOptions: () => {
     const token = localStorage.getItem("authToken");
     return {
-      headers: { ["auth-token"]: `${token}` },
+      headers: { "auth-token": `${token}` },
       credentials: "include",
       mode: "cors",
     };

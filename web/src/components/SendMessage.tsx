@@ -17,6 +17,7 @@ import { useRootStore } from "../stores/RootStore";
 import { mediaQuery } from "../utils/css/cssMedia";
 import { useMatchesMediaQuery } from "../utils/css/useMatchesMediaQuery";
 import { ContentEditable } from "../utils/ReactContentEditable";
+import { graphQLError } from "./../utils/graphQLError";
 import { EmojiPicker } from "./EmojiPicker";
 
 type SendMessageProps = {
@@ -198,6 +199,12 @@ export const SendMessage = observer(
                   setInput("");
                   setUploadFiles([]);
                 } catch (ex) {
+                  const chatError = graphQLError(ex, "chat doesnt exist");
+
+                  if (chatError) {
+                    console.log("Display modal");
+                  }
+
                   throw new Error(
                     "Error during sending a message" + ex.message
                   );

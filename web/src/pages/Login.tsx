@@ -18,8 +18,48 @@ export const Login = () => {
 
   const [, login] = useSignInMutation();
 
+  const inputValidation = (input: { name: string; value: string }) => {
+    const { name, value } = input;
+
+    if (value.trim() === "") {
+      return `${name} cannot be empty.`;
+    }
+    return null;
+  };
+
+  const clientErrors = () => {
+    const usernameInput = inputValidation({
+      name: "Login",
+      value: loginCredential,
+    });
+    const passwordInput = inputValidation({
+      name: "Password",
+      value: password,
+    });
+
+    if (usernameInput) {
+      setLoginError(usernameInput);
+      loginRef.current!.focus();
+    }
+
+    if (passwordInput) {
+      setPasswordError(passwordInput);
+      loginRef.current!.focus();
+    }
+
+    if (usernameInput || passwordInput) {
+      return true;
+    }
+
+    return false;
+  };
+
   const handleSubmit = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
+
+    if (clientErrors()) {
+      return;
+    }
 
     const response = await login({
       options: { login: loginCredential, password },
@@ -40,7 +80,6 @@ export const Login = () => {
       }
     } else {
       console.log("authorizing");
-
       localStorage.setItem("authToken", response.data!.signIn);
       rootStore.userStore.setIsAuth(true);
       console.log("authenticated");

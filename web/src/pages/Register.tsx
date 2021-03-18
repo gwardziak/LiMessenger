@@ -36,6 +36,7 @@ export const Register = () => {
     const err = validateClientErrors();
 
     if (err.login || err.email || err.password || err.rePassword) {
+      setError(err);
       return;
     }
 
