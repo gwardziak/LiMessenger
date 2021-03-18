@@ -19,6 +19,7 @@ import { useMatchesMediaQuery } from "../utils/css/useMatchesMediaQuery";
 import { ContentEditable } from "../utils/ReactContentEditable";
 import { graphQLError } from "./../utils/graphQLError";
 import { EmojiPicker } from "./EmojiPicker";
+import { Modal } from "./Modal";
 
 type SendMessageProps = {
   setIsScrolled(val: boolean): void;
@@ -45,6 +46,7 @@ export const SendMessage = observer(
     const [emojiStartPosition, setEmojiStartPosition] = useState<number>(-1);
     const emojiStartingChars: string[] = [":", ";", "="];
     const uploadFilesRef = useRef<HTMLInputElement>(null);
+    const [chatroomError, setChatroomError] = useState<boolean>(false);
 
     useClickAway(emojiRef, (e: any) => {
       if (e.srcElement.parentElement.attributes.name?.value === "SmileIcon") {
@@ -77,6 +79,15 @@ export const SendMessage = observer(
 
     return (
       <Container isToggle={toggle}>
+        {chatroomError && (
+          <Modal
+            title="Chatroom error"
+            message="Please select an active chatroom."
+            isVisible={chatroomError}
+            setIsVisible={setChatroomError}
+          />
+        )}
+
         <PlusIcon
           onClick={() => setToggle(!toggle)}
           isToggle={toggle}
@@ -202,7 +213,8 @@ export const SendMessage = observer(
                   const chatError = graphQLError(ex, "chat doesnt exist");
 
                   if (chatError) {
-                    console.log("Display modal");
+                    setChatroomError(true);
+                    return;
                   }
 
                   throw new Error(

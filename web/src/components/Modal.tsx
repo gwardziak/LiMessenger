@@ -1,45 +1,47 @@
-import React, { useState } from "react";
+import React from "react";
 import ReactModal from "react-modal";
 import styled from "styled-components";
 
 type ModalProps = {
   title: string;
   message: string;
-  show: boolean;
+  isVisible: boolean;
+  setIsVisible: (val: boolean) => void;
 };
 
 ReactModal.setAppElement("#root");
 
-export const Modal = ({ title, message }: ModalProps) => {
-  const [isVisible, setIsVisible] = useState<boolean>(false);
+export const Modal = ({
+  title,
+  message,
+  isVisible,
+  setIsVisible,
+}: ModalProps) => {
   return (
-    <div>
-      <button onClick={() => setIsVisible(true)}>Trigger Modal</button>
-      <StyledModal
-        isOpen={isVisible}
-        contentLabel="Modal"
-        onRequestClose={() => setIsVisible(false)}
-        shouldCloseOnOverlayClick={true}
-        shouldReturnFocusAfterClose={false}
-        style={{
-          overlay: {
-            display: "grid",
-            alignContent: "center",
-            justifyContent: "center",
-            backgroundColor: "rgba(134, 142, 153, 0.25)",
-          },
-        }}
-      >
-        <Container>
-          <Title>{title}</Title>
-          <IconContainer onClick={() => setIsVisible(false)}>
-            <Icon />
-          </IconContainer>
-          <Message>{message}</Message>
-          <BlueButton onClick={() => setIsVisible(false)}>Close</BlueButton>
-        </Container>
-      </StyledModal>
-    </div>
+    <StyledModal
+      isOpen={isVisible}
+      contentLabel="Modal"
+      onRequestClose={() => setIsVisible(false)}
+      shouldCloseOnOverlayClick={true}
+      shouldReturnFocusAfterClose={false}
+      style={{
+        overlay: {
+          display: "grid",
+          alignContent: "center",
+          justifyContent: "center",
+          backgroundColor: "rgba(134, 142, 153, 0.25)",
+        },
+      }}
+    >
+      <Container>
+        <Title>{title}</Title>
+        <IconContainer onClick={() => setIsVisible(false)}>
+          <Icon />
+        </IconContainer>
+        <Message>{message}</Message>
+        <BlueButton onClick={() => setIsVisible(false)}>Close</BlueButton>
+      </Container>
+    </StyledModal>
   );
 };
 

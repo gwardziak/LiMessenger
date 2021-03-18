@@ -74,20 +74,10 @@ const HeaderText = styled.div`
 `;
 
 const HeaderIcon = styled.div<{ isToggle: boolean }>`
-  /* background-image: url("assets/up-arrow.png"); */
-  /* background-size: 52px 718px; */
   background-repeat: no-repeat;
-
   background-image: ${(props) =>
     props.isToggle ? "url(assets/up-arrow.png)" : "url(assets/down-arrow.png)"};
 `;
-/* background-position: ${(props) =>
-    props.isToggle ? "-22px -336px" : "0 -314px"}; */
-
-// const HeaderIcon = styled.div<{ isToggle: boolean }>`
-// background-image: url("assets/up-arrow.png");
-// /* background-size: 52px 718px; */
-// background-repeat: no-repeat;
 
 const Item = styled.div`
   display: grid;

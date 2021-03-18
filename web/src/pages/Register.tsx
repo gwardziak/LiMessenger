@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import { useHistory } from "react-router-dom";
 import styled from "styled-components";
 import { useSignInMutation, useSignUpMutation } from "../generated/graphql";
@@ -20,6 +20,10 @@ export const Register = () => {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [rePassword, setRePassword] = useState<string>("");
+  const loginRef = useRef<HTMLInputElement>(null);
+  const emailRef = useRef<HTMLInputElement>(null);
+  const passwordRef = useRef<HTMLInputElement>(null);
+  const rePasswordRef = useRef<HTMLInputElement>(null);
 
   const [error, setError] = useState<IError>({
     login: null,
@@ -37,6 +41,22 @@ export const Register = () => {
 
     if (err.login || err.email || err.password || err.rePassword) {
       setError(err);
+
+      if (err.rePassword) {
+        rePasswordRef.current!.focus();
+      }
+
+      if (err.password) {
+        passwordRef.current!.focus();
+      }
+
+      if (err.email) {
+        emailRef.current!.focus();
+      }
+
+      if (err.login) {
+        loginRef.current!.focus();
+      }
       return;
     }
 
@@ -60,6 +80,14 @@ export const Register = () => {
         password: null,
         rePassword: null,
       });
+
+      if (emailErr) {
+        emailRef.current!.focus();
+      }
+
+      if (duplicateLogin) {
+        loginRef.current!.focus();
+      }
     } else {
       const response = await signIn({
         options: { login, password },
@@ -125,17 +153,23 @@ export const Register = () => {
         <Line />
         <Input
           placeholder="Login"
+          error={!!error.login}
+          ref={loginRef}
           onChange={(e) => setLogin(e.target.value)}
         ></Input>
         {error.login && <ErrorMessage>{error.login.message}</ErrorMessage>}
         <Input
           placeholder="Email"
+          error={!!error.email}
+          ref={emailRef}
           onChange={(e) => setEmail(e.target.value)}
         ></Input>
         {error.email && <ErrorMessage>{error.email.message}</ErrorMessage>}
         <Input
           type="password"
           placeholder="New password"
+          error={!!error.password}
+          ref={passwordRef}
           onChange={(e) => setPassword(e.target.value)}
         ></Input>
         {error.password && (
@@ -144,6 +178,8 @@ export const Register = () => {
         <Input
           type="password"
           placeholder="Repeat password"
+          error={!!error.rePassword}
+          ref={rePasswordRef}
           onChange={(e) => setRePassword(e.target.value)}
         ></Input>
         {error.rePassword && (
