@@ -96,7 +96,6 @@ export class AttachmentsStore {
       throw new Error("Select a chatroom");
     }
 
-    console.log("fetching attachments");
     const repository = isImage ? this.images : this.files;
     const chatroom = repository.get(activeChat);
 

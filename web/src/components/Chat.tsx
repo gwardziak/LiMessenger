@@ -5,7 +5,6 @@ import { ChatRoom } from "./ChatRoom";
 import { SendMessage } from "./SendMessage";
 
 export const Chat = () => {
-  const [isScrolled, setIsScrolled] = useState<boolean>(true);
   const [uploadFiles, setUploadFiles] = useState<File[]>([]);
   const onDrop = useCallback(
     (acceptedFiles: File[]) => {
@@ -20,12 +19,8 @@ export const Chat = () => {
   return (
     <Container {...getRootProps()}>
       {isDragActive && <DropMessage>Drop the files here... </DropMessage>}
-      <ChatRoom isScrolled={isScrolled} setIsScrolled={setIsScrolled} />
-      <SendMessage
-        setIsScrolled={setIsScrolled}
-        uploadFiles={uploadFiles}
-        setUploadFiles={setUploadFiles}
-      />
+      <ChatRoom />
+      <SendMessage uploadFiles={uploadFiles} setUploadFiles={setUploadFiles} />
     </Container>
   );
 };

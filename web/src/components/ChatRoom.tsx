@@ -9,194 +9,123 @@ import { MyScrollbar } from "../utils/Scrollbar";
 import { Files } from "./Files";
 import { Images } from "./Images";
 
-type ChatRoomProps = {
-  isScrolled: boolean;
-  setIsScrolled(val: boolean): void;
-};
+export const ChatRoom = observer(() => {
+  const rootStore = useRootStore();
+  const scrollbarRef = useRef<Scrollbar>(null);
+  const [isFetching, setIsFetching] = useState<boolean>(false);
 
-export const ChatRoom = observer(
-  ({ isScrolled, setIsScrolled }: ChatRoomProps) => {
-    const rootStore = useRootStore();
-    const scrollbarRef = useRef<Scrollbar>(null);
-    const [isFetching, setIsFetching] = useState<boolean>(false);
+  useLayoutEffect(() => {
+    const initialFetch = rootStore.chatStore.messagesInfo.get(
+      rootStore.chatStore.activeChat!
+    )?.initialFetch;
+    const activeChat = rootStore.chatStore.activeChat;
 
-    // useEffect(() => {
-    //   // console.log("scrollToBottom");
-    //   // console.log(scrollbarRef.current);
-    //   // scrollbarRef.current?.scrollToBottom();
-    //   console.log("Howmany times");
-    //   // scrollbarRef.current?.scrollToBottom();
-    //   //setIsScrolled(false);
-    //   setUpdate(false);
-    // }, [rootStore.chatStore.roomMessages]);
-
-    // useLayoutEffect(() => {
-    //   // console.log("scrollToBottom");
-    //   // console.log(scrollbarRef.current);
-    //   // scrollbarRef.current?.scrollToBottom();
-    //   console.log("hm");
-    //   // // scrollbarRef.current?.scrollToBottom();
-    //   // setIsScrolled(false);
-    //   handleScrollUpdate();
-    // }, [rootStore.chatStore.roomMessages, setIsScrolled]);
-
-    // useEffect(() => {
-    //   console.log(rootStore.chatStore.roomMessages);
-    //   console.log(rootStore.chatStore.roomMessages.length > 1);
-    //   if (
-    //     rootStore.chatStore.roomMessages[0] &&
-    //     rootStore.chatStore.roomMessages[0].length > 1
-    //   ) {
-    //     console.log("navigate to bottom");
-    //     handleScrollUpdate();
-    //   }
-    // console.log("scrollToBottom");
-    // console.log(scrollbarRef.current);
-    // scrollbarRef.current?.scrollToBottom();
-    //   console.log("Howmany times");
-    //   // scrollbarRef.current?.scrollToBottom();
-    //   //setIsScrolled(false);
-    // }, [rootStore.chatStore.roomMessages]);
-
-    useLayoutEffect(() => {
-      // console.log("scrollToBottom");
-      // console.log(scrollbarRef.current);
-      // scrollbarRef.current?.scrollToBottom();
-
+    //Todo onInitialFetch true
+    if (!initialFetch || activeChat) {
+      console.log("ScrollToBottom");
       scrollbarRef.current?.scrollToBottom();
-      // setUpdate(false);
-    }, []);
-
-    // useEffect(() => {
-    //   // console.log("scrollToBottom");
-    //   // console.log(scrollbarRef.current);
-    //   // scrollbarRef.current?.scrollToBottom();
-    //   console.log("Howmany times");
-    //   scrollbarRef.current?.scrollToBottom();
-    //   // setUpdate(false);
-    // });
-    // if (updateAa) {
-    //   scrollbarRef.current?.scrollToBottom();
-    //   setUpdate(false);
-    // }
-
-    if (!rootStore.chatStore.roomMessages) {
-      return <div>loading...</div>;
     }
+  }, [
+    rootStore.chatStore.messagesInfo.get(rootStore.chatStore.activeChat!)
+      ?.initialFetch,
+    rootStore.chatStore.activeChat,
+  ]);
 
-    //isScrolled ? handleLoadMore() : handleScrollUpdate(e);
-    return (
-      <StyledScrollbar
-        elementRef={scrollbarRef}
-        autoHide
-        noScrollX
-        onUpdate={async (
-          scrollValues: ScrollState,
-          prevScrollValues: ScrollState
-        ) => {
-          // console.log("now", scrollValues);
-          // console.log("prev", prevScrollValues);
-          // console.log(isFetching, "isFetching");
-          if (
-            !isFetching &&
-            scrollValues.scrollHeight > prevScrollValues.scrollHeight
-          ) {
-            scrollbarRef.current?.scrollToBottom();
-          }
+  return (
+    <StyledScrollbar
+      elementRef={scrollbarRef}
+      autoHide
+      noScrollX
+      onUpdate={async (
+        scrollValues: ScrollState,
+        prevScrollValues: ScrollState
+      ) => {
+        const activeChat = rootStore.chatStore.activeChat;
+        const recipientUuid = rootStore.chatStore.newMessage?.recipientUuid;
+        const senderUuid = rootStore.chatStore.newMessage?.senderUuid;
 
-          const roomId = rootStore.chatStore.activeChat;
-          const room = rootStore.chatStore.messagesInfo.get(roomId ?? "");
-          if (!room) {
-            return;
-          }
+        //scrollToBottom on new received, sent message
+        if (activeChat === (recipientUuid || senderUuid)) {
+          scrollbarRef.current!.scrollToBottom();
+          rootStore.chatStore.setNewMessage(null);
+        }
 
-          if (
-            scrollbarRef.current!.scrollTop === 0 &&
-            !isFetching &&
-            room.hasMore
-          ) {
-            const scroll = scrollbarRef.current!;
+        const roomId = rootStore.chatStore.activeChat;
+        const room = rootStore.chatStore.messagesInfo.get(roomId ?? "");
 
+        if (!room) {
+          return;
+        }
+
+        if (
+          scrollValues.scrollTop === 0 &&
+          !isFetching &&
+          room.hasMore &&
+          !room.initialFetch
+        ) {
+          const scroll = scrollbarRef.current!;
+
+          try {
             console.log("Fetching");
-            try {
-              setIsFetching(true);
-              rootStore.chatStore.fetchChatMessages();
-              const scrollPosition =
-                scroll.scrollHeight -
-                rootStore.chatStore.prevChatScrollHeight -
-                scroll.scrollTop;
-              console.log(scrollPosition, "ScrollPosition");
-              // scroll.scrollTo(0, scrollPosition);
-              setIsFetching(false);
-              console.log("Done fetching");
-            } catch (ex) {
-              console.log("Error during fetching messages", ex.message);
-            }
+            setIsFetching(true);
+            await rootStore.chatStore.fetchChatMessages();
+            const scrollPosition =
+              scroll.scrollHeight - prevScrollValues.scrollHeight;
+
+            scroll.scrollTo(0, scrollPosition);
+
+            setIsFetching(false);
+            console.log("Done fetching");
+          } catch (ex) {
+            console.log("Error during fetching messages", ex.message);
           }
-          // if (
-          //   !mounted &&
-          //   rootStore.chatStore.roomMessages[0] &&
-          //   rootStore.chatStore.roomMessages[0].length > 1
-          // ) {
-          //   scrollbarRef.current?.scrollToBottom();
-          //   console.log("setting mounted");
-          //   setMounted(true);
-          // }
-          // !isScrolled &&
-          // scrollValues.scrollHeight > prevScrollValues.scrollHeight &&
-          //   scrollbarRef.current!.scrollToBottom();
-          //   handleScrollUpdate();
-          // !isScrolled &&
-          // scrollValues.scrollHeight > prevScrollValues.scrollHeight + 28
-          //   ? handleScrollUpdate()
-          //   : handleLoadMore();
-        }}
-      >
-        <Container>
-          <MessageDate>Dziś</MessageDate>
-          {rootStore.chatStore.roomMessages.map((messages) => {
-            const sender = rootStore.userStore.uuid === messages[0].sender.uuid;
-            return (
-              <MessageContainer key={messages[0].uuid} messagesSender={sender}>
-                <GroupMessages messagesSender={sender}>
-                  {messages.map((message) => {
-                    const files = [];
-                    const images = [];
+        }
+      }}
+    >
+      <Container>
+        <MessageDate>Dziś</MessageDate>
+        {rootStore.chatStore.roomMessages.map((messages) => {
+          const sender = rootStore.userStore.uuid === messages[0].sender.uuid;
+          return (
+            <MessageContainer key={messages[0].uuid} messagesSender={sender}>
+              <GroupMessages messagesSender={sender}>
+                {messages.map((message) => {
+                  const files = [];
+                  const images = [];
 
-                    if (message.attachments!.length !== 0) {
-                      for (const attachment of message.attachments!) {
-                        attachment.mimetype.includes("image")
-                          ? images.push(attachment)
-                          : files.push(attachment);
-                      }
+                  if (message.attachments!.length !== 0) {
+                    for (const attachment of message.attachments!) {
+                      attachment.mimetype.includes("image")
+                        ? images.push(attachment)
+                        : files.push(attachment);
                     }
+                  }
 
-                    return (
-                      <React.Fragment key={message.uuid}>
-                        {message.text === "" &&
-                        message.attachments?.length !== 0 ? null : (
-                          <Message key={message.uuid} sender={sender}>
-                            {message.text}
-                          </Message>
-                        )}
-                        {files.length !== 0 && (
-                          <Files files={files} sender={sender} />
-                        )}
+                  return (
+                    <React.Fragment key={message.uuid}>
+                      {message.text === "" &&
+                      message.attachments?.length !== 0 ? null : (
+                        <Message key={message.uuid} sender={sender}>
+                          {message.text}
+                        </Message>
+                      )}
+                      {files.length !== 0 && (
+                        <Files files={files} sender={sender} />
+                      )}
 
-                        {images.length !== 0 && <Images images={images} />}
-                      </React.Fragment>
-                    );
-                  })}
-                </GroupMessages>
-                {!sender && <Avatar src="assets/defaultAvatar.svg" />}
-              </MessageContainer>
-            );
-          })}
-        </Container>
-      </StyledScrollbar>
-    );
-  }
-);
+                      {images.length !== 0 && <Images images={images} />}
+                    </React.Fragment>
+                  );
+                })}
+              </GroupMessages>
+              {!sender && <Avatar src="assets/defaultAvatar.svg" />}
+            </MessageContainer>
+          );
+        })}
+      </Container>
+    </StyledScrollbar>
+  );
+});
 
 const Container = styled.div`
   display: grid;
@@ -270,14 +199,11 @@ const Avatar = styled(DefaultAvatar)`
   grid-row: 1;
   width: 32px;
   height: 32px;
-  /* align-self: flex-end; */
-  /* grid-row: 4; */
 `;
 
 const StyledScrollbar = styled(MyScrollbar)`
   border-left: 1px solid rgba(0, 0, 0, 0.1);
   box-sizing: border-box;
-
   .ScrollbarsCustom-Content {
     display: grid;
   }

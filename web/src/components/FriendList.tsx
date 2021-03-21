@@ -23,8 +23,18 @@ export const FriendList = observer(() => {
             onClick={(e) => {
               if (rootStore.chatStore.activeChat !== friendUuid) {
                 try {
-                  rootStore.chatStore.setPrevChatScrollHeight(0);
                   rootStore.chatStore.setChatroom(friendUuid);
+                  console.log("Fetch data");
+
+                  if (
+                    rootStore.chatStore.messagesInfo.get(
+                      rootStore.chatStore.activeChat!
+                    )?.initialFetch
+                  ) {
+                    console.log("Kolejny req");
+                    rootStore.chatStore.fetchChatMessages();
+                  }
+
                   console.log("Change room");
                 } catch (ex) {
                   console.log("Error during selecting a chat", ex.message);

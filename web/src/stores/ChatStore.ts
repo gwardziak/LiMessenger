@@ -51,6 +51,7 @@ export type Message = {
 };
 
 export type MessageInfo = {
+  initialFetch: boolean;
   hasMore: boolean;
 };
 
@@ -71,14 +72,22 @@ export class ChatStore {
 
   @observable friendName: string | null = null;
 
-  @observable prevChatScrollHeight: number = 0;
+  @observable newMessage: {
+    recipientUuid: string;
+    senderUuid: string;
+  } | null = null;
+
+  @observable isFetching: boolean = true;
 
   constructor(private readonly rootStore: RootStore) {
     makeObservable(this);
   }
 
-  @action setPrevChatScrollHeight(position: number): void {
-    this.prevChatScrollHeight = position;
+  @action resetStore(): void {
+    this.messages.clear();
+    this.messagesInfo.clear();
+    this.activeChat = null;
+    this.friendName = null;
   }
 
   @action private addMessage(key: string, data: Message): void {
@@ -169,6 +178,15 @@ export class ChatStore {
     return messages.reverse();
   }
 
+  @action setNewMessage(
+    val: {
+      recipientUuid: string;
+      senderUuid: string;
+    } | null
+  ) {
+    this.newMessage = val;
+  }
+
   @action async fetchFirstMessages(): Promise<void> {
     const { data, error } = await this.rootStore.urqlClient
       .query<FirstMessagesQuery, FirstMessagesQueryVariables>(
@@ -189,9 +207,13 @@ export class ChatStore {
           this.messages.set(key, []);
         }
         this.messages.get(key)!.unshift(message);
-        this.setRoomHasMore(key, true);
+        this.setRoomHasMore(key, true, true);
       }
     });
+  }
+
+  @action setIsFetching(val: boolean) {
+    this.isFetching = val;
   }
 
   @action async fetchChatMessages(): Promise<void> {
@@ -225,21 +247,32 @@ export class ChatStore {
       }
       this.messages.get(this.activeChat)!.push(...data.messages.messages);
 
-      if (!data.messages.hasMore) {
-        this.setRoomHasMore(this.activeChat, false);
+      if (this.messagesInfo.get(this.activeChat)?.initialFetch) {
+        this.setRoomHasMore(
+          this.activeChat,
+          this.messagesInfo.get(this.activeChat)?.hasMore!,
+          false
+        );
       }
+
+      if (!data.messages.hasMore) {
+        this.setRoomHasMore(this.activeChat, false, false);
+      }
+      this.setIsFetching(false);
     });
   }
 
-  @action setChatroom(uuid?: string): void {
+  @action async setChatroom(uuid?: string): Promise<void> {
     if (!this.activeChat) {
       const latestMessage: Message = this.firstMessages[0];
 
       if (latestMessage) {
         this.activeChat = this.roomId(latestMessage);
-        this.fetchChatMessages();
-        this.rootStore.attachmentsStore.fetchAttachments(false);
-        this.rootStore.attachmentsStore.fetchAttachments(true);
+        this.setIsFetching(true);
+        await this.fetchChatMessages();
+        this.setIsFetching(false);
+        await this.rootStore.attachmentsStore.fetchAttachments(false);
+        await this.rootStore.attachmentsStore.fetchAttachments(true);
         return;
       } else {
         this.activeChat = " ";
@@ -257,13 +290,17 @@ export class ChatStore {
       this.rootStore.attachmentsStore.filesInfo.get(this.activeChat) ===
       undefined
     ) {
-      this.rootStore.attachmentsStore.fetchAttachments(false);
-      this.rootStore.attachmentsStore.fetchAttachments(true);
+      await this.rootStore.attachmentsStore.fetchAttachments(false);
+      await this.rootStore.attachmentsStore.fetchAttachments(true);
     }
   }
 
-  @action setRoomHasMore(uuid: string, hasMore: boolean): void {
-    this.messagesInfo.set(uuid, { hasMore });
+  @action setRoomHasMore(
+    uuid: string,
+    hasMore: boolean,
+    initialFetch: boolean
+  ): void {
+    this.messagesInfo.set(uuid, { hasMore, initialFetch });
   }
 
   @action async unsubsribeChat(): Promise<void> {
@@ -290,6 +327,7 @@ export class ChatStore {
         }
 
         return runInAction(() => {
+          console.log(data.chatroomSubscription);
           const key: string = this.roomId(data.chatroomSubscription);
           const files = [];
           const images = [];
@@ -322,6 +360,11 @@ export class ChatStore {
               this.rootStore.attachmentsStore.images.get(key)!.push(...images);
             }
           }
+
+          this.setNewMessage({
+            recipientUuid: data.chatroomSubscription.recipient.uuid,
+            senderUuid: data.chatroomSubscription.sender.uuid,
+          });
         });
       })
     );
@@ -351,18 +394,10 @@ export class ChatStore {
     }
   }
 
-  @action resetStore(): void {
-    this.messages.clear();
-    this.messagesInfo.clear();
-    this.activeChat = null;
-    this.friendName = null;
-    this.prevChatScrollHeight = 0;
-  }
-
   @action async subscribeAndFetch(): Promise<void> {
     await this.rootStore.userStore.fetchMe();
     await this.subscribeMessages();
     await this.fetchFirstMessages();
-    this.setChatroom();
+    await this.setChatroom();
   }
 }

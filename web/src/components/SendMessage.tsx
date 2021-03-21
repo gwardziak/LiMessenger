@@ -22,13 +22,12 @@ import { EmojiPicker } from "./EmojiPicker";
 import { Modal } from "./Modal";
 
 type SendMessageProps = {
-  setIsScrolled(val: boolean): void;
   uploadFiles: File[];
   setUploadFiles(val: File[]): void;
 };
 
 export const SendMessage = observer(
-  ({ setIsScrolled, uploadFiles, setUploadFiles }: SendMessageProps) => {
+  ({ uploadFiles, setUploadFiles }: SendMessageProps) => {
     const rootStore = useRootStore();
     const isMobile = useMatchesMediaQuery([
       mediaQuery.xs,
@@ -206,7 +205,6 @@ export const SendMessage = observer(
                     input.replace(/&nbsp;/g, " "),
                     uploadFiles
                   );
-                  setIsScrolled(false);
                   setInput("");
                   setUploadFiles([]);
                 } catch (ex) {
