@@ -72,12 +72,10 @@ export class ChatStore {
 
   @observable friendName: string | null = null;
 
-  @observable newMessage: {
+  @observable incomingMessage: {
     recipientUuid: string;
     senderUuid: string;
   } | null = null;
-
-  @observable isFetching: boolean = true;
 
   constructor(private readonly rootStore: RootStore) {
     makeObservable(this);
@@ -88,13 +86,6 @@ export class ChatStore {
     this.messagesInfo.clear();
     this.activeChat = null;
     this.friendName = null;
-  }
-
-  @action private addMessage(key: string, data: Message): void {
-    if (!this.messages.has(key)) {
-      this.messages.set(key, []);
-    }
-    this.messages.get(key)!.push(data);
   }
 
   @action setFriendName(name: string): void {
@@ -178,13 +169,13 @@ export class ChatStore {
     return messages.reverse();
   }
 
-  @action setNewMessage(
-    val: {
+  @action setIncomingMessage(
+    participants: {
       recipientUuid: string;
       senderUuid: string;
     } | null
   ) {
-    this.newMessage = val;
+    this.incomingMessage = participants;
   }
 
   @action async fetchFirstMessages(): Promise<void> {
@@ -207,13 +198,9 @@ export class ChatStore {
           this.messages.set(key, []);
         }
         this.messages.get(key)!.unshift(message);
-        this.setRoomHasMore(key, true, true);
+        this.setMessageInfo(key, { hasMore: true, initialFetch: true });
       }
     });
-  }
-
-  @action setIsFetching(val: boolean) {
-    this.isFetching = val;
   }
 
   @action async fetchChatMessages(): Promise<void> {
@@ -248,17 +235,18 @@ export class ChatStore {
       this.messages.get(this.activeChat)!.push(...data.messages.messages);
 
       if (this.messagesInfo.get(this.activeChat)?.initialFetch) {
-        this.setRoomHasMore(
-          this.activeChat,
-          this.messagesInfo.get(this.activeChat)?.hasMore!,
-          false
-        );
+        this.setMessageInfo(this.activeChat, {
+          hasMore: this.messagesInfo.get(this.activeChat)?.hasMore!,
+          initialFetch: false,
+        });
       }
 
       if (!data.messages.hasMore) {
-        this.setRoomHasMore(this.activeChat, false, false);
+        this.setMessageInfo(this.activeChat, {
+          hasMore: false,
+          initialFetch: false,
+        });
       }
-      this.setIsFetching(false);
     });
   }
 
@@ -268,9 +256,9 @@ export class ChatStore {
 
       if (latestMessage) {
         this.activeChat = this.roomId(latestMessage);
-        this.setIsFetching(true);
+
         await this.fetchChatMessages();
-        this.setIsFetching(false);
+
         await this.rootStore.attachmentsStore.fetchAttachments(false);
         await this.rootStore.attachmentsStore.fetchAttachments(true);
         return;
@@ -295,12 +283,11 @@ export class ChatStore {
     }
   }
 
-  @action setRoomHasMore(
+  @action setMessageInfo(
     uuid: string,
-    hasMore: boolean,
-    initialFetch: boolean
+    { initialFetch, hasMore }: MessageInfo
   ): void {
-    this.messagesInfo.set(uuid, { hasMore, initialFetch });
+    this.messagesInfo.set(uuid, { initialFetch, hasMore });
   }
 
   @action async unsubsribeChat(): Promise<void> {
@@ -361,7 +348,7 @@ export class ChatStore {
             }
           }
 
-          this.setNewMessage({
+          this.setIncomingMessage({
             recipientUuid: data.chatroomSubscription.recipient.uuid,
             senderUuid: data.chatroomSubscription.sender.uuid,
           });

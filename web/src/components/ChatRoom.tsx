@@ -41,13 +41,14 @@ export const ChatRoom = observer(() => {
         prevScrollValues: ScrollState
       ) => {
         const activeChat = rootStore.chatStore.activeChat;
-        const recipientUuid = rootStore.chatStore.newMessage?.recipientUuid;
-        const senderUuid = rootStore.chatStore.newMessage?.senderUuid;
+        const recipientUuid =
+          rootStore.chatStore.incomingMessage?.recipientUuid;
+        const senderUuid = rootStore.chatStore.incomingMessage?.senderUuid;
 
         //scrollToBottom on new received, sent message
         if (activeChat === (recipientUuid || senderUuid)) {
           scrollbarRef.current!.scrollToBottom();
-          rootStore.chatStore.setNewMessage(null);
+          rootStore.chatStore.setIncomingMessage(null);
         }
 
         const roomId = rootStore.chatStore.activeChat;
