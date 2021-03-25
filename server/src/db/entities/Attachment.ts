@@ -3,6 +3,7 @@ import {
   Column,
   Entity,
   Generated,
+  Index,
   ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
@@ -50,6 +51,7 @@ export class Attachment implements Attachment.Options {
   @UpdateDateColumn()
   updatedAt!: Date;
 
+  @Index()
   @ManyToOne(() => Message, (message) => message.attachments, {
     nullable: false,
   })
