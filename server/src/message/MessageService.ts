@@ -198,29 +198,4 @@ export class MessageService {
     await this.messageRepository.save(message);
     await this.pubSub.publish("NEW_MESSAGE", message);
   }
-
-  async sender(id: number): Promise<User> {
-    const message = await this.messageRepository.findOne({
-      where: { id },
-      relations: ["sender"],
-    });
-    return message!.sender;
-  }
-
-  async recipient(id: number): Promise<User> {
-    const message = await this.messageRepository.findOne({
-      where: { id },
-      relations: ["recipient"],
-    });
-    return message!.recipient;
-  }
-
-  async attachments(messageId: number): Promise<Attachment[]> {
-    const message = await this.messageRepository.findOne({
-      where: { id: messageId },
-      relations: ["attachments"],
-    });
-
-    return message?.attachments || [];
-  }
 }

@@ -201,8 +201,7 @@ export const SendMessage = observer(
                 e.preventDefault();
 
                 try {
-                  console.log(uploadFiles, "upFiles");
-                  await rootStore.chatStore.sendMessage(
+                  rootStore.chatStore.sendMessage(
                     input.replace(/&nbsp;/g, " "),
                     uploadFiles
                   );

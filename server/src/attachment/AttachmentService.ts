@@ -127,13 +127,4 @@ export class AttachmentService {
       })
     );
   }
-
-  async link(id: number): Promise<string> {
-    const attachment = await this.attachmentRepository.findOne({
-      where: { id },
-      relations: ["participantA"],
-    });
-
-    return `attachment/${attachment!.participantA.uuid}/${attachment!.uuid}`;
-  }
 }

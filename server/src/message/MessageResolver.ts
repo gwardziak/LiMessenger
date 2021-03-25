@@ -12,7 +12,7 @@ import {
 import { AttachmentInput } from "../attachment/dto/AttachmentInput";
 import { AttachmentObjectType } from "../attachment/dto/AttachmentObjectType";
 import { Message } from "../db/entities/Message";
-import { MyContext } from "../models/MyContext";
+import { GraphQLServer } from "../GraphQLServer";
 import { MessageInput } from "./dto/MessageInput";
 import {
   MessageObjectType,
@@ -30,17 +30,19 @@ export class MessageResolver {
   async messages(
     @Arg("options")
     options: MessagePaginationInput,
-    @Ctx() { user }: MyContext
+    @Ctx() { user }: GraphQLServer.Context
   ): Promise<{
     messages: Message[];
     hasMore: boolean;
   }> {
-    return await this.messageService.getAll(user, options);
+    return await this.messageService.getAll(user!, options);
   }
 
   @Query(() => [MessageObjectType])
-  async firstMessages(@Ctx() { user }: MyContext): Promise<Message[]> {
-    return await this.messageService.firstMessages(user);
+  async firstMessages(
+    @Ctx() { user }: GraphQLServer.Context
+  ): Promise<Message[]> {
+    return await this.messageService.firstMessages(user!);
   }
 
   @Authorized()
@@ -50,37 +52,33 @@ export class MessageResolver {
     options: MessageInput,
     @Arg("files", () => [GraphQLUpload], { nullable: true })
     files: AttachmentInput[],
-    @Ctx() { user }: MyContext
+    @Ctx() { user }: GraphQLServer.Context
   ): Promise<boolean> {
-    await this.messageService.sendMessage(user, options, files);
+    await this.messageService.sendMessage(user!, options, files);
     return true;
   }
 
   @FieldResolver(() => UserMessageObjectType)
   async sender(
-    @Root() message: Message, //@ts-ignore
-    @Ctx() { loaders }: MyContext
+    @Root() message: Message,
+    @Ctx() { loaders }: GraphQLServer.Context
   ): Promise<UserMessageObjectType> {
     return loaders.sender.load(message.id);
-    // return await this.messageService.sender(message.id);
   }
 
   @FieldResolver(() => UserMessageObjectType)
   async recipient(
-    @Root() message: Message, //@ts-ignore
-    @Ctx() { loaders }: MyContext
+    @Root() message: Message,
+    @Ctx() { loaders }: GraphQLServer.Context
   ): Promise<UserMessageObjectType> {
     return loaders.recipient.load(message.id);
-    // return await this.messageService.recipient(message.id);
   }
 
   @FieldResolver(() => [AttachmentObjectType])
   async attachments(
     @Root() message: Message,
-    //@ts-ignore
-    @Ctx() { loaders }: MyContext
+    @Ctx() { loaders }: GraphQLServer.Context
   ): Promise<AttachmentObjectType[]> {
     return loaders.attachments.load(message.id);
-    // return await this.messageService.attachments(message.id);
   }
 }
