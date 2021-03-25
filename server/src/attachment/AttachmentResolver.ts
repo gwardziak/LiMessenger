@@ -25,7 +25,12 @@ export class AttachmentResolver {
   }
 
   @FieldResolver(() => String)
-  async link(@Root() attachment: Attachment): Promise<string> {
-    return await this.attachmentService.link(attachment.id);
+  async link(
+    @Root() attachment: Attachment,
+    //@ts-ignore
+    @Ctx() { loaders }: MyContext
+  ): Promise<string> {
+    return loaders.link.load(attachment.id);
+    // return await this.attachmentService.link(attachment.id);
   }
 }

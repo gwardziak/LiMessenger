@@ -2,6 +2,7 @@ import { ExpressContext } from "apollo-server-express/dist/ApolloServer";
 import { ConnectionContext } from "subscriptions-transport-ws";
 import { User } from "./db/entities/User";
 import { UserService } from "./user/UserService";
+import { createLoaders } from "./utils/createLoaders";
 
 import WebSocket = require("ws");
 
@@ -9,6 +10,7 @@ export namespace GraphQLServer {
   export type Context = {
     user: User | null;
     assosiateWithUser: (user: User | null) => void;
+    loaders: ReturnType<typeof createLoaders>;
   };
 
   export type BuildContextFrom =
@@ -120,8 +122,10 @@ export class GraphQLServer {
       }
     }
 
+    const loaders = createLoaders();
     return {
       user,
+      loaders,
       assosiateWithUser: (user) => {
         if (websocketInstance) {
           if (user) {

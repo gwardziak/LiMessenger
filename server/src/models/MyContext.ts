@@ -6,4 +6,5 @@ export interface MyContext {
   res: Response;
   user: User;
   assosiateWithUser: (user: User | null) => void;
+  loaders: any;
 }

@@ -57,17 +57,30 @@ export class MessageResolver {
   }
 
   @FieldResolver(() => UserMessageObjectType)
-  async sender(@Root() message: Message): Promise<UserMessageObjectType> {
-    return await this.messageService.sender(message.id);
+  async sender(
+    @Root() message: Message, //@ts-ignore
+    @Ctx() { loaders }: MyContext
+  ): Promise<UserMessageObjectType> {
+    return loaders.sender.load(message.id);
+    // return await this.messageService.sender(message.id);
   }
 
   @FieldResolver(() => UserMessageObjectType)
-  async recipient(@Root() message: Message): Promise<UserMessageObjectType> {
-    return await this.messageService.recipient(message.id);
+  async recipient(
+    @Root() message: Message, //@ts-ignore
+    @Ctx() { loaders }: MyContext
+  ): Promise<UserMessageObjectType> {
+    return loaders.recipient.load(message.id);
+    // return await this.messageService.recipient(message.id);
   }
 
   @FieldResolver(() => [AttachmentObjectType])
-  async attachments(@Root() message: Message): Promise<AttachmentObjectType[]> {
-    return await this.messageService.attachments(message.id);
+  async attachments(
+    @Root() message: Message,
+    //@ts-ignore
+    @Ctx() { loaders }: MyContext
+  ): Promise<AttachmentObjectType[]> {
+    return loaders.attachments.load(message.id);
+    // return await this.messageService.attachments(message.id);
   }
 }
