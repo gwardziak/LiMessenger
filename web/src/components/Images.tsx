@@ -14,7 +14,7 @@ export const Images = ({ images, elementsInCol }: ImagesProps) => {
         <Image
           imagesCount={elementsInCol ? elementsInCol : images.length}
           key={image.uuid}
-          src={`http://localhost:4000/attachment/${image.link}`}
+          src={`http://localhost:4000/${image.link}`}
         />
       ))}
     </Container>

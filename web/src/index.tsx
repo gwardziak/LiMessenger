@@ -12,6 +12,7 @@ import {
 } from "urql";
 import App from "./App";
 import { RootStore } from "./stores/RootStore";
+import fileExchange from "./utils/fileExchange";
 
 const GlobalStyle = createGlobalStyle`
 html {
@@ -49,7 +50,7 @@ const client = createClient({
   exchanges: [
     dedupExchange,
     cacheExchange,
-    // multipartFetchExchange,
+    fileExchange,
     subscriptionExchange({
       forwardSubscription: (operation) => subscriptionClient.request(operation),
       enableAllOperations: true,
