@@ -1,7 +1,7 @@
 import { Resolver, ResolverFilterData, Root, Subscription } from "type-graphql";
 import { Message } from "../db/entities/Message";
+import { GraphQLServer } from "../GraphQLServer";
 import { MessageObjectType } from "../message/dto/MessageObjectType";
-import { MyContext } from "../models/MyContext";
 import { ChatroomService } from "./ChatroomService";
 
 @Resolver()
@@ -13,7 +13,7 @@ export class ChatroomResolver {
     filter: ({
       payload,
       context,
-    }: ResolverFilterData<Message, any, MyContext>) => {
+    }: ResolverFilterData<Message, any, GraphQLServer.Context>) => {
       return (
         payload.recipient.uuid === context.user?.uuid ||
         payload.sender.id === context.user?.id

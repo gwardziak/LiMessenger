@@ -1,12 +1,15 @@
 import { AuthChecker } from "type-graphql";
 import { User } from "../db/entities/User";
-import { MyContext } from "../models/MyContext";
+import { GraphQLServer } from "../GraphQLServer";
 
 export interface Context {
   authUser?: User;
 }
 
-export const authChecker: AuthChecker<MyContext> = ({ context }, roles) => {
+export const authChecker: AuthChecker<GraphQLServer.Context> = (
+  { context },
+  roles
+) => {
   if (roles.length === 0) {
     return context.user !== undefined;
   }

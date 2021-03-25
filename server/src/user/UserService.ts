@@ -4,8 +4,8 @@ import * as crypto from "crypto";
 import { Service } from "typedi";
 import { getRepository, Like } from "typeorm";
 import { User } from "../db/entities/User";
+import { GraphQLServer } from "../GraphQLServer";
 import { isDuplicateError } from "../utils/isDuplicateError";
-import { MyContext } from "./../models/MyContext";
 
 export namespace UserService {
   export type CreateUser = {
@@ -61,7 +61,7 @@ export class UserService {
 
   async authorize(
     options: UserService.Authorize,
-    { assosiateWithUser }: MyContext
+    { assosiateWithUser }: GraphQLServer.Context
   ): Promise<User | null> {
     const user = await this.verifyUserToken(options.token);
 

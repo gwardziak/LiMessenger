@@ -1,7 +1,7 @@
 import { Arg, Authorized, Ctx, Mutation, Query, Resolver } from "type-graphql";
 import { User } from "../db/entities/User";
+import { GraphQLServer } from "../GraphQLServer";
 import { UserMessageObjectType } from "../message/dto/MessageObjectType";
-import { MyContext } from "./../models/MyContext";
 import { AuthorizeInput } from "./dto/AuthorizeInput";
 import { SignInInput } from "./dto/SignInInput";
 import { SignUpInput } from "./dto/SignUpInput";
@@ -14,22 +14,22 @@ export class UserResolver {
 
   @Authorized()
   @Query(() => UserObjectType, { nullable: true })
-  async me(@Ctx() { user }: MyContext): Promise<User | null> {
+  async me(@Ctx() { user }: GraphQLServer.Context): Promise<User | null> {
     return await this.userService.me(user);
   }
 
   @Query(() => [UserMessageObjectType])
   async findUser(
     @Arg("phase") phase: string,
-    @Ctx() { user }: MyContext
+    @Ctx() { user }: GraphQLServer.Context
   ): Promise<User[]> {
-    return await this.userService.findUsers(user, phase);
+    return await this.userService.findUsers(user!, phase);
   }
 
   @Query(() => UserObjectType, { nullable: true })
   async authorize(
     @Arg("token") token: AuthorizeInput,
-    @Ctx() context: MyContext
+    @Ctx() context: GraphQLServer.Context
   ): Promise<User | null> {
     return await this.userService.authorize(token, context);
   }
@@ -50,7 +50,7 @@ export class UserResolver {
 
   @Authorized()
   @Mutation(() => Boolean)
-  async signOut(@Ctx() context: MyContext): Promise<boolean> {
+  async signOut(@Ctx() context: GraphQLServer.Context): Promise<boolean> {
     context.assosiateWithUser(null);
     return true;
   }
