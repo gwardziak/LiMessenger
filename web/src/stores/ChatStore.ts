@@ -39,6 +39,8 @@ export type Attachment = {
   name: string;
   mimetype: string;
   createdAt: string;
+  height: number;
+  width: number;
 };
 
 export type Message = {

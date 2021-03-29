@@ -12,6 +12,8 @@ export const Images = ({ images, elementsInCol }: ImagesProps) => {
     <Container imagesCount={images.length}>
       {images.map((image) => (
         <Image
+          height={image.height}
+          width={image.width}
           imagesCount={elementsInCol ? elementsInCol : images.length}
           key={image.uuid}
           src={`http://localhost:4000/${image.link}`}
@@ -24,11 +26,11 @@ export const Images = ({ images, elementsInCol }: ImagesProps) => {
 const handleColumnTemplate = (imagesCount: number) => {
   switch (imagesCount) {
     case 1:
-      return "grid-template-columns: 1fr";
+      return "1fr";
     case 2:
-      return "grid-template-columns: 1fr 1fr";
+      return "1fr 1fr";
     default:
-      return "grid-template-columns: 1fr 1fr 1fr";
+      return "1fr 1fr 1fr";
   }
 };
 
@@ -37,17 +39,17 @@ const Container = styled.div<{ imagesCount: number }>`
   grid-gap: 4px;
   max-width: 75%;
   border-radius: ${(props) => (props.imagesCount > 1 ? "4px" : "18px")};
-  ${(props) => handleColumnTemplate(props.imagesCount)}
+  grid-template-columns: ${(props) => handleColumnTemplate(props.imagesCount)};
 `;
 
 const handleImageHeight = (imagesCount: number) => {
   switch (imagesCount) {
     case 1:
-      return "height: auto";
+      return "auto";
     case 2:
-      return "height: 190px";
+      return "190px";
     default:
-      return "height: 125px";
+      return "125px";
   }
 };
 
@@ -58,6 +60,5 @@ const Image = styled.img<{ imagesCount: number }>`
   border: 1px solid rgba(0, 0, 0, 0.1);
   box-shadow: inset 0 0 1px rgba(0, 0, 0, 0.4);
   border-radius: ${(props) => (props.imagesCount > 1 ? "4px" : "18px")};
-  width: ${(props) => (props.imagesCount > 1 ? "100%" : "auto")};
-  ${(props) => handleImageHeight(props.imagesCount)};
+  height: ${(props) => handleImageHeight(props.imagesCount)};
 `;

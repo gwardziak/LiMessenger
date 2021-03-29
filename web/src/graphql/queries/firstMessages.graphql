@@ -17,6 +17,8 @@ query FirstMessages {
       mimetype
       link
       createdAt
+      height
+      width
     }
   }
 }

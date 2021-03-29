@@ -1,3 +1,4 @@
+import sizeOf from "image-size";
 import { Stream } from "stream";
 import { Service } from "typedi";
 import { getRepository } from "typeorm";
@@ -41,13 +42,24 @@ export class AttachmentService {
 
       readStream.on("data", (chunk) => (file += chunk));
       readStream.on("end", async () => {
+        const binaryFile = Buffer.from(file, "binary");
+        let dimensions;
+        try {
+          dimensions = sizeOf(binaryFile);
+        } catch (ex) {
+          dimensions = { width: 0, height: 0 };
+        }
+
         const attachment = new Attachment({
           participantA: sender,
           participantB: recipient,
           name: filename,
-          attachment: Buffer.from(file, "binary"),
+          attachment: binaryFile,
           mimetype,
+          width: dimensions.width!,
+          height: dimensions.height!,
         });
+
         return resolve(attachment);
       });
     });

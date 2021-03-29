@@ -28,6 +28,8 @@ export type Attachment = {
   mimetype: string;
   createdAt: string;
   link: string;
+  height: number;
+  width: number;
 };
 
 export type AttachmentsInfo = {

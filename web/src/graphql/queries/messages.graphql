@@ -19,6 +19,8 @@ query Messages($options: MessagePaginationInput!) {
         mimetype
         link
         createdAt
+        height
+        width
       }
     }
   }

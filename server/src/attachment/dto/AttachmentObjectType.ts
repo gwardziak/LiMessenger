@@ -8,6 +8,8 @@ namespace AttachmentObjectType {
     mimetype: string;
     createdAt: Date;
     updatedAt: Date;
+    height: number;
+    width: number;
   };
   export type Pagination = {
     attachments: Attachment[];
@@ -25,6 +27,12 @@ export class AttachmentObjectType implements AttachmentObjectType.Options {
 
   @Field()
   mimetype!: string;
+
+  @Field()
+  width!: number;
+
+  @Field()
+  height!: number;
 
   @Field((type) => Date)
   createdAt!: Date;

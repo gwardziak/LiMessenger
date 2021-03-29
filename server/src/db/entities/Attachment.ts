@@ -18,6 +18,8 @@ export namespace Attachment {
     participantA: User;
     participantB: User;
     mimetype: string;
+    width: number;
+    height: number;
     message?: Message;
   };
 }
@@ -39,6 +41,12 @@ export class Attachment implements Attachment.Options {
 
   @Column()
   mimetype!: string;
+
+  @Column()
+  width!: number;
+
+  @Column()
+  height!: number;
 
   @Column()
   createdAt!: Date;

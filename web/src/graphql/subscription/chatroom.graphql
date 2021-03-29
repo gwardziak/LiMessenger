@@ -18,6 +18,8 @@ subscription Chatroom {
       mimetype
       link
       createdAt
+      height
+      width
     }
   }
 }

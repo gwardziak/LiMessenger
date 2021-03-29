@@ -64,6 +64,8 @@ export type Attachment = {
   uuid: Scalars['String'];
   name: Scalars['String'];
   mimetype: Scalars['String'];
+  width: Scalars['Float'];
+  height: Scalars['Float'];
   createdAt: Scalars['DateTime'];
   updatedAt: Scalars['DateTime'];
   link: Scalars['String'];
@@ -209,7 +211,7 @@ export type AttachmentsQuery = (
     & Pick<PaginatedAttachments, 'hasMore'>
     & { attachments: Array<(
       { __typename?: 'Attachment' }
-      & Pick<Attachment, 'uuid' | 'name' | 'mimetype' | 'link' | 'createdAt'>
+      & Pick<Attachment, 'uuid' | 'name' | 'mimetype' | 'link' | 'createdAt' | 'height' | 'width'>
     )> }
   ) }
 );
@@ -256,7 +258,7 @@ export type FirstMessagesQuery = (
       & Pick<UserMessage, 'uuid' | 'username'>
     ), attachments: Array<(
       { __typename?: 'Attachment' }
-      & Pick<Attachment, 'uuid' | 'name' | 'mimetype' | 'link' | 'createdAt'>
+      & Pick<Attachment, 'uuid' | 'name' | 'mimetype' | 'link' | 'createdAt' | 'height' | 'width'>
     )> }
   )> }
 );
@@ -293,7 +295,7 @@ export type MessagesQuery = (
         & Pick<UserMessage, 'uuid' | 'username'>
       ), attachments: Array<(
         { __typename?: 'Attachment' }
-        & Pick<Attachment, 'uuid' | 'name' | 'mimetype' | 'link' | 'createdAt'>
+        & Pick<Attachment, 'uuid' | 'name' | 'mimetype' | 'link' | 'createdAt' | 'height' | 'width'>
       )> }
     )> }
   ) }
@@ -315,7 +317,7 @@ export type ChatroomSubscription = (
       & Pick<UserMessage, 'uuid' | 'username'>
     ), attachments: Array<(
       { __typename?: 'Attachment' }
-      & Pick<Attachment, 'uuid' | 'name' | 'mimetype' | 'link' | 'createdAt'>
+      & Pick<Attachment, 'uuid' | 'name' | 'mimetype' | 'link' | 'createdAt' | 'height' | 'width'>
     )> }
   ) }
 );
@@ -367,6 +369,8 @@ export const AttachmentsDocument = gql`
       mimetype
       link
       createdAt
+      height
+      width
     }
   }
 }
@@ -422,6 +426,8 @@ export const FirstMessagesDocument = gql`
       mimetype
       link
       createdAt
+      height
+      width
     }
   }
 }
@@ -467,6 +473,8 @@ export const MessagesDocument = gql`
         mimetype
         link
         createdAt
+        height
+        width
       }
     }
   }
@@ -497,6 +505,8 @@ export const ChatroomDocument = gql`
       mimetype
       link
       createdAt
+      height
+      width
     }
   }
 }
