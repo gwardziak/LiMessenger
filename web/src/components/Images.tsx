@@ -1,4 +1,5 @@
 import React from "react";
+import { useInView } from "react-intersection-observer";
 import styled from "styled-components";
 import { Attachment } from "../stores/ChatStore";
 
@@ -8,17 +9,32 @@ type ImagesProps = {
 };
 
 export const Images = ({ images, elementsInCol }: ImagesProps) => {
+  const [ref, inView, entry] = useInView({
+    triggerOnce: true,
+    rootMargin: "600px 0px",
+  });
+
   return (
-    <Container imagesCount={images.length}>
-      {images.map((image) => (
-        <Image
-          height={image.height}
-          width={image.width}
-          imagesCount={elementsInCol ? elementsInCol : images.length}
-          key={image.uuid}
-          src={`http://localhost:4000/${image.link}`}
-        />
-      ))}
+    <Container imagesCount={images.length} ref={ref}>
+      {images.map((image) =>
+        inView ? (
+          <Image
+            height={image.height}
+            width={image.width}
+            imagesCount={elementsInCol ? elementsInCol : images.length}
+            key={image.uuid}
+            src={`http://localhost:4000/${image.link}`}
+          />
+        ) : (
+          <Image
+            height={image.height}
+            width={image.width}
+            imagesCount={elementsInCol ? elementsInCol : images.length}
+            key={image.uuid}
+            data-src={`http://localhost:4000/${image.link}`}
+          />
+        )
+      )}
     </Container>
   );
 };
@@ -34,7 +50,9 @@ const handleColumnTemplate = (imagesCount: number) => {
   }
 };
 
-const Container = styled.div<{ imagesCount: number }>`
+const Container = styled.div<{
+  imagesCount: number;
+}>`
   display: grid;
   grid-gap: 4px;
   max-width: 75%;
