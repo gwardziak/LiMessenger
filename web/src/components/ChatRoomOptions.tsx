@@ -96,13 +96,17 @@ const Username = styled.div`
 
 const Activity = styled.div`
   grid-area: activity;
-  color: rgba(0, 0, 0, 0.4);
+  color: ${({ theme }) => theme.input.placeholder};
   font-size: 14px;
   margin-top: 2px;
   padding-bottom: 16px;
 `;
 
 const StyledScrollbar = styled(MyScrollbar)`
-  border-left: 1px solid rgba(0, 0, 0, 0.1);
+  border-left: ${({ theme }) => `1px solid ${theme.divider.color}`};
   box-sizing: border-box;
+
+  .ScrollbarsCustom-Thumb {
+    background: ${({ theme }) => theme.scroll.color};
+  }
 `;

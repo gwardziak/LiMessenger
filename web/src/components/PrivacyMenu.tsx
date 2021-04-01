@@ -1,7 +1,9 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import { Bell } from "../Icons/Bell";
+import { DownArrow } from "../Icons/DownArrow";
 import { MessageCross } from "../Icons/MessageCross";
+import { UpArrow } from "../Icons/UpArrow";
 import { CautionTriangle } from "./../Icons/CautionTriangle";
 import { MinusCircle } from "./../Icons/MinusCircle";
 
@@ -12,7 +14,7 @@ export const PrivacyMenu = () => {
     <Container isToggle={toggle}>
       <Header isToggle={toggle} onClick={() => setToggle(!toggle)}>
         <HeaderText>Prywatność i Pomoc</HeaderText>
-        <HeaderIcon isToggle={toggle} />
+        {toggle ? <UpArrowIcon /> : <DownArrowIcon />}
       </Header>
 
       {toggle && (
@@ -54,7 +56,7 @@ const Container = styled.div<{ isToggle: boolean }>`
   grid-template-rows: ${(props) =>
     props.isToggle ? "48px 44px 44px 44px 44px" : "48px"};
   grid-template-columns: 1fr;
-  border-top: 1px solid rgba(0, 0, 0, 0.1);
+  border-top: ${({ theme }) => `1px solid ${theme.divider.color}`};
   width: 100%;
   cursor: pointer;
   margin-bottom: ${(props) => (props.isToggle ? "16px" : "0")};
@@ -72,19 +74,26 @@ const Header = styled.div<{ isToggle: boolean }>`
 `;
 
 const HeaderText = styled.div`
-  color: rgba(0, 0, 0, 0.34);
   font-size: 13px;
   font-weight: bold;
   text-transform: uppercase;
 `;
 
-const HeaderIcon = styled.div<{ isToggle: boolean }>`
-  background-repeat: no-repeat;
-
-  background-image: ${(props) =>
-    props.isToggle ? "url(assets/up-arrow.png)" : "url(assets/down-arrow.png)"};
+const UpArrowIcon = styled(UpArrow)`
+  fill: ${({ theme }) => theme.svg.color};
+  align-self: center;
+  justify-self: center;
+  height: 70%;
+  width: 70%;
 `;
 
+const DownArrowIcon = styled(DownArrow)`
+  fill: ${({ theme }) => theme.svg.color};
+  align-self: center;
+  justify-self: center;
+  height: 70%;
+  width: 70%;
+`;
 const Item = styled.div`
   display: grid;
   grid-template-rows: 1fr;
@@ -117,7 +126,7 @@ const ItemWithExtraText = styled.div`
 `;
 
 const ItemExtraText = styled.div`
-  color: rgba(0, 0, 0, 0.4);
+  color: ${({ theme }) => theme.input.placeholder};
   font-size: 12px;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -126,7 +135,7 @@ const ItemExtraText = styled.div`
 `;
 
 const GrayIconBackground = styled.div`
-  background-color: rgba(0, 0, 0, 0.04);
+  background-color: ${({ theme }) => theme.svg.background};
   border-radius: 99px;
   box-sizing: border-box;
   height: 32px;
@@ -140,19 +149,23 @@ const ExtendGrayIconBackground = styled(GrayIconBackground)`
 const BellIcon = styled(Bell)`
   height: 22px;
   width: 22px;
+  fill: ${({ theme }) => theme.svg.color};
 `;
 
 const MessageCrossIcon = styled(MessageCross)`
   height: 22px;
   width: 22px;
+  fill: ${({ theme }) => theme.svg.color};
 `;
 
 const MinusCircleIcon = styled(MinusCircle)`
   height: 22px;
   width: 22px;
+  fill: ${({ theme }) => theme.svg.color};
 `;
 
 const CautionTriangleIcon = styled(CautionTriangle)`
   height: 22px;
   width: 22px;
+  fill: ${({ theme }) => theme.svg.color};
 `;

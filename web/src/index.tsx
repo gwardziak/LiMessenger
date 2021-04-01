@@ -1,7 +1,7 @@
 import React, { createContext } from "react";
 import ReactDOM from "react-dom";
 import { BrowserRouter as Router } from "react-router-dom";
-import { createGlobalStyle } from "styled-components";
+import { ThemeProvider } from "styled-components";
 import { SubscriptionClient } from "subscriptions-transport-ws/dist/client";
 import {
   cacheExchange,
@@ -12,19 +12,9 @@ import {
 } from "urql";
 import App from "./App";
 import { RootStore } from "./stores/RootStore";
+import { GlobalStyle } from "./utils/css/GlobalStyle";
+import { themes } from "./utils/css/themes";
 import fileExchange from "./utils/fileExchange";
-
-const GlobalStyle = createGlobalStyle`
-html {
-  height:100%;
-}
-body {
-  height:100%;
-  margin: 0;
-  padding: 0;
-  font-family: SFUIDisplay-Regular, Helvetica Neue, system-ui, Segoe UI, Helvetica, Arial, sans-serif;
-}
-`;
 
 const url = "http://localhost:4000/graphql";
 
@@ -64,10 +54,12 @@ export const StoreContext = createContext<RootStore>(
 
 ReactDOM.render(
   <React.StrictMode>
-    <GlobalStyle />
     <Provider value={client}>
       <Router>
-        <App />
+        <ThemeProvider theme={themes.light}>
+          <GlobalStyle />
+          <App />
+        </ThemeProvider>
       </Router>
     </Provider>
   </React.StrictMode>,

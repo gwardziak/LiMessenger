@@ -1,6 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import { Attachment } from "../stores/ChatStore";
+import { File } from "./../Icons/File";
 
 type FilesProps = {
   files: Attachment[];
@@ -18,7 +19,7 @@ export const Files = ({ files, sender }: FilesProps) => {
           >
             <Container sender={sender}>
               <ImageContainer>
-                <Image />
+                <FileIcon />
               </ImageContainer>
               <Filename>{file.name}</Filename>
             </Container>
@@ -40,7 +41,7 @@ const Container = styled.div<{ sender: boolean }>`
   grid-template-columns: 24px 1fr;
   border-radius: ${(props) =>
     props.sender ? "10px 0 0 10px" : "0 10px 10px 0"};
-  background-color: rgba(134, 142, 153, 0.25);
+  background-color: ${({ theme }) => theme.item.hover};
   padding: 7px 16px 8px 8px;
   box-sizing: border-box;
   grid-column-gap: 10px;
@@ -48,27 +49,30 @@ const Container = styled.div<{ sender: boolean }>`
 
 const ImageContainer = styled.div`
   display: grid;
-  height: 24px;
-  width: 24px;
-  background-color: rgb(255, 255, 255);
+  height: 30px;
+  width: 30px;
+  background-color: ${({ theme }) => theme.colors.body};
   align-self: center;
   border-radius: 50%;
   align-content: center;
   justify-content: center;
+  justify-self: center;
+  align-self: center;
 `;
 
-const Image = styled.div`
-  background-image: url("assets/textFile.png");
-  background-repeat: no-repeat;
-  width: 16px;
-  height: 16px;
+const FileIcon = styled(File)`
+  height: 70%;
+  width: 90%;
+  justify-self: center;
+  align-self: center;
+  fill: ${({ theme }) => theme.colors.text};
 `;
 
 const Filename = styled.div`
   display: grid;
+  color: ${({ theme }) => theme.colors.text};
   overflow: hidden;
   text-overflow: ellipsis;
-  color: #050505;
   font-weight: 600;
   font-size: 14px;
   align-self: center;

@@ -6,7 +6,9 @@ import { useClickAway } from "react-use";
 import styled from "styled-components";
 import { Attachment } from "../Icons/Attachment";
 import { Camera } from "../Icons/Camera";
+import { Close } from "../Icons/Close";
 import { EmojiFolder } from "../Icons/EmojiFolder";
+import { File } from "../Icons/File";
 import { GamePad } from "../Icons/GamePad";
 import { GifFolder } from "../Icons/GifFolder";
 import { Like } from "../Icons/Like";
@@ -144,13 +146,13 @@ export const SendMessage = observer(
                     ) : (
                       <UploadFile>
                         <UploadFileImgContainer>
-                          <UploadFileImg />
+                          <FileIcon />
                         </UploadFileImgContainer>
                         <UploadFilename>{file.name}</UploadFilename>
                       </UploadFile>
                     )}
                     <CloseFile onClick={() => handleRemoveFile(i)}>
-                      <CloseFileImg />
+                      <CloseIcon />
                     </CloseFile>
                   </FileContainer>
                 ))}
@@ -257,7 +259,7 @@ const Container = styled.div<{ isToggle: boolean }>`
   padding: 0 8px;
   grid-column-gap: 8px;
   align-items: flex-end;
-  border-left: 1px solid rgba(0, 0, 0, 0.1);
+  border-left: ${({ theme }) => `1px solid ${theme.divider.color}`};
   box-sizing: border-box;
   margin-bottom: 8px;
   position: relative;
@@ -348,7 +350,7 @@ const MessageContainer = styled.div<{ isToggle: boolean; hasFile: boolean }>`
   display: grid;
   grid-template-columns: 1fr 24px;
   grid-template-rows: 1fr;
-  background-color: rgba(0, 0, 0, 0.05);
+  background-color: ${({ theme }) => theme.input.background};
   min-width: 100px;
   border-radius: 18px;
   padding: 0 8px 0 12px;
@@ -369,11 +371,11 @@ const Input = styled(ContentEditable)`
   max-height: 144px;
   overflow-y: auto;
   :empty {
-    color: rgba(0, 0, 0, 0.4);
+    color: ${({ theme }) => theme.input.color};
   }
   :empty:before {
     cursor: text;
-    color: rgba(0, 0, 0, 0.4);
+    color: ${({ theme }) => theme.input.placeholder};
     content: attr(placeholder);
     display: block; // For Firefox
   }
@@ -390,7 +392,7 @@ const SmileIcon = styled(Smile)`
 const MobileIconsContainer = styled.div`
   display: grid;
   grid-template-columns: repeat(6, 36px);
-  background-color: #fafafa;
+  background-color: ${({ theme }) => theme.item.select};
   column-gap: 16px;
   grid-column: 1/4;
   padding: 8px 0 8px 8px;
@@ -420,36 +422,38 @@ const UploadFile = styled.div`
   border-radius: 10px;
   height: 48px;
   width: 152px;
-  background-color: rgba(134, 142, 153, 0.25);
+  background-color: ${({ theme }) => theme.svg.background};
+
   padding: 0 16px 0 8px;
   box-sizing: border-box;
   grid-column-gap: 10px;
 `;
-
 const UploadFileImgContainer = styled.div`
   display: grid;
-  height: 24px;
-  width: 24px;
-  background-color: rgb(255, 255, 255);
+  height: 30px;
+  width: 30px;
+  background-color: ${({ theme }) => theme.colors.body};
+
   align-self: center;
   border-radius: 50%;
   align-content: center;
   justify-content: center;
 `;
 
-const UploadFileImg = styled.div`
-  background-image: url("assets/textFile.png");
-  background-repeat: no-repeat;
-  width: 16px;
-  height: 16px;
+const FileIcon = styled(File)`
+  align-self: center;
+  height: 70%;
+  width: 90%;
+  justify-self: center;
+  fill: ${({ theme }) => theme.colors.text};
 `;
+
 const UploadFilename = styled.div`
   overflow: hidden;
   text-overflow: ellipsis;
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
-  color: #050505;
   font-weight: 600;
   font-size: 15px;
   align-self: center;
@@ -458,7 +462,7 @@ const UploadFilename = styled.div`
 
 const CloseFile = styled.div`
   position: absolute;
-  background-color: #fff;
+  background-color: ${({ theme }) => theme.emojiPicker.background};
   height: 24px;
   width: 24px;
   top: 8px;
@@ -470,19 +474,33 @@ const CloseFile = styled.div`
   justify-content: center;
   align-content: center;
   :hover {
-    background-color: rgb(242, 242, 242);
+    background-color: ${({ theme }) => theme.svg.hover};
   }
 `;
 
-const CloseFileImg = styled.div`
-  display: grid;
+const CloseIcon = styled(Close)`
+  fill: ${({ theme }) => theme.svg.color};
+  align-self: center;
   justify-self: center;
   height: 12px;
   width: 12px;
-  background-image: url("assets/closeImage.png");
-  background-size: contain;
-  background-repeat: no-repeat;
 `;
+
+// const UploadMore = styled.div`
+//   display: grid;
+//   border-radius: 10px;
+//   height: 48px;
+//   width: 48px;
+//   justify-content: center;
+//   background-color: rgba(134, 142, 153, 0.25);
+//   align-self: flex-end;
+//   min-width: 48px;
+//   margin-bottom: 3px;
+//   cursor: pointer;
+//   :hover {
+//     background-color: rgb(205, 207, 211);
+//   }
+// `;
 
 const UploadMore = styled.div`
   display: grid;
@@ -490,13 +508,13 @@ const UploadMore = styled.div`
   height: 48px;
   width: 48px;
   justify-content: center;
-  background-color: rgba(134, 142, 153, 0.25);
+  background-color: ${({ theme }) => theme.svg.background};
   align-self: flex-end;
   min-width: 48px;
   margin-bottom: 3px;
   cursor: pointer;
   :hover {
-    background-color: rgb(205, 207, 211);
+    background-color: ${({ theme }) => theme.item.secondHover};
   }
 `;
 
@@ -509,4 +527,6 @@ const UploadMoreImg = styled.div`
   background-image: url("assets/uploadFiles.png");
   background-size: cover;
   background-repeat: no-repeat;
+
+  filter: ${({ theme }) => theme.svg.filter};
 `;

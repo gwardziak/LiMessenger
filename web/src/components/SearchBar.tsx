@@ -1,6 +1,7 @@
 import { OperationContext } from "@urql/core";
 import React from "react";
 import styled from "styled-components";
+import { Magnifier } from "../Icons/Magnifier";
 
 type SearchBarType = {
   input: string;
@@ -50,9 +51,11 @@ export const SearchBar = ({
 
   return (
     <Container>
+      <MagnifierIcon viewBox="-7 -7 45 45" />
       <SearchBarInput
         placeholder="Szukaj w Messengerze"
         name="SearchInput"
+        autoComplete="off"
         value={input}
         onChange={(e) => {
           setInput(e.target.value);
@@ -61,28 +64,27 @@ export const SearchBar = ({
         onKeyPress={handleKeyPress}
         onKeyDown={handleKeyDown}
       />
-      <MagnifierImg title="magnifierImg" />
     </Container>
   );
 };
 
 const Container = styled.div`
-  position: relative;
   margin: 4px 16px 0;
+  position: relative;
 `;
 
-const MagnifierImg = styled.div`
-  height: 16px;
-  width: 16px;
-  top: 10px;
-  left: 12px;
+const MagnifierIcon = styled(Magnifier)`
+  top: 6px;
+  left: 6px;
   position: absolute;
-  background-image: url("assets/magnifier.png");
-  background-repeat: no-repeat;
+  display: grid;
+  height: 24px;
+  width: 24px;
+  fill: ${({ theme }) => theme.input.placeholder};
 `;
 
 const SearchBarInput = styled.input`
-  background-color: rgba(0, 0, 0, 0.04);
+  background-color: ${({ theme }) => theme.input.background};
   border-radius: 50px;
   font-size: 15px;
   padding: 0px 16px 0px 36px;
@@ -92,9 +94,10 @@ const SearchBarInput = styled.input`
   height: 36px;
   width: 100%;
   box-sizing: border-box;
+  color: ${({ theme }) => theme.input.color};
 
   &::placeholder {
-    color: rgba(0, 0, 0, 0.4);
+    color: ${({ theme }) => theme.input.placeholder};
     font-family: Helvetica Neue, Segoe UI, Helvetica, Arial, sans-serif;
   }
 `;

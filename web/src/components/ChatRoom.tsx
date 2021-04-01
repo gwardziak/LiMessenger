@@ -22,7 +22,6 @@ export const ChatRoom = observer(() => {
 
     //Todo onInitialFetch true
     if (!initialFetch || activeChat) {
-      console.log("ScrollToBottom");
       scrollbarRef.current?.scrollToBottom();
     }
   }, [
@@ -167,7 +166,8 @@ const Message = styled.div<{ sender: boolean }>`
   min-height: 32px;
   box-sizing: border-box;
   overflow-wrap: anywhere;
-  background-color: ${(props) => (props.sender ? "#09f" : "#f1f0f0")};
+  background-color: ${(props) =>
+    props.sender ? "#09f" : props.theme.svg.hover};
   color: ${(props) => props.sender && "#fff"};
   ${(props) =>
     !props.sender &&
@@ -203,9 +203,13 @@ const Avatar = styled(DefaultAvatar)`
 `;
 
 const StyledScrollbar = styled(MyScrollbar)`
-  border-left: 1px solid rgba(0, 0, 0, 0.1);
+  border-left: ${({ theme }) => `1px solid ${theme.divider.color}`};
   box-sizing: border-box;
   .ScrollbarsCustom-Content {
     display: grid;
+  }
+
+  .ScrollbarsCustom-Thumb {
+    background: ${({ theme }) => theme.scroll.color};
   }
 `;

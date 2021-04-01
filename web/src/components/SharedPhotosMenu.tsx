@@ -1,6 +1,8 @@
 import { observer } from "mobx-react-lite";
 import React from "react";
 import styled from "styled-components";
+import { DownArrow } from "../Icons/DownArrow";
+import { UpArrow } from "../Icons/UpArrow";
 import { useRootStore } from "../stores/RootStore";
 
 type FileProps = {
@@ -15,7 +17,7 @@ export const SharedPhotosMenu = observer(({ isOpen, setIsOpen }: FileProps) => {
     <Container isToggle={isOpen}>
       <Header isToggle={isOpen} onClick={() => setIsOpen(!isOpen)}>
         <HeaderText>Udostępnione zdjęcia</HeaderText>
-        <HeaderIcon isToggle={isOpen} />
+        {isOpen ? <UpArrowIcon /> : <DownArrowIcon />}
       </Header>
       {isOpen && (
         <Photos>
@@ -35,7 +37,7 @@ const Container = styled.div<{ isToggle: boolean }>`
   display: grid;
   grid-template-rows: ${(props) => (props.isToggle ? "48px 1fr" : "48px")};
   grid-template-columns: 1fr;
-  border-top: 1px solid rgba(0, 0, 0, 0.1);
+  border-top: ${({ theme }) => `1px solid ${theme.divider.color}`};
   width: 100%;
 
   margin-bottom: ${(props) => (props.isToggle ? "16px" : "0")};
@@ -53,16 +55,9 @@ const Header = styled.div<{ isToggle: boolean }>`
 `;
 
 const HeaderText = styled.div`
-  color: rgba(0, 0, 0, 0.34);
   font-size: 13px;
   font-weight: bold;
   text-transform: uppercase;
-`;
-
-const HeaderIcon = styled.div<{ isToggle: boolean }>`
-  background-repeat: no-repeat;
-  background-image: ${(props) =>
-    props.isToggle ? "url(assets/up-arrow.png)" : "url(assets/down-arrow.png)"};
 `;
 
 const Photos = styled.div`
@@ -101,4 +96,20 @@ const Photo = styled.img`
   &:hover {
     opacity: 0.95;
   }
+`;
+
+const UpArrowIcon = styled(UpArrow)`
+  fill: ${({ theme }) => theme.svg.color};
+  align-self: center;
+  justify-self: center;
+  height: 70%;
+  width: 70%;
+`;
+
+const DownArrowIcon = styled(DownArrow)`
+  fill: ${({ theme }) => theme.svg.color};
+  align-self: center;
+  justify-self: center;
+  height: 70%;
+  width: 70%;
 `;

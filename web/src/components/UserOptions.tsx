@@ -40,29 +40,13 @@ export const UserOptions = observer(() => {
       <Avatar src="assets/defaultAvatar.svg" />
       <ListName>Czaty</ListName>
       <IconContainer>
-        <Settings
-          fill="#000"
-          height="30px"
-          width="30px"
-          viewBox="-25 -25 175 175"
-        />
+        <SettingsIcon viewBox="-25 -25 175 175" />
       </IconContainer>
       <IconContainer>
-        <CreateNewRoom
-          fill="#000"
-          height="28px"
-          width="28px"
-          viewBox="0 0 28 28"
-        />
+        <CreateNewRoomIcon viewBox="0 0 28 28" />
       </IconContainer>
       <IconMobileAndDesktopContainer>
-        <Compose
-          fill="#000"
-          height="30px"
-          width="30px"
-          viewBox="0 0 36 36"
-          onClick={() => logout()}
-        />
+        <ComposeIcon viewBox="0 0 36 36" onClick={() => logout()} />
       </IconMobileAndDesktopContainer>
     </Container>
   );
@@ -114,12 +98,16 @@ const ListName = styled.h1`
 
 const IconContainer = styled.div`
   border-radius: 99px;
-  background-color: rgba(0, 0, 0, 0.04);
+  background-color: ${({ theme }) => theme.svg.background};
   cursor: pointer;
   display: inline-flex;
   justify-content: center;
   align-items: center;
   height: 36px;
+
+  &:hover {
+    background-color: ${({ theme }) => theme.svg.hover};
+  }
 
   @media ${mediaQuery.xs}, ${mediaQuery.sm}, ${mediaQuery.md} {
     display: none;
@@ -131,4 +119,25 @@ const IconMobileAndDesktopContainer = styled(IconContainer)`
     display: flex;
     width: 36px;
   }
+`;
+
+const SettingsIcon = styled(Settings)`
+  height: 30px;
+  width: 30px;
+  fill: ${({ theme }) => theme.svg.color};
+  cursor: pointer;
+`;
+
+const CreateNewRoomIcon = styled(CreateNewRoom)`
+  height: 28px;
+  width: 28px;
+  fill: ${({ theme }) => theme.svg.color};
+  cursor: pointer;
+`;
+
+const ComposeIcon = styled(Compose)`
+  height: 30px;
+  width: 30px;
+  fill: ${({ theme }) => theme.svg.color};
+  cursor: pointer;
 `;

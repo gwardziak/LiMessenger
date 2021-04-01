@@ -1,8 +1,10 @@
 import React, { useState } from "react";
 import styled from "styled-components";
+import { DownArrow } from "../Icons/DownArrow";
 import { Like } from "../Icons/Like";
 import { Magnifier } from "../Icons/Magnifier";
 import { PencilUnderline } from "../Icons/PencilUnderline";
+import { UpArrow } from "../Icons/UpArrow";
 
 export const SettingsMenu = () => {
   const [toggle, setToggle] = useState<boolean>(false);
@@ -11,7 +13,7 @@ export const SettingsMenu = () => {
     <Container isToggle={toggle}>
       <Header isToggle={toggle} onClick={() => setToggle(!toggle)}>
         <HeaderText>więcej działań</HeaderText>
-        <HeaderIcon isToggle={toggle} />
+        {toggle ? <UpArrowIcon /> : <DownArrowIcon />}
       </Header>
       {toggle && (
         <>
@@ -49,7 +51,7 @@ const Container = styled.div<{ isToggle: boolean }>`
   grid-template-rows: ${(props) =>
     props.isToggle ? "48px 44px 44px 44px 44px" : "48px"};
   grid-template-columns: 1fr;
-  border-top: 1px solid rgba(0, 0, 0, 0.1);
+  border-top: ${({ theme }) => `1px solid ${theme.divider.color}`};
   width: 100%;
   cursor: pointer;
   margin-bottom: ${(props) => (props.isToggle ? "16px" : "0")};
@@ -62,21 +64,30 @@ const Header = styled.div<{ isToggle: boolean }>`
   padding: 14px;
 
   &:hover {
-    background-color: rgba(0, 0, 0, 0.05);
+    background-color: ${({ theme }) => theme.item.hover};
   }
 `;
 
 const HeaderText = styled.div`
-  color: rgba(0, 0, 0, 0.34);
   font-size: 13px;
   font-weight: bold;
   text-transform: uppercase;
 `;
 
-const HeaderIcon = styled.div<{ isToggle: boolean }>`
-  background-repeat: no-repeat;
-  background-image: ${(props) =>
-    props.isToggle ? "url(assets/up-arrow.png)" : "url(assets/down-arrow.png)"};
+const UpArrowIcon = styled(UpArrow)`
+  fill: ${({ theme }) => theme.svg.color};
+  align-self: center;
+  justify-self: center;
+  height: 70%;
+  width: 70%;
+`;
+
+const DownArrowIcon = styled(DownArrow)`
+  fill: ${({ theme }) => theme.svg.color};
+  align-self: center;
+  justify-self: center;
+  height: 70%;
+  width: 70%;
 `;
 
 const Item = styled.div`
@@ -97,7 +108,7 @@ const ItemText = styled.div`
 `;
 
 const GrayIconBackground = styled.div`
-  background-color: rgba(0, 0, 0, 0.04);
+  background-color: ${({ theme }) => theme.svg.background};
   border-radius: 99px;
   box-sizing: border-box;
   height: 32px;
@@ -112,11 +123,13 @@ const BlueIconBackground = styled.div`
 `;
 
 const MagnifierIcon = styled(Magnifier)`
+  fill: ${({ theme }) => theme.svg.color};
   height: 22px;
   width: 22px;
 `;
 
 const PencilUnderlineIcon = styled(PencilUnderline)`
+  fill: ${({ theme }) => theme.svg.color};
   height: 22px;
   width: 22px;
 `;

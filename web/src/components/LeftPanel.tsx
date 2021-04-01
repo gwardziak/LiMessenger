@@ -43,7 +43,7 @@ export const LeftPanel = () => {
           isVisible={isSearchListVisible}
         />
       )}
-      <MyScrollbar autoHide noScrollX>
+      <StyledScrollbar autoHide noScrollX>
         {isSearchListVisible ? (
           <SearchList
             ref={searchListRef}
@@ -54,7 +54,7 @@ export const LeftPanel = () => {
         ) : (
           <FriendList />
         )}
-      </MyScrollbar>
+      </StyledScrollbar>
     </Container>
   );
 };
@@ -66,5 +66,11 @@ const Container = styled.div`
   grid-row-gap: 16px;
   @media ${mediaQuery.xs}, ${mediaQuery.sm}, ${mediaQuery.md} {
     grid-template-rows: 1fr; //64px
+  }
+`;
+
+const StyledScrollbar = styled(MyScrollbar)`
+  .ScrollbarsCustom-Thumb {
+    background: ${({ theme }) => theme.scroll.color};
   }
 `;

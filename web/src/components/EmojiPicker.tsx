@@ -44,6 +44,8 @@ const Wrapper = styled.div`
     display: grid;
     border-radius: 6px;
     box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.1), 0 1px 10px rgba(0, 0, 0, 0.35);
+    background: ${({ theme }) => theme.emojiPicker.background};
+    border: ${({ theme }) => `1px solid ${theme.emojiPicker.border}`};
   }
 
   .emoji-mart-search {
@@ -65,5 +67,12 @@ const Wrapper = styled.div`
 
   .emoji-mart-bar {
     grid-row: 2;
+    border-bottom: ${({ theme }) => `1px solid ${theme.emojiPicker.border}`};
+  }
+
+  .emoji-mart-emoji:hover:before {
+    top: 4px;
+    left: 6px;
+    background: ${({ theme }) => theme.emojiPicker.hover};
   }
 `;

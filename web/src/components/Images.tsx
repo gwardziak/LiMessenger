@@ -9,7 +9,7 @@ type ImagesProps = {
 };
 
 export const Images = ({ images, elementsInCol }: ImagesProps) => {
-  const [ref, inView, entry] = useInView({
+  const [ref, inView] = useInView({
     triggerOnce: true,
     rootMargin: "600px 0px",
   });

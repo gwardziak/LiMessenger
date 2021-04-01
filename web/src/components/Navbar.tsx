@@ -30,12 +30,12 @@ const Container = styled.div`
   grid-template-columns: 40px 1fr 32px 32px 32px;
   grid-template-rows: 1fr 1fr;
   grid-template-areas: "avatar username  phoneIcon camcorderIcon infoIcon" "avatar activity phoneIcon camcorderIcon infoIcon";
-  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.1);
+  box-shadow: ${({ theme }) => `0 1px 2px 0 ${theme.divider.color}`};
   box-sizing: border-box;
   padding: 8px 8px 8px 16px;
   grid-column-gap: 12px;
   align-items: center;
-  border-left: 1px solid rgba(0, 0, 0, 0.1);
+  border-left: ${({ theme }) => `1px solid ${theme.divider.color}`};
 `;
 
 const Avatar = styled(DefaultAvatar)`
@@ -54,7 +54,7 @@ const Username = styled.h2`
 const Activity = styled.div`
   grid-area: activity;
   font-size: 12px;
-  color: rgba(0, 0, 0, 0.4);
+  color: ${({ theme }) => theme.input.placeholder};
   align-self: stretch;
 `;
 

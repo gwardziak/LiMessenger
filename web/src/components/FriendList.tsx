@@ -31,7 +31,6 @@ export const FriendList = observer(() => {
                       rootStore.chatStore.activeChat!
                     )?.initialFetch
                   ) {
-                    console.log("Kolejny req");
                     rootStore.chatStore.fetchChatMessages();
                   }
 
@@ -81,11 +80,11 @@ const Item = styled.li<{ isActive?: boolean; isSearch?: boolean }>`
   padding: 0 8px;
   align-items: center;
   cursor: pointer;
-  background-color: ${(props) => props.isActive && "rgba(0, 0, 0, 0.04)"};
+  background-color: ${(props) => props.isActive && props.theme.item.select};
   border-radius: ${(props) => props.isActive && "10px"};
 
   &:hover {
-    background-color: rgba(0, 0, 0, 0.05);
+    background-color: ${({ theme }) => theme.item.hover};
     border-radius: 10px;
   }
 
