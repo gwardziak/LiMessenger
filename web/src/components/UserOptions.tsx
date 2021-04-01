@@ -7,7 +7,6 @@ import { Compose } from "../Icons/Compose";
 import { CreateNewRoom } from "../Icons/CreateNewRoom";
 import { Settings } from "../Icons/Settings";
 import { useRootStore } from "../stores/RootStore";
-import { Avatar as DefaultAvatar } from "../ui/Avatar";
 import { mediaQuery } from "../utils/css/cssMedia";
 
 export const UserOptions = observer(() => {
@@ -38,15 +37,15 @@ export const UserOptions = observer(() => {
   return (
     <Container>
       <Avatar src="assets/defaultAvatar.svg" />
-      <ListName>Czaty</ListName>
+      <ListName>Chats</ListName>
       <IconContainer>
-        <SettingsIcon viewBox="-25 -25 175 175" />
+        <SettingsIcon />
       </IconContainer>
       <IconContainer>
-        <CreateNewRoomIcon viewBox="0 0 28 28" />
+        <CreateNewRoomIcon />
       </IconContainer>
       <IconMobileAndDesktopContainer>
-        <ComposeIcon viewBox="0 0 36 36" onClick={() => logout()} />
+        <ComposeIcon onClick={() => logout()} />
       </IconMobileAndDesktopContainer>
     </Container>
   );
@@ -64,18 +63,17 @@ const Container = styled.div`
   min-width: 300px;
 
   @media ${mediaQuery.xs}, ${mediaQuery.sm}, ${mediaQuery.md} {
-    grid-template-columns: 1fr;
-    min-width: 0;
     display: flex;
     justify-content: center;
+    min-width: 0;
   }
 `;
 
-const Avatar = styled(DefaultAvatar)`
+const Avatar = styled.img`
   grid-area: avatar;
+  border-radius: 50%;
   height: 40px;
   width: 40px;
-  cursor: pointer;
 
   @media ${mediaQuery.xs}, ${mediaQuery.sm}, ${mediaQuery.md} {
     display: none;
@@ -97,13 +95,14 @@ const ListName = styled.h1`
 `;
 
 const IconContainer = styled.div`
-  border-radius: 99px;
-  background-color: ${({ theme }) => theme.svg.background};
+  display: grid;
+  height: 36px;
+  width: 36px;
+  border-radius: 50%;
   cursor: pointer;
-  display: inline-flex;
   justify-content: center;
   align-items: center;
-  height: 36px;
+  background-color: ${({ theme }) => theme.svg.background};
 
   &:hover {
     background-color: ${({ theme }) => theme.svg.hover};
@@ -125,19 +124,16 @@ const SettingsIcon = styled(Settings)`
   height: 30px;
   width: 30px;
   fill: ${({ theme }) => theme.svg.color};
-  cursor: pointer;
 `;
 
 const CreateNewRoomIcon = styled(CreateNewRoom)`
   height: 28px;
   width: 28px;
   fill: ${({ theme }) => theme.svg.color};
-  cursor: pointer;
 `;
 
 const ComposeIcon = styled(Compose)`
   height: 30px;
   width: 30px;
   fill: ${({ theme }) => theme.svg.color};
-  cursor: pointer;
 `;

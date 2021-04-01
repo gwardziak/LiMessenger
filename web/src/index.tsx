@@ -56,7 +56,7 @@ ReactDOM.render(
   <React.StrictMode>
     <Provider value={client}>
       <Router>
-        <ThemeProvider theme={themes.light}>
+        <ThemeProvider theme={themes.dark}>
           <GlobalStyle />
           <App />
         </ThemeProvider>

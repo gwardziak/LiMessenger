@@ -486,22 +486,6 @@ const CloseIcon = styled(Close)`
   width: 12px;
 `;
 
-// const UploadMore = styled.div`
-//   display: grid;
-//   border-radius: 10px;
-//   height: 48px;
-//   width: 48px;
-//   justify-content: center;
-//   background-color: rgba(134, 142, 153, 0.25);
-//   align-self: flex-end;
-//   min-width: 48px;
-//   margin-bottom: 3px;
-//   cursor: pointer;
-//   :hover {
-//     background-color: rgb(205, 207, 211);
-//   }
-// `;
-
 const UploadMore = styled.div`
   display: grid;
   border-radius: 10px;

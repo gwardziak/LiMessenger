@@ -3,7 +3,6 @@ import React, { useRef, useState } from "react";
 import Scrollbar from "react-scrollbars-custom";
 import styled from "styled-components";
 import { useRootStore } from "../stores/RootStore";
-import { Avatar as DefaultAvatar } from "../ui/Avatar";
 import { MyScrollbar } from "../utils/Scrollbar";
 import { PrivacyMenu } from "./PrivacyMenu";
 import { SettingsMenu } from "./SettingsMenu";
@@ -56,7 +55,7 @@ export const ChatRoomOptions = observer(() => {
       <Container>
         <Avatar src="assets/defaultAvatar.svg" />
         <Username>{rootStore.chatStore.recipientName}</Username>
-        <Activity>Aktywny(a) 1 godz. temu</Activity>
+        <Activity>Active 19 m ago</Activity>
         <SettingsMenu />
         <PrivacyMenu />
         {rootStore.attachmentsStore.files.get(activeChat)?.length! > 0 && (
@@ -73,15 +72,16 @@ export const ChatRoomOptions = observer(() => {
 const Container = styled.div`
   grid-area: chatRoomOptions;
   display: grid;
-  grid-template-rows: 100px auto auto auto auto auto auto;
+  grid-template-rows: 100px;
   grid-template-columns: minmax(200px, 420px);
   grid-template-areas: "avatar" "username" "activity" "settingsMenu" "supportMenu" "sharedFilesMenu" "sharedPhotosMenu";
   padding-top: 14px;
   justify-items: center;
 `;
 
-const Avatar = styled(DefaultAvatar)`
+const Avatar = styled.img`
   grid-area: avatar;
+  border-radius: 50%;
   height: 100px;
   width: 100px;
 `;
@@ -91,12 +91,11 @@ const Username = styled.div`
   margin-top: 12px;
   font-size: 20px;
   font-weight: bold;
-  text-align: center;
 `;
 
 const Activity = styled.div`
   grid-area: activity;
-  color: ${({ theme }) => theme.input.placeholder};
+  color: ${({ theme }) => theme.text.color.secondary};
   font-size: 14px;
   margin-top: 2px;
   padding-bottom: 16px;
@@ -107,6 +106,6 @@ const StyledScrollbar = styled(MyScrollbar)`
   box-sizing: border-box;
 
   .ScrollbarsCustom-Thumb {
-    background: ${({ theme }) => theme.scroll.color};
+    background: ${({ theme }) => theme.scroll.color} !important;
   }
 `;

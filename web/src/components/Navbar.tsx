@@ -5,7 +5,6 @@ import { Camcorder } from "../Icons/Camcorder";
 import { InfoCircle } from "../Icons/InfoCircle";
 import { Phone } from "../Icons/Phone";
 import { useRootStore } from "../stores/RootStore";
-import { Avatar as DefaultAvatar } from "../ui/Avatar";
 
 export const Navbar = observer(() => {
   const rootStore = useRootStore();
@@ -14,9 +13,9 @@ export const Navbar = observer(() => {
     <Container>
       <Avatar src="assets/defaultAvatar.svg" />
       <Username>{rootStore.chatStore.recipientName}</Username>
-      <Activity>Aktywny(a) przez: Messenger</Activity>
-      <PhoneIcon viewBox="-100 -300 2200 2200" />
-      <CamcorderIcon viewBox="0 0 36 36" />
+      <Activity>Active 19 m ago</Activity>
+      <PhoneIcon />
+      <CamcorderIcon />
       <IconHelper>
         <InfoIcon />
       </IconHelper>
@@ -38,8 +37,9 @@ const Container = styled.div`
   border-left: ${({ theme }) => `1px solid ${theme.divider.color}`};
 `;
 
-const Avatar = styled(DefaultAvatar)`
+const Avatar = styled.img`
   grid-area: avatar;
+  border-radius: 50%;
   height: 40px;
   width: 40px;
 `;
@@ -54,7 +54,7 @@ const Username = styled.h2`
 const Activity = styled.div`
   grid-area: activity;
   font-size: 12px;
-  color: ${({ theme }) => theme.input.placeholder};
+  color: ${({ theme }) => theme.text.color.secondary};
   align-self: stretch;
 `;
 
@@ -85,7 +85,7 @@ const InfoIcon = styled(InfoCircle)`
 const IconHelper = styled.div`
   grid-area: infoIcon;
   background-color: rgba(0, 153, 255, 0.2);
-  border-radius: 99px;
+  border-radius: 50%;
   height: 32px;
   width: 32px;
 `;

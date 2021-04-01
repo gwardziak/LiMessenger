@@ -2,7 +2,6 @@ import { observer } from "mobx-react-lite";
 import React from "react";
 import styled from "styled-components";
 import { useRootStore } from "../stores/RootStore";
-import { Avatar as DefaultAvatar } from "../ui/Avatar";
 import { mediaQuery } from "../utils/css/cssMedia";
 import { formatDate } from "../utils/formatDate";
 
@@ -41,7 +40,7 @@ export const FriendList = observer(() => {
               }
             }}
           >
-            <Avatar src="assets/defaultAvatar.svg"></Avatar>
+            <Avatar src="assets/defaultAvatar.svg" />
             <Username>
               {rootStore.userStore.uuid === message.sender.uuid
                 ? message.recipient.username
@@ -62,30 +61,25 @@ export const FriendList = observer(() => {
 });
 
 const Container = styled.ul`
-  display: grid;
-  list-style-type: none;
-  margin: 0 8px;
+  margin: 2px 8px 0px 8px;
   padding: 0;
-  margin-top: 2px;
   /* border-top: 1px solid #ced0d4; */
 `;
 
-const Item = styled.li<{ isActive?: boolean; isSearch?: boolean }>`
+const Item = styled.li<{ isActive: boolean }>`
   display: grid;
   grid-template-areas: "avatar username" "avatar message";
-  grid-template-rows: ${(props) => (props.isSearch ? "52px" : "32px 32px")};
-  grid-template-columns: ${(props) =>
-    props.isSearch ? "36px 1fr" : "50px 1fr"};
+  grid-template-rows: 32px 32px;
+  grid-template-columns: 50px 1fr;
   grid-column-gap: 12px;
   padding: 0 8px;
   align-items: center;
   cursor: pointer;
-  background-color: ${(props) => props.isActive && props.theme.item.select};
-  border-radius: ${(props) => props.isActive && "10px"};
+  border-radius: 10px;
+  background-color: ${({ isActive, theme }) => isActive && theme.item.select};
 
   &:hover {
     background-color: ${({ theme }) => theme.item.hover};
-    border-radius: 10px;
   }
 
   @media ${mediaQuery.xs}, ${mediaQuery.sm}, ${mediaQuery.md} {
@@ -97,18 +91,19 @@ const Item = styled.li<{ isActive?: boolean; isSearch?: boolean }>`
   }
 `;
 
-const Avatar = styled(DefaultAvatar)<{ isSearch?: boolean }>`
+const Avatar = styled.img`
   grid-area: avatar;
-  height: ${(props) => props.isSearch && "36px"};
-  width: ${(props) => props.isSearch && "36px"};
+  border-radius: 50%;
+  height: 50px;
+  width: 50px;
 `;
 
-const Username = styled.div<{ isSearch?: boolean }>`
+const Username = styled.div`
   grid-area: username;
   font-size: 15px;
   text-overflow: ellipsis;
   white-space: nowrap;
-  align-self: ${(props) => (props.isSearch ? "none" : "flex-end")};
+  align-self: flex-end;
   overflow: hidden;
   @media ${mediaQuery.xs}, ${mediaQuery.sm}, ${mediaQuery.md} {
     display: none;
@@ -118,7 +113,7 @@ const Username = styled.div<{ isSearch?: boolean }>`
 const Message = styled.div`
   grid-area: message;
   font-size: 13px;
-  color: rgb(153, 153, 153);
+  color: ${({ theme }) => theme.text.color.secondary};
   align-self: flex-start;
   text-overflow: ellipsis;
   white-space: nowrap;

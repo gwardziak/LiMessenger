@@ -71,6 +71,6 @@ const Container = styled.div`
 
 const StyledScrollbar = styled(MyScrollbar)`
   .ScrollbarsCustom-Thumb {
-    background: ${({ theme }) => theme.scroll.color};
+    background: ${({ theme }) => theme.scroll.color} !important;
   }
 `;

@@ -51,9 +51,9 @@ export const SearchBar = ({
 
   return (
     <Container>
-      <MagnifierIcon viewBox="-7 -7 45 45" />
+      <MagnifierIcon />
       <SearchBarInput
-        placeholder="Szukaj w Messengerze"
+        placeholder="Search Messenger"
         name="SearchInput"
         autoComplete="off"
         value={input}
@@ -74,30 +74,28 @@ const Container = styled.div`
 `;
 
 const MagnifierIcon = styled(Magnifier)`
+  position: absolute;
   top: 6px;
   left: 6px;
-  position: absolute;
-  display: grid;
   height: 24px;
   width: 24px;
   fill: ${({ theme }) => theme.input.placeholder};
 `;
 
 const SearchBarInput = styled.input`
-  background-color: ${({ theme }) => theme.input.background};
   border-radius: 50px;
   font-size: 15px;
   padding: 0px 16px 0px 36px;
-  text-align: left;
   outline: 0;
   border-style: none;
   height: 36px;
   width: 100%;
   box-sizing: border-box;
+  background-color: ${({ theme }) => theme.input.background};
   color: ${({ theme }) => theme.input.color};
 
   &::placeholder {
-    color: ${({ theme }) => theme.input.placeholder};
     font-family: Helvetica Neue, Segoe UI, Helvetica, Arial, sans-serif;
+    color: ${({ theme }) => theme.input.placeholder};
   }
 `;

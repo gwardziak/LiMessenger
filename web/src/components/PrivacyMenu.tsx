@@ -12,36 +12,38 @@ export const PrivacyMenu = () => {
 
   return (
     <Container isToggle={toggle}>
-      <Header isToggle={toggle} onClick={() => setToggle(!toggle)}>
-        <HeaderText>Prywatność i Pomoc</HeaderText>
+      <Header onClick={() => setToggle(!toggle)}>
+        <HeaderText>Privacy and support</HeaderText>
         {toggle ? <UpArrowIcon /> : <DownArrowIcon />}
       </Header>
 
       {toggle && (
         <>
           <Item>
-            <ItemText>Powiadomienia</ItemText>
+            <ItemText>Mute conversation</ItemText>
             <GrayIconBackground>
               <BellIcon />
             </GrayIconBackground>
           </Item>
           <Item>
-            <ItemText>Ignoruj wiadomości</ItemText>
+            <ItemText>Ignore messages</ItemText>
             <GrayIconBackground>
-              <MessageCrossIcon viewBox="-120 0 750 500" />
+              <MessageCrossIcon />
             </GrayIconBackground>
           </Item>
           <Item>
-            <ItemText>Blokuj wiadomości</ItemText>
+            <ItemText>Block</ItemText>
             <GrayIconBackground>
-              <MinusCircleIcon viewBox="-15 -15 127 127" />
+              <MinusCircleIcon />
             </GrayIconBackground>
           </Item>
           <ItemWithExtraText>
-            <ItemText>Wystąpił błąd</ItemText>
-            <ItemExtraText>Przekaż opinię i zgłoś konwersację</ItemExtraText>
+            <ItemText>Something's wrong</ItemText>
+            <ItemExtraText>
+              Give feedback and report the conversation
+            </ItemExtraText>
             <ExtendGrayIconBackground>
-              <CautionTriangleIcon viewBox="0 0 36 36" />
+              <CautionTriangleIcon />
             </ExtendGrayIconBackground>
           </ItemWithExtraText>
         </>
@@ -53,23 +55,22 @@ export const PrivacyMenu = () => {
 const Container = styled.div<{ isToggle: boolean }>`
   grid-area: supportMenu;
   display: grid;
-  grid-template-rows: ${(props) =>
-    props.isToggle ? "48px 44px 44px 44px 44px" : "48px"};
-  grid-template-columns: 1fr;
-  border-top: ${({ theme }) => `1px solid ${theme.divider.color}`};
+  grid-template-rows: ${({ isToggle }) =>
+    isToggle ? "49px 44px 44px 44px 44px" : "48px"};
   width: 100%;
   cursor: pointer;
-  margin-bottom: ${(props) => (props.isToggle ? "16px" : "0")};
+  margin-bottom: ${({ isToggle }) => (isToggle ? "16px" : "0")};
+  border-top: ${({ theme }) => `1px solid ${theme.divider.color}`};
 `;
 
-const Header = styled.div<{ isToggle: boolean }>`
+const Header = styled.div`
   display: grid;
   grid-template-rows: 20px;
   grid-template-columns: 1fr 20px;
   padding: 14px;
 
   &:hover {
-    background-color: rgba(0, 0, 0, 0.05);
+    background-color: ${({ theme }) => theme.item.hover};
   }
 `;
 
@@ -80,30 +81,32 @@ const HeaderText = styled.div`
 `;
 
 const UpArrowIcon = styled(UpArrow)`
-  fill: ${({ theme }) => theme.svg.color};
   align-self: center;
   justify-self: center;
   height: 70%;
   width: 70%;
+
+  fill: ${({ theme }) => theme.svg.color};
 `;
 
 const DownArrowIcon = styled(DownArrow)`
-  fill: ${({ theme }) => theme.svg.color};
   align-self: center;
   justify-self: center;
   height: 70%;
   width: 70%;
+
+  fill: ${({ theme }) => theme.svg.color};
 `;
+
 const Item = styled.div`
   display: grid;
-  grid-template-rows: 1fr;
   grid-template-columns: 1fr 32px;
   padding: 0 12px 0 14px;
   align-items: center;
 
   &:focus {
     outline-width: 1px;
-    outline-color: rgb(16, 16, 16);
+    outline-color: rgb(28, 30, 33);
   }
 `;
 
@@ -121,25 +124,26 @@ const ItemWithExtraText = styled.div`
 
   &:focus {
     outline-width: 1px;
-    outline-color: rgb(16, 16, 16);
+    outline-color: rgb(28, 30, 33);
   }
 `;
 
 const ItemExtraText = styled.div`
-  color: ${({ theme }) => theme.input.placeholder};
   font-size: 12px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  align-self: baseline;
+
+  color: ${({ theme }) => theme.text.color.secondary};
 `;
 
 const GrayIconBackground = styled.div`
-  background-color: ${({ theme }) => theme.svg.background};
-  border-radius: 99px;
+  border-radius: 50%;
   box-sizing: border-box;
   height: 32px;
   padding: 5px;
+
+  background-color: ${({ theme }) => theme.svg.background};
 `;
 
 const ExtendGrayIconBackground = styled(GrayIconBackground)`

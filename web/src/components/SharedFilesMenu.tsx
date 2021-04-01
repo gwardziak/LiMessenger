@@ -32,8 +32,8 @@ export const SharedFilesMenu = observer(() => {
 
   return (
     <Container isToggle={toggle}>
-      <Header isToggle={toggle} onClick={() => setToggle(!toggle)}>
-        <HeaderText>Udostępnione pliki</HeaderText>
+      <Header onClick={() => setToggle(!toggle)}>
+        <HeaderText>Shared files</HeaderText>
         {toggle ? <UpArrowIcon /> : <DownArrowIcon />}
       </Header>
 
@@ -58,22 +58,22 @@ export const SharedFilesMenu = observer(() => {
 const Container = styled.div<{ isToggle: boolean }>`
   grid-area: sharedFilesMenu;
   display: grid;
-  grid-template-rows: ${(props) => (props.isToggle ? "48px 1fr" : "48px")};
-  grid-template-columns: 1fr;
-  border-top: ${({ theme }) => `1px solid ${theme.divider.color}`};
+  grid-template-rows: ${(props) => (props.isToggle ? "49px 1fr" : "48px")};
   width: 100%;
   cursor: pointer;
-  margin-bottom: ${(props) => (props.isToggle ? "16px" : "0")};
+
+  margin-bottom: ${({ isToggle }) => (isToggle ? "16px" : "0")};
+  border-top: ${({ theme }) => `1px solid ${theme.divider.color}`};
 `;
 
-const Header = styled.div<{ isToggle: boolean }>`
+const Header = styled.div`
   display: grid;
   grid-template-rows: 20px;
   grid-template-columns: 1fr 20px;
   padding: 14px;
 
   &:hover {
-    background-color: rgba(0, 0, 0, 0.05);
+    background-color: ${({ theme }) => theme.item.hover};
   }
 `;
 
@@ -84,10 +84,7 @@ const HeaderText = styled.div`
 `;
 
 const List = styled.ul`
-  display: grid;
-  grid-template-rows: 1fr;
   padding: 0 16px;
-  list-style-type: none;
   margin: 0;
 `;
 
@@ -98,26 +95,27 @@ const Item = styled.a`
   padding: 8px 0;
   grid-column-gap: 4px;
   text-decoration: none;
-
   &:hover {
     background-color: ${({ theme }) => theme.item.hover};
   }
 `;
 
 const UpArrowIcon = styled(UpArrow)`
-  fill: ${({ theme }) => theme.svg.color};
   align-self: center;
   justify-self: center;
   height: 70%;
   width: 70%;
+
+  fill: ${({ theme }) => theme.svg.color};
 `;
 
 const DownArrowIcon = styled(DownArrow)`
-  fill: ${({ theme }) => theme.svg.color};
   align-self: center;
   justify-self: center;
   height: 70%;
   width: 70%;
+
+  fill: ${({ theme }) => theme.svg.color};
 `;
 
 const FileIcon = styled(File)`
@@ -125,14 +123,15 @@ const FileIcon = styled(File)`
   margin-left: 2px;
   width: 100%;
   height: 22px;
-  fill: ${({ theme }) => theme.colors.text};
+  fill: ${({ theme }) => theme.text.color.primary};
 `;
 
 const ItemText = styled.div`
-  color: ${({ theme }) => theme.colors.text};
   overflow-wrap: break-word;
   font-size: 15px;
   font-weight: 500;
+
+  color: ${({ theme }) => theme.text.color.primary};
 `;
 
 const ShowMore = styled.div`

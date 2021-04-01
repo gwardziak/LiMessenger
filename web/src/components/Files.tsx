@@ -39,25 +39,24 @@ const LinkContainer = styled.a`
 const Container = styled.div<{ sender: boolean }>`
   display: grid;
   grid-template-columns: 24px 1fr;
-  border-radius: ${(props) =>
-    props.sender ? "10px 0 0 10px" : "0 10px 10px 0"};
-  background-color: ${({ theme }) => theme.item.hover};
   padding: 7px 16px 8px 8px;
   box-sizing: border-box;
   grid-column-gap: 10px;
+
+  border-radius: ${({ sender }) =>
+    sender ? "10px 0 0 10px" : "0 10px 10px 0"};
+  background-color: ${({ theme }) => theme.item.hover};
 `;
 
 const ImageContainer = styled.div`
   display: grid;
   height: 30px;
   width: 30px;
-  background-color: ${({ theme }) => theme.colors.body};
-  align-self: center;
   border-radius: 50%;
-  align-content: center;
-  justify-content: center;
   justify-self: center;
   align-self: center;
+
+  background-color: ${({ theme }) => theme.body.background};
 `;
 
 const FileIcon = styled(File)`
@@ -65,16 +64,15 @@ const FileIcon = styled(File)`
   width: 90%;
   justify-self: center;
   align-self: center;
-  fill: ${({ theme }) => theme.colors.text};
+
+  fill: ${({ theme }) => theme.text.color.primary};
 `;
 
 const Filename = styled.div`
-  display: grid;
-  color: ${({ theme }) => theme.colors.text};
-  overflow: hidden;
-  text-overflow: ellipsis;
   font-weight: 600;
   font-size: 14px;
   align-self: center;
   word-break: break-word;
+
+  color: ${({ theme }) => theme.text.color.primary};
 `;

@@ -4,7 +4,6 @@ import { Scrollbar } from "react-scrollbars-custom";
 import { ScrollState } from "react-scrollbars-custom/dist/types/types";
 import styled, { css } from "styled-components";
 import { useRootStore } from "../stores/RootStore";
-import { Avatar as DefaultAvatar } from "../ui/Avatar";
 import { MyScrollbar } from "../utils/Scrollbar";
 import { Files } from "./Files";
 import { Images } from "./Images";
@@ -166,11 +165,11 @@ const Message = styled.div<{ sender: boolean }>`
   min-height: 32px;
   box-sizing: border-box;
   overflow-wrap: anywhere;
-  background-color: ${(props) =>
-    props.sender ? "#09f" : props.theme.svg.hover};
+  background-color: ${({ theme, sender }) =>
+    sender ? "#09f" : theme.item.hover};
   color: ${(props) => props.sender && "#fff"};
-  ${(props) =>
-    !props.sender &&
+  ${({ sender }) =>
+    !sender &&
     css`
       border-top-right-radius: 1.3em;
       border-bottom-right-radius: 1.3em;
@@ -181,8 +180,8 @@ const Message = styled.div<{ sender: boolean }>`
         border-bottom-left-radius: 1.3em;
       }
     `}
-  ${(props) =>
-    props.sender &&
+  ${({ sender }) =>
+    sender &&
     css`
       border-top-left-radius: 1.3em;
       border-bottom-left-radius: 1.3em;
@@ -195,9 +194,10 @@ const Message = styled.div<{ sender: boolean }>`
     `}
 `;
 
-const Avatar = styled(DefaultAvatar)`
+const Avatar = styled.img`
   display: grid;
   grid-row: 1;
+  border-radius: 50%;
   width: 32px;
   height: 32px;
 `;
@@ -205,11 +205,8 @@ const Avatar = styled(DefaultAvatar)`
 const StyledScrollbar = styled(MyScrollbar)`
   border-left: ${({ theme }) => `1px solid ${theme.divider.color}`};
   box-sizing: border-box;
-  .ScrollbarsCustom-Content {
-    display: grid;
-  }
 
   .ScrollbarsCustom-Thumb {
-    background: ${({ theme }) => theme.scroll.color};
+    background: ${({ theme }) => theme.scroll.color} !important;
   }
 `;

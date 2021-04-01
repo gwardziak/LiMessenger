@@ -1,18 +1,26 @@
-type Themes = {
+export type Themes = {
   light: Theme;
   dark: Theme;
 };
 
-type Theme = {
-  colors: {
-    body: string;
-    text: string;
+export type Theme = {
+  text: {
+    color: {
+      primary: string;
+      secondary: string;
+    };
+  };
+  body: {
+    background: string;
   };
   svg: {
     background: string;
     color: string;
     hover: string;
+  };
+  img: {
     filter: string;
+    hover: string;
   };
   input: {
     color: string;
@@ -22,7 +30,6 @@ type Theme = {
   item: {
     hover: string;
     select: string;
-    secondHover: string;
   };
   scroll: {
     color: string;
@@ -39,69 +46,83 @@ type Theme = {
 
 export const themes: Themes = {
   light: {
-    colors: {
-      body: "#FFFFFF",
-      text: "#050505",
+    body: {
+      background: "rgb(255, 255, 255)", //stays
+    },
+    text: {
+      color: {
+        primary: "rgb(5, 5, 5)", //stays
+        secondary: "rgb(101,103,107)", //stays
+      },
     },
     svg: {
-      background: "rgba(0, 0, 0, 0.04)",
-      color: "#000",
-      hover: "rgb(233,233,233)",
+      background: "rgba(0, 0, 0, 0.04)", //stays
+      color: "rgb(0, 0, 0)", //stays
+      hover: "rgb(233,233,233)", //stays
+    },
+    img: {
       filter: "",
+      hover: "rgb(205, 207, 211)",
     },
     input: {
-      color: "#1c1e21",
-      placeholder: "#65676b",
-      background: "rgba(0,0,0,0.05)",
+      color: "rgb(5, 5, 5)", //stays
+      placeholder: "rgb(101, 103, 107)", //stays
+      background: "rgba(0,0,0,0.05)", //stays
     },
     item: {
-      hover: "rgba(0, 0, 0, 0.05)",
-      select: "rgba(0, 0, 0, 0.04)",
-      secondHover: "rgb(205, 207, 211)",
+      hover: "rgba(0, 0, 0, 0.05)", //stays
+      select: "rgba(0, 0, 0, 0.04)", //stays
     },
     scroll: {
-      color: "rgba(0, 0, 0, 0.4) !important",
+      color: "rgba(0, 0, 0, 0.4)", //es
     },
     divider: {
-      color: "rgba(0, 0, 0, 0.1)",
+      color: "rgba(0, 0, 0, 0.1)", //stas
     },
     emojiPicker: {
-      background: "#fff",
-      hover: "#f4f4f4",
+      background: "rgb(255, 255, 255)",
+      hover: "rgb(244, 244, 244)",
       border: "rgb(217, 217, 217)",
     },
   },
   dark: {
-    colors: {
-      body: "#131313",
-      text: "#c9c9c9",
+    body: {
+      background: "rgb(19, 19, 19)",
+    },
+    text: {
+      color: {
+        primary: "rgb(201, 201, 201)",
+        secondary: "rgb(112, 112, 112)",
+      },
     },
     svg: {
       background: "rgba(255, 255, 255, 0.05)",
-      color: "#707070",
+      color: "rgb(112, 112, 112)",
       hover: "rgb(42,42,42)",
+    },
+    img: {
       filter: "brightness(0.5) invert(0.4)",
+      hover: "rgb(53, 53, 53)",
     },
     input: {
-      color: "#c9c9c9",
-      placeholder: "#707070",
+      color: "rgb(201, 201, 201)",
+      placeholder: "rgb(112, 112, 112)",
       background: "rgba(255, 255, 255, 0.05)",
     },
     item: {
       hover: "rgba(255, 255, 255, 0.05)",
       select: "rgba(255, 255, 255, 0.04)",
-      secondHover: "rgb(53, 53, 53)",
     },
     scroll: {
-      color: "rgb(188,192,196) !important",
+      color: "rgb(188,192,196)",
     },
     divider: {
       color: "rgba(255,255,255,0.12)",
     },
     emojiPicker: {
-      background: "#202020",
+      background: "rgb(32, 32, 32)",
       hover: "rgba(255, 255, 255, 0.25)",
-      border: "#202020",
+      border: "rgb(32, 32, 32)",
     },
   },
 };

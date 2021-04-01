@@ -15,8 +15,8 @@ export const SharedPhotosMenu = observer(({ isOpen, setIsOpen }: FileProps) => {
 
   return (
     <Container isToggle={isOpen}>
-      <Header isToggle={isOpen} onClick={() => setIsOpen(!isOpen)}>
-        <HeaderText>Udostępnione zdjęcia</HeaderText>
+      <Header onClick={() => setIsOpen(!isOpen)}>
+        <HeaderText>Shared images</HeaderText>
         {isOpen ? <UpArrowIcon /> : <DownArrowIcon />}
       </Header>
       {isOpen && (
@@ -35,22 +35,21 @@ export const SharedPhotosMenu = observer(({ isOpen, setIsOpen }: FileProps) => {
 const Container = styled.div<{ isToggle: boolean }>`
   grid-area: sharedPhotosMenu;
   display: grid;
-  grid-template-rows: ${(props) => (props.isToggle ? "48px 1fr" : "48px")};
-  grid-template-columns: 1fr;
-  border-top: ${({ theme }) => `1px solid ${theme.divider.color}`};
+  grid-template-rows: ${(props) => (props.isToggle ? "49px 1fr" : "48px")};
   width: 100%;
-
-  margin-bottom: ${(props) => (props.isToggle ? "16px" : "0")};
+  margin-bottom: ${({ isToggle }) => (isToggle ? "16px" : "0")};
+  border-top: ${({ theme }) => `1px solid ${theme.divider.color}`};
 `;
 
-const Header = styled.div<{ isToggle: boolean }>`
+const Header = styled.div`
   display: grid;
   grid-template-rows: 20px;
   grid-template-columns: 1fr 20px;
   padding: 14px;
   cursor: pointer;
+
   &:hover {
-    background-color: rgba(0, 0, 0, 0.05);
+    background-color: ${({ theme }) => theme.item.hover};
   }
 `;
 
@@ -62,7 +61,6 @@ const HeaderText = styled.div`
 
 const Photos = styled.div`
   display: grid;
-  grid-template-rows: 1fr;
   grid-template-columns: 1fr 1fr 1fr;
   padding: 0 12px;
   grid-gap: 4px 4px;
@@ -88,7 +86,6 @@ const Photo = styled.img`
   left: 0;
   right: 0;
   bottom: 0;
-
   width: 100%;
   height: 100%;
   object-fit: cover;
@@ -99,17 +96,19 @@ const Photo = styled.img`
 `;
 
 const UpArrowIcon = styled(UpArrow)`
-  fill: ${({ theme }) => theme.svg.color};
   align-self: center;
   justify-self: center;
   height: 70%;
   width: 70%;
+
+  fill: ${({ theme }) => theme.svg.color};
 `;
 
 const DownArrowIcon = styled(DownArrow)`
-  fill: ${({ theme }) => theme.svg.color};
   align-self: center;
   justify-self: center;
   height: 70%;
   width: 70%;
+
+  fill: ${({ theme }) => theme.svg.color};
 `;
