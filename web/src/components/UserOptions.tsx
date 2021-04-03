@@ -34,12 +34,22 @@ export const UserOptions = observer(() => {
     }
   };
 
+  const theme = () => {
+    const getTheme = localStorage.getItem("theme");
+
+    if (getTheme) {
+      return getTheme === "dark" ? "light" : "dark";
+    }
+
+    return "dark";
+  };
+
   return (
     <Container>
       <Avatar src="assets/defaultAvatar.svg" />
       <ListName>Chats</ListName>
       <IconContainer>
-        <SettingsIcon />
+        <SettingsIcon onClick={() => rootStore.themeStore.setTheme(theme())} />
       </IconContainer>
       <IconContainer>
         <CreateNewRoomIcon />

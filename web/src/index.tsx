@@ -1,3 +1,4 @@
+import { observer } from "mobx-react-lite";
 import React, { createContext } from "react";
 import ReactDOM from "react-dom";
 import { BrowserRouter as Router } from "react-router-dom";
@@ -11,10 +12,9 @@ import {
   subscriptionExchange,
 } from "urql";
 import App from "./App";
-import { RootStore } from "./stores/RootStore";
+import { RootStore, useRootStore } from "./stores/RootStore";
 import { GlobalStyle } from "./utils/css/GlobalStyle";
 import fileExchange from "./utils/fileExchange";
-import { loadTheme } from "./utils/loadTheme";
 
 const url = "http://localhost:4000/graphql";
 
@@ -52,14 +52,23 @@ export const StoreContext = createContext<RootStore>(
   new RootStore(client, subscriptionClient)
 );
 
+const ObservableThemeProvider = observer((props) => {
+  const rootStore = useRootStore();
+  return (
+    <ThemeProvider theme={rootStore.themeStore.theme}>
+      {props.children}
+    </ThemeProvider>
+  );
+});
+
 ReactDOM.render(
   <React.StrictMode>
     <Provider value={client}>
       <Router>
-        <ThemeProvider theme={loadTheme()}>
+        <ObservableThemeProvider>
           <GlobalStyle />
           <App />
-        </ThemeProvider>
+        </ObservableThemeProvider>
       </Router>
     </Provider>
   </React.StrictMode>,

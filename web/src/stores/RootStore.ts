@@ -4,12 +4,14 @@ import { Client } from "urql";
 import { StoreContext } from "..";
 import { AttachmentsStore } from "./AttachmentsStore";
 import { ChatStore } from "./ChatStore";
+import { ThemeStore } from "./ThemeStore";
 import { UserStore } from "./UserStore";
 
 export class RootStore {
   public readonly userStore: UserStore;
   public readonly chatStore: ChatStore;
   public readonly attachmentsStore: AttachmentsStore;
+  public readonly themeStore: ThemeStore;
 
   constructor(
     public readonly urqlClient: Client,
@@ -18,6 +20,7 @@ export class RootStore {
     this.userStore = new UserStore(this);
     this.chatStore = new ChatStore(this);
     this.attachmentsStore = new AttachmentsStore(this);
+    this.themeStore = new ThemeStore(this);
   }
 }
 
