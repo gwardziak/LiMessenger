@@ -1,7 +1,6 @@
 import { createGlobalStyle } from "styled-components";
-import { Theme } from "./themes";
 
-export const GlobalStyle = createGlobalStyle<{ theme: Theme }>`
+export const GlobalStyle = createGlobalStyle`
 html {
   height:100%;
 }

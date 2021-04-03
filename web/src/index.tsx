@@ -13,8 +13,8 @@ import {
 import App from "./App";
 import { RootStore } from "./stores/RootStore";
 import { GlobalStyle } from "./utils/css/GlobalStyle";
-import { themes } from "./utils/css/themes";
 import fileExchange from "./utils/fileExchange";
+import { loadTheme } from "./utils/loadTheme";
 
 const url = "http://localhost:4000/graphql";
 
@@ -56,7 +56,7 @@ ReactDOM.render(
   <React.StrictMode>
     <Provider value={client}>
       <Router>
-        <ThemeProvider theme={themes.dark}>
+        <ThemeProvider theme={loadTheme()}>
           <GlobalStyle />
           <App />
         </ThemeProvider>

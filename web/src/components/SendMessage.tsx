@@ -36,7 +36,7 @@ export const SendMessage = observer(
       mediaQuery.sm,
       mediaQuery.md,
     ]);
-    const defaultInput = "Wpisz wiadomość...";
+    const defaultInput = "Aa";
     const [toggle, setToggle] = useState<boolean>(false);
     const [isEmojiPickerVisible, setIsEmojiPickerVisible] = useState<boolean>(
       false
@@ -89,24 +89,19 @@ export const SendMessage = observer(
           />
         )}
 
-        <PlusIcon
-          onClick={() => setToggle(!toggle)}
-          isToggle={toggle}
-          viewBox="30 30 448 448"
-        />
+        <PlusIcon onClick={() => setToggle(!toggle)} isToggle={toggle} />
         {!isMobile && (
           <>
             {toggle && !isMobile && (
               <>
-                <CameraIcon viewBox="0 0 36 36" />
-                <GamePadIcon viewBox="0 0 36 36" />
-                <MicrophoneIcon viewBox="-95 0 680 450" />
+                <CameraIcon />
+                <GamePadIcon />
+                <MicrophoneIcon />
               </>
             )}
-            <GifIcon viewBox="0 0 36 36" />
-            <EmojiIcon viewBox="0 0 36 36" />
+            <GifIcon />
+            <EmojiIcon />
             <AttachmentIcon
-              viewBox="0 0 36 36"
               onClick={() =>
                 uploadFilesRef.current && uploadFilesRef.current.click()
               }
@@ -116,15 +111,14 @@ export const SendMessage = observer(
         {isMobile && toggle && (
           <MobileIconsContainer>
             <AttachmentIcon
-              viewBox="0 0 36 36"
               onClick={() =>
                 uploadFilesRef.current && uploadFilesRef.current.click()
               }
             />
-            <EmojiIcon viewBox="0 0 36 36" />
-            <GifIcon viewBox="0 0 36 36" />
-            <MicrophoneIcon viewBox="-95 0 680 450" />
-            <GamePadIcon viewBox="0 0 36 36" />
+            <EmojiIcon />
+            <GifIcon />
+            <MicrophoneIcon />
+            <GamePadIcon />
             <CameraIcon />
           </MobileIconsContainer>
         )}
@@ -203,12 +197,10 @@ export const SendMessage = observer(
                 e.preventDefault();
 
                 try {
-                  rootStore.chatStore.sendMessage(
+                  await rootStore.chatStore.sendMessage(
                     input.replace(/&nbsp;/g, " "),
                     uploadFiles
                   );
-                  setInput("");
-                  setUploadFiles([]);
                 } catch (ex) {
                   const chatError = graphQLError(ex, "chat doesnt exist");
 
@@ -220,6 +212,9 @@ export const SendMessage = observer(
                   throw new Error(
                     "Error during sending a message" + ex.message
                   );
+                } finally {
+                  setInput("");
+                  setUploadFiles([]);
                 }
               }
             }}
@@ -227,7 +222,6 @@ export const SendMessage = observer(
 
           <SmileIcon
             name="SmileIcon"
-            viewBox="80 80 850 850"
             onClick={() => setIsEmojiPickerVisible(!isEmojiPickerVisible)}
           />
           {isEmojiPickerVisible && (
@@ -243,26 +237,22 @@ export const SendMessage = observer(
             />
           )}
         </MessageContainer>
-        <LikeIcon viewBox="-90 -70 700 700" />
+        <LikeIcon />
       </Container>
     );
   }
 );
-
 const Container = styled.div<{ isToggle: boolean }>`
   display: grid;
   grid-template-columns: ${(props) =>
     props.isToggle
       ? "28px 36px 36px 36px 36px 36px 36px 1fr 36px"
       : "28px 36px 36px 36px 1fr 36px"};
-  grid-template-rows: 1fr;
-  padding: 0 8px;
+  padding: 0 8px 8px;
   grid-column-gap: 8px;
   align-items: flex-end;
   border-left: ${({ theme }) => `1px solid ${theme.divider.color}`};
-  box-sizing: border-box;
-  margin-bottom: 8px;
-  position: relative;
+
   @media ${mediaQuery.xs}, ${mediaQuery.sm}, ${mediaQuery.md} {
     grid-template-columns: ${(props) => props.isToggle && "28px 1fr 36px"};
     grid-template-rows: ${(props) => (props.isToggle ? "52px 1fr" : "1fr")};
@@ -349,15 +339,16 @@ const Files = styled.div`
 const MessageContainer = styled.div<{ isToggle: boolean; hasFile: boolean }>`
   display: grid;
   grid-template-columns: 1fr 24px;
-  grid-template-rows: 1fr;
-  background-color: ${({ theme }) => theme.input.background};
   min-width: 100px;
   border-radius: 18px;
   padding: 0 8px 0 12px;
   align-items: flex-end;
   cursor: context-menu;
   font-size: 14px;
-  grid-template-rows: ${(props) => props.hasFile && "auto 1fr"};
+
+  grid-template-rows: ${({ hasFile }) => hasFile && "auto 1fr"};
+  background-color: ${({ theme }) => theme.input.background};
+
   @media ${mediaQuery.xs}, ${mediaQuery.sm}, ${mediaQuery.md} {
     grid-column: ${(props) => (props.isToggle ? "2/3" : "2/6")};
   }
@@ -415,7 +406,6 @@ const UploadImg = styled.img`
   width: 48px;
 `;
 
-//DUPLICATE IN CHATROOM
 const UploadFile = styled.div`
   display: grid;
   grid-template-columns: 24px 1fr;
@@ -423,7 +413,6 @@ const UploadFile = styled.div`
   height: 48px;
   width: 152px;
   background-color: ${({ theme }) => theme.svg.background};
-
   padding: 0 16px 0 8px;
   box-sizing: border-box;
   grid-column-gap: 10px;
@@ -432,8 +421,8 @@ const UploadFileImgContainer = styled.div`
   display: grid;
   height: 30px;
   width: 30px;
-  background-color: ${({ theme }) => theme.colors.body};
 
+  background-color: ${({ theme }) => theme.body.background};
   align-self: center;
   border-radius: 50%;
   align-content: center;
@@ -445,7 +434,7 @@ const FileIcon = styled(File)`
   height: 70%;
   width: 90%;
   justify-self: center;
-  fill: ${({ theme }) => theme.colors.text};
+  fill: ${({ theme }) => theme.text.color.primary};
 `;
 
 const UploadFilename = styled.div`
@@ -479,11 +468,10 @@ const CloseFile = styled.div`
 `;
 
 const CloseIcon = styled(Close)`
-  fill: ${({ theme }) => theme.svg.color};
-  align-self: center;
-  justify-self: center;
   height: 12px;
   width: 12px;
+
+  fill: ${({ theme }) => theme.svg.color};
 `;
 
 const UploadMore = styled.div`
@@ -491,26 +479,24 @@ const UploadMore = styled.div`
   border-radius: 10px;
   height: 48px;
   width: 48px;
+  min-width: 48px;
   justify-content: center;
+  align-content: center;
   background-color: ${({ theme }) => theme.svg.background};
   align-self: flex-end;
-  min-width: 48px;
   margin-bottom: 3px;
   cursor: pointer;
+
   :hover {
-    background-color: ${({ theme }) => theme.item.secondHover};
+    background-color: ${({ theme }) => theme.img.hover};
   }
 `;
 
 const UploadMoreImg = styled.div`
-  display: grid;
-  justify-self: center;
-  align-self: center;
   height: 24px;
   width: 24px;
   background-image: url("assets/uploadFiles.png");
   background-size: cover;
   background-repeat: no-repeat;
-
-  filter: ${({ theme }) => theme.svg.filter};
+  filter: ${({ theme }) => theme.img.filter};
 `;

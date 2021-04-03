@@ -316,7 +316,6 @@ export class ChatStore {
         }
 
         return runInAction(() => {
-          console.log(data.chatroomSubscription);
           const key: string = this.roomId(data.chatroomSubscription);
           const files = [];
           const images = [];

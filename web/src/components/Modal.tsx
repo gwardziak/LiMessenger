@@ -1,6 +1,7 @@
-import React from "react";
+import React, { useContext } from "react";
 import ReactModal from "react-modal";
-import styled from "styled-components";
+import styled, { ThemeContext } from "styled-components";
+import { Close } from "../Icons/Close";
 
 type ModalProps = {
   title: string;
@@ -17,6 +18,8 @@ export const Modal = ({
   isVisible,
   setIsVisible,
 }: ModalProps) => {
+  const theme = useContext(ThemeContext);
+
   return (
     <StyledModal
       isOpen={isVisible}
@@ -29,14 +32,14 @@ export const Modal = ({
           display: "grid",
           alignContent: "center",
           justifyContent: "center",
-          backgroundColor: "rgba(134, 142, 153, 0.25)",
+          backgroundColor: theme.modal.overlay,
         },
       }}
     >
       <Container>
         <Title>{title}</Title>
         <IconContainer onClick={() => setIsVisible(false)}>
-          <Icon />
+          <CloseIcon />
         </IconContainer>
         <Message>{message}</Message>
         <BlueButton onClick={() => setIsVisible(false)}>Close</BlueButton>
@@ -47,20 +50,20 @@ export const Modal = ({
 
 const StyledModal = styled(ReactModal)`
   display: grid;
-
   min-height: 152px;
+  max-height: fit-content;
+  min-width: 400px;
   max-width: 500px;
   width: fit-content;
-  min-width: 400px;
-  max-height: fit-content;
+
+  border-radius: 8px;
   outline: none;
   box-sizing: border-box;
   padding: 12px 16px 16px;
-  background-color: #fff;
-  border-radius: 8px;
-  box-shadow: rgba(0, 0, 0, 0.2) 0px 12px 28px 0px,
+  background-color: ${({ theme }) => theme.modal.background};
+  box-shadow: ${({ theme }) => `rgba(0, 0, 0, 0.2) 0px 12px 28px 0px,
     rgba(0, 0, 0, 0.1) 0px 2px 4px 0px,
-    rgba(255, 255, 255, 0.5) 0px 0px 0px 1px inset;
+    ${theme.modal.shadow} 0px 0px 0px 1px inset`};
 `;
 
 const Container = styled.div`
@@ -75,20 +78,21 @@ const Title = styled.span`
   font-weight: 700;
   line-height: 24px;
 `;
+
 const IconContainer = styled.div`
   display: grid;
-  background-color: rgb(245, 245, 245);
   width: 36px;
   height: 36px;
   border-radius: 50%;
   justify-content: center;
   align-content: center;
+  background-color: ${({ theme }) => theme.svg.background};
 
   :hover {
-    background-color: rgb(233, 233, 233);
+    background: ${({ theme }) => theme.img.hover};
   }
   :active {
-    background-color: rgb(218, 219, 220);
+    background-color: ${({ theme }) => theme.svg.active};
   }
 `;
 
@@ -98,12 +102,11 @@ const Message = styled.span`
   font-size: 15px;
 `;
 
-const Icon = styled.div`
-  display: grid;
+const CloseIcon = styled(Close)`
   height: 16px;
   width: 16px;
-  background-image: url(assets/close.png);
-  background-repeat: no-repeat;
+
+  fill: ${({ theme }) => theme.input.placeholder};
 `;
 
 const BlueButton = styled.button`

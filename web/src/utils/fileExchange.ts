@@ -16,6 +16,10 @@ const fileExchange: Exchange = ({ forward }) => {
           return true;
         }
 
+        if (operation.variables.files.length === 0) {
+          return true;
+        }
+
         //Upload file
         const { url } = operation.context;
         const { files, clone: variables } = extractFiles({

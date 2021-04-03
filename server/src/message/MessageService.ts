@@ -159,7 +159,9 @@ export class MessageService {
         where: { uuid: options.recipientUuid },
       });
 
-      if (!user) throw new Error("Selected chat doesnt exist");
+      if (!user) {
+        throw new Error("Selected chat doesnt exist");
+      }
 
       room = await this.chatroomService.createChatroom(user, sender);
     }

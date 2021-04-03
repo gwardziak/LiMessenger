@@ -121,20 +121,20 @@ export const Login = () => {
 
 const Container = styled.div`
   display: grid;
-  grid-template-columns: minmax(240px, 396px);
-  align-self: center;
-  justify-self: center;
+  background: #ebedf0;
+  height: 100%;
 `;
 
 const FormContainer = styled.form`
   display: grid;
-  grid-template-columns: 1fr;
+  grid-template-columns: minmax(240px, 364px);
   grid-row-gap: 12px;
-  justify-items: center;
+  align-self: center;
+  justify-self: center;
   background-color: #fff;
   border-radius: 8px;
+  justify-items: center;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1), 0 8px 16px rgba(0, 0, 0, 0.1);
-  box-sizing: border-box;
   padding: 24px 16px;
 `;
 
