@@ -1,13 +1,20 @@
 import { observer } from "mobx-react-lite";
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
+import { ModalProvider } from "styled-react-modal";
 import { DownArrow } from "../Icons/DownArrow";
 import { UpArrow } from "../Icons/UpArrow";
+import { Attachment } from "../stores/ChatStore";
 import { useRootStore } from "../stores/RootStore";
+import { Gallery } from "./Gallery";
 
 type FileProps = {
   isOpen: boolean;
   setIsOpen(val: boolean): void;
+};
+
+type ImageProps = {
+  image: Attachment;
 };
 
 export const SharedPhotosMenu = observer(({ isOpen, setIsOpen }: FileProps) => {
@@ -22,15 +29,34 @@ export const SharedPhotosMenu = observer(({ isOpen, setIsOpen }: FileProps) => {
       {isOpen && (
         <Photos>
           {rootStore.attachmentsStore.imageAttachments.map((image) => (
-            <PhotoContainer key={image.uuid}>
-              <Photo src={`http://localhost:4000/${image.link}`} />
-            </PhotoContainer>
+            <Image key={image.uuid} image={image} />
           ))}
         </Photos>
       )}
     </Container>
   );
 });
+
+const Image = ({ image }: ImageProps) => {
+  const [isZoomImage, setIsZoomImage] = useState<boolean>(false);
+
+  return (
+    <>
+      <PhotoContainer onClick={() => setIsZoomImage(!isZoomImage)}>
+        <Photo src={`http://localhost:4000/${image.link}`} />
+      </PhotoContainer>
+      {isZoomImage && (
+        <ModalProvider>
+          <Gallery
+            image={`http://localhost:4000/${image.link}`}
+            zoomImage={isZoomImage}
+            setZoomImage={setIsZoomImage}
+          />
+        </ModalProvider>
+      )}
+    </>
+  );
+};
 
 const Container = styled.div<{ isToggle: boolean }>`
   grid-area: sharedPhotosMenu;

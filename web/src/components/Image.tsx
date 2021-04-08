@@ -53,4 +53,5 @@ export const Img = styled.img<{ imageCount: number }>`
   box-shadow: inset 0 0 1px rgba(0, 0, 0, 0.4);
   border-radius: ${({ imageCount }) => (imageCount > 1 ? "4px" : "18px")};
   height: ${({ imageCount }) => handleImageHeight(imageCount)};
+  cursor: pointer;
 `;
