@@ -1,36 +1,31 @@
 import React from "react";
 import { useInView } from "react-intersection-observer";
 import styled from "styled-components";
+import { Image, Img } from "../components/Image";
 import { Attachment } from "../stores/ChatStore";
 
 type ImagesProps = {
   images: Attachment[];
-  elementsInCol?: number;
 };
 
-export const Images = ({ images, elementsInCol }: ImagesProps) => {
+export const Images = ({ images }: ImagesProps) => {
   const [ref, inView] = useInView({
     triggerOnce: true,
     rootMargin: "600px 0px",
   });
 
   return (
-    <Container imagesCount={images.length} ref={ref}>
+    <Container imageCount={images.length} ref={ref}>
       {images.map((image) =>
         inView ? (
-          <Image
-            height={image.height}
-            width={image.width}
-            imagesCount={elementsInCol ? elementsInCol : images.length}
-            key={image.uuid}
-            src={`http://localhost:4000/${image.link}`}
-          />
+          <Image key={image.uuid} image={image} imageCount={images.length} />
         ) : (
-          <Image
+          //placeholder
+          <Img
+            key={image.uuid}
             height={image.height}
             width={image.width}
-            imagesCount={elementsInCol ? elementsInCol : images.length}
-            key={image.uuid}
+            imageCount={images.length}
             data-src={`http://localhost:4000/${image.link}`}
           />
         )
@@ -39,8 +34,8 @@ export const Images = ({ images, elementsInCol }: ImagesProps) => {
   );
 };
 
-const handleColumnTemplate = (imagesCount: number) => {
-  switch (imagesCount) {
+const handleColumnTemplate = (imageCount: number) => {
+  switch (imageCount) {
     case 1:
       return "1fr";
     case 2:
@@ -50,33 +45,11 @@ const handleColumnTemplate = (imagesCount: number) => {
   }
 };
 
-const Container = styled.div<{
-  imagesCount: number;
-}>`
+const Container = styled.div<{ imageCount: number }>`
   display: grid;
   grid-gap: 4px;
   max-width: 75%;
-  border-radius: ${(props) => (props.imagesCount > 1 ? "4px" : "18px")};
-  grid-template-columns: ${(props) => handleColumnTemplate(props.imagesCount)};
-`;
-
-const handleImageHeight = (imagesCount: number) => {
-  switch (imagesCount) {
-    case 1:
-      return "auto";
-    case 2:
-      return "190px";
-    default:
-      return "125px";
-  }
-};
-
-const Image = styled.img<{ imagesCount: number }>`
-  max-height: 400px;
-  max-width: 100%;
-  object-fit: cover;
-  border: 1px solid rgba(0, 0, 0, 0.1);
-  box-shadow: inset 0 0 1px rgba(0, 0, 0, 0.4);
-  border-radius: ${(props) => (props.imagesCount > 1 ? "4px" : "18px")};
-  height: ${(props) => handleImageHeight(props.imagesCount)};
+  border-radius: ${({ imageCount }) => (imageCount > 1 ? "4px" : "18px")};
+  grid-template-columns: ${({ imageCount }) =>
+    handleColumnTemplate(imageCount)};
 `;

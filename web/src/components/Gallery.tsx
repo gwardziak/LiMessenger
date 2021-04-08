@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import styled from "styled-components";
 import Modal from "styled-react-modal";
 import { Close } from "../Icons/Close";
@@ -6,29 +6,25 @@ import { Download } from "./../Icons/Download";
 
 type IGalleryProps = {
   image: string;
+  zoomImage: boolean;
+  setZoomImage(val: boolean): void;
 };
 
-export const Gallery = ({ image }: IGalleryProps) => {
-  const [isOpen, setIsOpen] = useState(false);
-
-  function toggleModal() {
-    setIsOpen(!isOpen);
-  }
-
+export const Gallery = ({ image, zoomImage, setZoomImage }: IGalleryProps) => {
   return (
     <StyledModal
-      isOpen={isOpen}
-      onBackgroundClick={toggleModal}
-      onEscapeKeydown={toggleModal}
+      isOpen={zoomImage}
+      onBackgroundClick={() => setZoomImage(false)}
+      onEscapeKeydown={() => setZoomImage(false)}
     >
       <ImageContainer>
-        <LeftIconContainer>
-          <CloseIcon onClick={toggleModal} />
+        <LeftIconContainer onClick={() => setZoomImage(false)}>
+          <CloseIcon />
         </LeftIconContainer>
         <RightIconContainer>
+          <DownloadLink href={image} download />
           <DownloadIcon />
         </RightIconContainer>
-
         <Image src={image} />
       </ImageContainer>
       <GalleryContainer></GalleryContainer>
@@ -74,6 +70,11 @@ const IconContainer = styled.div`
   }
 `;
 
+const DownloadLink = styled.a`
+  position: absolute;
+  width: 100%;
+  height: 100%;
+`;
 const LeftIconContainer = styled(IconContainer)`
   left: 0;
   margin: 8px 0 0 16px;

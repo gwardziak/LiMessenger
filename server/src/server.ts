@@ -52,12 +52,6 @@ const main = async () => {
     }
 
     res.setHeader("Content-Type", file.mimetype);
-
-    if (file.mimetype.includes("image")) {
-      res.setHeader("Content-disposition", "filename=" + file.name);
-      return res.send(file.attachment);
-    }
-
     res.setHeader("Content-disposition", "attachment; filename=" + file.name);
     return res.send(file.attachment);
   });
