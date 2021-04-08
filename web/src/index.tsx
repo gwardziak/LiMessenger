@@ -33,6 +33,7 @@ const client = createClient({
     return {
       headers: { "auth-token": `${token}` },
       credentials: "include",
+
       mode: "cors",
     };
   },

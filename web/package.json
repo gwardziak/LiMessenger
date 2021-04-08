@@ -25,6 +25,7 @@
     "react-use": "^15.3.4",
     "save": "^2.4.0",
     "styled-components": "^5.2.0",
+    "styled-react-modal": "^2.0.1",
     "subscriptions-transport-ws": "^0.9.18",
     "type-route": "^0.5.4",
     "urql": "^1.10.1",

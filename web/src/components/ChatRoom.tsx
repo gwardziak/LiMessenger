@@ -132,6 +132,14 @@ const Container = styled.div`
   padding: 0 20px 0 12px;
   grid-row-gap: 15px;
   padding-bottom: 20px;
+
+  -webkit-touch-callout: text; /* iOS Safari */
+  -webkit-user-select: text; /* Safari */
+  -khtml-user-select: text; /* Konqueror HTML */
+  -moz-user-select: text; /* Old versions of Firefox */
+  -ms-user-select: text; /* Internet Explorer/Edge */
+  user-select: text; /* Non-prefixed version, currently
+                                supported by Chrome, Edge, Opera and Firefox */
 `;
 
 const GroupMessages = styled.div<{ messagesSender: boolean }>`

@@ -1,57 +1,53 @@
-import { DefaultTheme } from "styled-components";
-
-declare module "styled-components" {
-  export interface DefaultTheme {
-    text: {
-      color: {
-        primary: string;
-        secondary: string;
-      };
-    };
-    body: {
-      background: string;
-    };
-    svg: {
-      background: string;
-      color: string;
-      hover: string;
-      active: string;
-    };
-    img: {
-      filter: string;
-      hover: string;
-    };
-    input: {
-      color: string;
-      placeholder: string;
-      background: string;
-    };
-    item: {
-      hover: string;
-      select: string;
-    };
-    scroll: {
-      color: string;
-    };
-    divider: {
-      color: string;
-    };
-    modal: {
-      background: string;
-      shadow: string;
-      overlay: string;
-    };
-    emojiPicker: {
-      background: string;
-      hover: string;
-      border: string;
-    };
-  }
-}
-
 export type Themes = {
-  light: DefaultTheme;
-  dark: DefaultTheme;
+  light: Theme;
+  dark: Theme;
+};
+
+export type Theme = {
+  text: {
+    color: {
+      primary: string;
+      secondary: string;
+    };
+  };
+  body: {
+    background: string;
+  };
+  svg: {
+    background: string;
+    color: string;
+    hover: string;
+    active: string;
+  };
+  img: {
+    filter: string;
+    hover: string;
+  };
+  input: {
+    color: string;
+    placeholder: string;
+    background: string;
+  };
+  item: {
+    hover: string;
+    select: string;
+  };
+  scroll: {
+    color: string;
+  };
+  divider: {
+    color: string;
+  };
+  modal: {
+    background: string;
+    shadow: string;
+    overlay: string;
+  };
+  emojiPicker: {
+    background: string;
+    hover: string;
+    border: string;
+  };
 };
 
 export const themes: Themes = {
