@@ -15,9 +15,9 @@ It has been created because I wanted to get familiar with `type-graphql` and `re
 1. Open terminal and execute:
 
    ```bash
-   git clone git@github.com:gwardziak/chatApp.git
-   cd ./chatApp
-   npm --prefix ./server install && npm --prefix ./web install
+   git clone https://github.com/gwardziak/LiMessenger.git
+   cd ./LiMessenger
+   cd server && npm install && cd ../web && npm install && cd ..
    ```
 
    It's going to clone the repository and install all the required dependencies.
@@ -25,8 +25,8 @@ It has been created because I wanted to get familiar with `type-graphql` and `re
 2. In 2 different terminals run:
 
    ```bash
-   npm --prefix ./server run start # to start the server
-   npm --prefix ./web run start # to start the frontend
+   npm run dev --prefix ./server  # to start the server
+   npm start --prefix ./web  # to start the frontend
    ```
 
 3. Navitage to the `http://localhost:3000` in the browser.
