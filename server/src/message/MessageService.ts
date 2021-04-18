@@ -1,3 +1,4 @@
+import sizeOf from "image-size";
 import { PubSubEngine } from "type-graphql";
 import { Inject, Service } from "typedi";
 import { getRepository } from "typeorm";
@@ -6,6 +7,7 @@ import { AttachmentInput } from "../attachment/dto/AttachmentInput";
 import { Attachment } from "../db/entities/Attachment";
 import { Message } from "../db/entities/Message";
 import { User } from "../db/entities/User";
+import { upload } from "../utils/upload";
 import { ChatroomService } from "./../chatroom/ChatroomService";
 import { Chatroom } from "./../db/entities/Chatroom";
 
@@ -166,7 +168,7 @@ export class MessageService {
 
     let attachments: Attachment[] = [];
 
-    if (files && files.length !== 0) {
+    if (files.length > 0) {
       const resolvedFiles: AttachmentInput[] = [];
 
       for (const file of files) {
@@ -174,11 +176,51 @@ export class MessageService {
         resolvedFiles.push(result);
       }
 
-      attachments = await this.attachmentService.upload(
-        sender,
-        recipient,
-        resolvedFiles
-      );
+      const streams = resolvedFiles.map(async (file) => {
+        return await upload(file);
+      });
+
+      const uploadMany = await Promise.all([...streams]);
+
+      for (const file of uploadMany) {
+        // const attachment = {
+        //   ...file,
+        //   participantA: sender,
+        //   participantB: recipient,
+        // };
+
+        //   if (file.mimetype.includes("image")) {
+        //     const newImage = await this.imageService.createImage(attachment);
+        //     uplaodImages.push(newImage);
+        //   }
+
+        //   const newFile = this.fileService.createFile(attachment);
+        //   uploadFiles.push(newFile);
+        // }
+
+        // message.images = [...uplaodImages];
+        // message.files = [...uploadFiles];
+
+        const binaryFile = Buffer.from(file.file, "binary");
+        let dimensions;
+        try {
+          dimensions = sizeOf(binaryFile);
+        } catch (ex) {
+          dimensions = { width: 0, height: 0 };
+        }
+
+        const attachment = new Attachment({
+          participantA: sender,
+          participantB: recipient,
+          name: file.name,
+          attachment: binaryFile,
+          mimetype: file.mimetype,
+          width: dimensions.width!,
+          height: dimensions.height!,
+        });
+
+        attachments.push(attachment);
+      }
 
       message.attachments = [...attachments];
     }

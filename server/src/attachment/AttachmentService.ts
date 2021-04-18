@@ -1,4 +1,3 @@
-import sizeOf from "image-size";
 import { Stream } from "stream";
 import { Service } from "typedi";
 import { getRepository } from "typeorm";
@@ -23,47 +22,6 @@ export namespace AttachmentService {
 @Service()
 export class AttachmentService {
   private attachmentRepository = getRepository(Attachment);
-
-  async uploadSingle(
-    sender: User,
-    recipient: User,
-    { createReadStream, filename, mimetype }: AttachmentService.upload
-  ) {
-    return new Promise<Attachment>((resolve, reject) => {
-      const readStream = createReadStream();
-      (readStream as any).setEncoding("binary");
-
-      let file: string = "";
-
-      readStream.once("error", (err) => {
-        file = "";
-        return reject(err);
-      });
-
-      readStream.on("data", (chunk) => (file += chunk));
-      readStream.on("end", async () => {
-        const binaryFile = Buffer.from(file, "binary");
-        let dimensions;
-        try {
-          dimensions = sizeOf(binaryFile);
-        } catch (ex) {
-          dimensions = { width: 0, height: 0 };
-        }
-
-        const attachment = new Attachment({
-          participantA: sender,
-          participantB: recipient,
-          name: filename,
-          attachment: binaryFile,
-          mimetype,
-          width: dimensions.width!,
-          height: dimensions.height!,
-        });
-
-        return resolve(attachment);
-      });
-    });
-  }
 
   async getAll(
     me: User,
@@ -125,17 +83,5 @@ export class AttachmentService {
       attachments: attachments.slice(0, realLimit),
       hasMore: attachments.length === realLimitPlusOne,
     };
-  }
-
-  async upload(
-    sender: User,
-    recipient: User,
-    files: AttachmentService.upload[]
-  ): Promise<Attachment[]> {
-    return Promise.all(
-      files.map(async (file) => {
-        return await this.uploadSingle(sender, recipient, file);
-      })
-    );
   }
 }
