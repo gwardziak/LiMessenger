@@ -82,40 +82,39 @@ export class AttachmentService {
 
     const qb = this.attachmentRepository
       .createQueryBuilder("attachments")
-      .leftJoinAndSelect("attachments.participantA", "participantA")
-      .leftJoinAndSelect("attachments.participantB", "participantB")
-      .orderBy("attachments.createdAt", "DESC")
-      .take(realLimitPlusOne);
-
-    if (options.cursor) {
-      qb.where(
+      .select([
+        "attachments.id",
+        "attachments.uuid",
+        "attachments.name",
+        "attachments.mimetype",
+        "attachments.createdAt",
+        "attachments.updatedAt",
+        "attachments.height",
+        "attachments.width",
+      ])
+      .leftJoin("attachments.participantA", "participantA")
+      .leftJoin("attachments.participantB", "participantB")
+      .orderBy("attachments.id", "DESC")
+      .take(realLimitPlusOne)
+      .where(
         `
-          (
-            (participantA.uuid = :recipientUuid AND participantB.id = :senderId)
-            OR
-            (participantA.id = :senderId AND participantB.uuid = :recipientUuid)
-          )
-          AND
-          (DATETIME(attachments.createdAt) < DATETIME(:cursor) AND attachments.mimetype ${has} "%image%")
+      (
+        (participantA.uuid = :recipientUuid AND participantB.id = :senderId)
+        OR
+        (participantA.id = :senderId AND participantB.uuid = :recipientUuid)
+      ) AND attachments.mimetype ${has} "%image%"
         `,
         {
           senderId: me.id,
           recipientUuid: options.friendUuid,
-          cursor: options.cursor,
         }
       );
-    } else {
-      qb.where(
-        `
-          (
-            (participantA.uuid = :recipientUuid AND participantB.id = :senderId)
-            OR
-            (participantA.id = :senderId AND participantB.uuid = :recipientUuid)
-          ) AND attachments.mimetype ${has} "%image%"
-        `,
+
+    if (options.cursor) {
+      qb.andWhere(
+        "attachments.id < (SELECT id from attachment where uuid = :cursor)",
         {
-          senderId: me.id,
-          recipientUuid: options.friendUuid,
+          cursor: options.cursor,
         }
       );
     }

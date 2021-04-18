@@ -48,44 +48,30 @@ export class MessageService {
 
     const qb = this.messageRepository
       .createQueryBuilder("messages")
-      .leftJoinAndSelect("messages.sender", "sender")
-      .leftJoinAndSelect("messages.recipient", "recipient")
-      .orderBy("messages.createdAt", "DESC")
-      .take(realLimitPlusOne);
-
-    if (options.cursor) {
-      qb.where(
+      .leftJoin("messages.sender", "sender")
+      .leftJoin("messages.recipient", "recipient")
+      .orderBy("messages.id", "DESC")
+      .take(realLimitPlusOne)
+      .where(
         `
-          (
             (sender.uuid = :recipientUuid AND recipient.id = :senderId) 
             OR 
             (sender.id = :senderId AND recipient.uuid = :recipientUuid)
-          ) 
-          AND 
-          DATETIME(messages.createdAt) < DATETIME(:cursor)
         `,
         {
           senderId: me.id,
           recipientUuid: options.friendUuid,
+        }
+      );
+
+    if (options.cursor) {
+      qb.andWhere(
+        "messages.id < (SELECT id from message where uuid = :cursor)",
+        {
           cursor: options.cursor,
         }
       );
-    } else {
-      qb.where(
-        `
-          (
-            (sender.uuid = :recipientUuid AND recipient.id = :senderId) 
-            OR 
-            (sender.id = :senderId AND recipient.uuid = :recipientUuid)
-          )
-        `,
-        {
-          senderId: me.id,
-          recipientUuid: options.friendUuid,
-        }
-      );
     }
-
     const messages = await qb.getMany();
 
     return {

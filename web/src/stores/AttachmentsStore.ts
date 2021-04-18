@@ -107,7 +107,7 @@ export class AttachmentsStore {
           friendUuid: activeChat,
           limit: 24,
           isImage,
-          cursor: chatroom ? chatroom[chatroom.length - 1]?.createdAt : null,
+          cursor: chatroom ? chatroom[chatroom.length - 1]?.uuid : null,
         },
       })
       .toPromise();

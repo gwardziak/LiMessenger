@@ -216,7 +216,7 @@ export class ChatStore {
         options: {
           friendUuid: this.activeChat,
           limit: 30,
-          cursor: chatroom ? chatroom[chatroom.length - 1]?.createdAt : null,
+          cursor: chatroom ? chatroom[chatroom.length - 1]?.uuid : null,
         },
       })
       .toPromise();
