@@ -21,7 +21,7 @@ export const SharedFilesMenu = observer(() => {
     if (!isFetching && fileInfo.hasMore) {
       try {
         setIsFetching(true);
-        await rootStore.attachmentsStore.fetchAttachments(false);
+        await rootStore.attachmentsStore.fetchFiles();
         setIsFetching(false);
         console.log("Done fetching");
       } catch (ex) {
@@ -70,7 +70,7 @@ const Header = styled.div`
   display: grid;
   grid-template-rows: 20px;
   grid-template-columns: 1fr 20px;
-  padding: 14px;
+  padding: 14px 19px 14px 14px;
 
   &:hover {
     background-color: ${({ theme }) => theme.item.hover};

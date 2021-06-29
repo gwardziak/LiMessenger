@@ -3,6 +3,8 @@ import React, { useLayoutEffect, useRef, useState } from "react";
 import { Scrollbar } from "react-scrollbars-custom";
 import { ScrollState } from "react-scrollbars-custom/dist/types/types";
 import styled, { css } from "styled-components";
+import { AttachmentStore } from "../stores/AttachmentsStore";
+import { IFile } from "../stores/ChatStore";
 import { useRootStore } from "../stores/RootStore";
 import { MyScrollbar } from "../utils/Scrollbar";
 import { Files } from "./Files";
@@ -89,21 +91,26 @@ export const ChatRoom = observer(() => {
             <MessageContainer key={messages[0].uuid} messagesSender={sender}>
               <GroupMessages messagesSender={sender}>
                 {messages.map((message) => {
-                  const files = [];
-                  const images = [];
+                  const files: IFile[] = [];
+                  const images: AttachmentStore.Image[] = [];
 
-                  if (message.attachments!.length !== 0) {
-                    for (const attachment of message.attachments!) {
-                      attachment.mimetype.includes("image")
-                        ? images.push(attachment)
-                        : files.push(attachment);
+                  if (message.files!.length !== 0) {
+                    for (const file of message.files!) {
+                      files.push(file);
+                    }
+                  }
+
+                  if (message.images!.length !== 0) {
+                    for (const image of message.images!) {
+                      images.push(image);
                     }
                   }
 
                   return (
                     <React.Fragment key={message.uuid}>
                       {message.text === "" &&
-                      message.attachments?.length !== 0 ? null : (
+                      (message.files?.length !== 0 ||
+                        message.images?.length !== 0) ? null : (
                         <Message key={message.uuid} sender={sender}>
                           {message.text}
                         </Message>

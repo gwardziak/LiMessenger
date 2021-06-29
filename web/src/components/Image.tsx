@@ -1,30 +1,29 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import { ModalProvider } from "styled-react-modal";
-import { Attachment } from "../stores/ChatStore";
+import { AttachmentStore } from "../stores/AttachmentsStore";
 import { Gallery } from "./Gallery";
 
 type ImageProps = {
-  image: Attachment;
+  image: AttachmentStore.Image;
   imageCount: number;
 };
 
 export const Image = ({ image, imageCount }: ImageProps) => {
   const [isZoomImage, setIsZoomImage] = useState<boolean>(false);
-
   return (
     <>
       <Img
-        height={image.height}
-        width={image.width}
-        src={`http://localhost:4000/${image.link}`}
+        height={image.minHeight}
+        width={image.minWidth}
+        src={`http://localhost:4000/${image.links.min ?? image.links.orginal}`}
         onClick={() => setIsZoomImage(!isZoomImage)}
         imageCount={imageCount}
       />
       {isZoomImage && (
         <ModalProvider>
           <Gallery
-            image={`http://localhost:4000/${image.link}`}
+            image={`http://localhost:4000/${image.links.orginal}`}
             zoomImage={isZoomImage}
             setZoomImage={setIsZoomImage}
           />

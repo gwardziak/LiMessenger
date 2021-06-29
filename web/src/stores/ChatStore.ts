@@ -33,14 +33,29 @@ export type Sender = {
   username: string;
 };
 
-export type Attachment = {
+export type Image = {
   uuid: string;
-  link: string;
   name: string;
   mimetype: string;
   createdAt: string;
-  height: number;
-  width: number;
+  updatedAt: string;
+  minHeight: number;
+  minWidth: number;
+  links: Links;
+};
+
+export type IFile = {
+  uuid: string;
+  name: string;
+  mimetype: string;
+  createdAt: string;
+  updatedAt: string;
+  link: string;
+};
+
+export type Links = {
+  orginal: string;
+  min: string | null;
 };
 
 export type Message = {
@@ -49,7 +64,8 @@ export type Message = {
   createdAt: string;
   sender: Sender;
   recipient: Recipient;
-  attachments?: Attachment[];
+  images?: Image[];
+  files?: IFile[];
 };
 
 export type MessageInfo = {
@@ -60,15 +76,11 @@ export type MessageInfo = {
 export class ChatStore {
   private chatSubscription: { unsubscribe: (_: void) => void } | null = null;
 
-  @observable public readonly messages: Map<
-    string,
-    Message[]
-  > = observable.map();
+  @observable public readonly messages: Map<string, Message[]> =
+    observable.map();
 
-  @observable public readonly messagesInfo: Map<
-    string,
-    MessageInfo
-  > = observable.map();
+  @observable public readonly messagesInfo: Map<string, MessageInfo> =
+    observable.map();
 
   @observable activeChat: string | null = null;
 
@@ -193,12 +205,14 @@ export class ChatStore {
     if (!data?.firstMessages) {
       throw new Error("Data not found");
     }
+
     return runInAction(() => {
       for (const message of data.firstMessages) {
         const key: string = this.roomId(message);
         if (!this.messages.has(key)) {
           this.messages.set(key, []);
         }
+
         this.messages.get(key)!.unshift(message);
         this.setMessageInfo(key, { hasMore: true, initialFetch: true });
       }
@@ -234,6 +248,7 @@ export class ChatStore {
       if (!this.messages.has(this.activeChat)) {
         this.messages.set(this.activeChat, []);
       }
+
       this.messages.get(this.activeChat)!.push(...data.messages.messages);
 
       if (this.messagesInfo.get(this.activeChat)?.initialFetch) {
@@ -261,8 +276,8 @@ export class ChatStore {
 
         await this.fetchChatMessages();
 
-        await this.rootStore.attachmentsStore.fetchAttachments(false);
-        await this.rootStore.attachmentsStore.fetchAttachments(true);
+        await this.rootStore.attachmentsStore.fetchFiles();
+        await this.rootStore.attachmentsStore.fetchImages();
         return;
       } else {
         this.activeChat = " ";
@@ -280,8 +295,8 @@ export class ChatStore {
       this.rootStore.attachmentsStore.filesInfo.get(this.activeChat) ===
       undefined
     ) {
-      await this.rootStore.attachmentsStore.fetchAttachments(false);
-      await this.rootStore.attachmentsStore.fetchAttachments(true);
+      await this.rootStore.attachmentsStore.fetchFiles();
+      await this.rootStore.attachmentsStore.fetchImages();
     }
   }
 
@@ -317,8 +332,6 @@ export class ChatStore {
 
         return runInAction(() => {
           const key: string = this.roomId(data.chatroomSubscription);
-          const files = [];
-          const images = [];
 
           if (!this.messages.has(key)) {
             this.messages.set(key, []);
@@ -326,27 +339,24 @@ export class ChatStore {
 
           this.messages.get(key)!.unshift(data.chatroomSubscription);
 
-          if (data.chatroomSubscription.attachments.length !== 0) {
-            for (const attachment of data.chatroomSubscription.attachments!) {
-              attachment.mimetype.includes("image")
-                ? images.push(attachment)
-                : files.push(attachment);
+          if (data.chatroomSubscription.images.length !== 0) {
+            if (!this.rootStore.attachmentsStore.images.has(key)) {
+              this.rootStore.attachmentsStore.images.set(key, []);
             }
 
-            if (files.length !== 0) {
-              if (!this.rootStore.attachmentsStore.files.has(key)) {
-                this.rootStore.attachmentsStore.files.set(key, []);
-              }
-              this.rootStore.attachmentsStore.files.get(key)!.push(...files);
+            this.rootStore.attachmentsStore.images
+              .get(key)!
+              .push(...data.chatroomSubscription.images);
+          }
+
+          if (data.chatroomSubscription.files.length !== 0) {
+            if (!this.rootStore.attachmentsStore.files.has(key)) {
+              this.rootStore.attachmentsStore.files.set(key, []);
             }
 
-            if (images.length !== 0) {
-              if (!this.rootStore.attachmentsStore.images.has(key)) {
-                this.rootStore.attachmentsStore.images.set(key, []);
-              }
-
-              this.rootStore.attachmentsStore.images.get(key)!.push(...images);
-            }
+            this.rootStore.attachmentsStore.files
+              .get(key)!
+              .push(...data.chatroomSubscription.files);
           }
 
           this.setIncomingMessage({

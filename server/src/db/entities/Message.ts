@@ -9,8 +9,9 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from "typeorm";
-import { Attachment } from "./Attachment";
 import { Chatroom } from "./Chatroom";
+import { File } from "./File";
+import { Image } from "./Image";
 import { User } from "./User";
 
 export namespace Message {
@@ -19,7 +20,8 @@ export namespace Message {
     room: Chatroom;
     sender: User;
     recipient: User;
-    attachments?: Attachment[];
+    files?: File[];
+    images?: Image[];
   };
 }
 
@@ -61,10 +63,15 @@ export class Message implements Message.Options {
   })
   public readonly room!: Chatroom;
 
-  @OneToMany(() => Attachment, (attachment) => attachment.message, {
+  @OneToMany(() => Image, (image) => image.message, {
     cascade: true,
   })
-  public attachments?: Attachment[];
+  public images?: Image[];
+
+  @OneToMany(() => File, (file) => file.message, {
+    cascade: true,
+  })
+  public files?: File[];
 
   constructor(options: Message.Options) {
     if (options) {

@@ -1,7 +1,7 @@
 import DataLoader from "dataloader";
 import { getRepository } from "typeorm";
 import { Message } from "../db/entities/Message";
-import { User } from "./../db/entities/User";
+import { User } from "../db/entities/User";
 
 export const senderLoader = () =>
   new DataLoader<number, User>(async (messageIds) => {

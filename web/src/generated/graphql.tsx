@@ -18,7 +18,8 @@ export type Scalars = {
 
 export type Query = {
   __typename?: 'Query';
-  attachments: PaginatedAttachments;
+  files: FilePagination;
+  images: ImagePagination;
   messages: PaginatedMessages;
   firstMessages: Array<Message>;
   me?: Maybe<User>;
@@ -27,8 +28,13 @@ export type Query = {
 };
 
 
-export type QueryAttachmentsArgs = {
-  options: AttachmentPaginationInput;
+export type QueryFilesArgs = {
+  options: FilePaginationInput;
+};
+
+
+export type QueryImagesArgs = {
+  options: ImagePaginationInput;
 };
 
 
@@ -46,31 +52,58 @@ export type QueryAuthorizeArgs = {
   token: AuthorizeInput;
 };
 
-export type AttachmentPaginationInput = {
+export type FilePaginationInput = {
   friendUuid: Scalars['String'];
   limit: Scalars['Int'];
   cursor?: Maybe<Scalars['String']>;
-  isImage: Scalars['Boolean'];
 };
 
-export type PaginatedAttachments = {
-  __typename?: 'PaginatedAttachments';
-  attachments: Array<Attachment>;
+export type FilePagination = {
+  __typename?: 'FilePagination';
+  files: Array<File>;
   hasMore: Scalars['Boolean'];
 };
 
-export type Attachment = {
-  __typename?: 'Attachment';
+export type File = {
+  __typename?: 'File';
   uuid: Scalars['String'];
   name: Scalars['String'];
   mimetype: Scalars['String'];
-  width: Scalars['Float'];
-  height: Scalars['Float'];
   createdAt: Scalars['DateTime'];
   updatedAt: Scalars['DateTime'];
   link: Scalars['String'];
 };
 
+
+export type ImagePaginationInput = {
+  friendUuid: Scalars['String'];
+  limit: Scalars['Int'];
+  cursor?: Maybe<Scalars['String']>;
+};
+
+export type ImagePagination = {
+  __typename?: 'ImagePagination';
+  images: Array<Image>;
+  hasMore: Scalars['Boolean'];
+};
+
+export type Image = {
+  __typename?: 'Image';
+  uuid: Scalars['String'];
+  name: Scalars['String'];
+  mimetype: Scalars['String'];
+  minWidth: Scalars['Float'];
+  minHeight: Scalars['Float'];
+  createdAt: Scalars['DateTime'];
+  updatedAt: Scalars['DateTime'];
+  links: Links;
+};
+
+export type Links = {
+  __typename?: 'Links';
+  orginal: Scalars['String'];
+  min: Scalars['String'];
+};
 
 export type MessagePaginationInput = {
   friendUuid: Scalars['String'];
@@ -92,7 +125,8 @@ export type Message = {
   updatedAt: Scalars['DateTime'];
   sender: UserMessage;
   recipient: UserMessage;
-  attachments: Array<Attachment>;
+  images: Array<Image>;
+  files: Array<File>;
 };
 
 export type UserMessage = {
@@ -199,23 +233,6 @@ export type SignUpMutation = (
   & Pick<Mutation, 'signUp'>
 );
 
-export type AttachmentsQueryVariables = Exact<{
-  options: AttachmentPaginationInput;
-}>;
-
-
-export type AttachmentsQuery = (
-  { __typename?: 'Query' }
-  & { attachments: (
-    { __typename?: 'PaginatedAttachments' }
-    & Pick<PaginatedAttachments, 'hasMore'>
-    & { attachments: Array<(
-      { __typename?: 'Attachment' }
-      & Pick<Attachment, 'uuid' | 'name' | 'mimetype' | 'link' | 'createdAt' | 'height' | 'width'>
-    )> }
-  ) }
-);
-
 export type AuthorizeQueryVariables = Exact<{
   options: AuthorizeInput;
 }>;
@@ -227,6 +244,23 @@ export type AuthorizeQuery = (
     { __typename?: 'User' }
     & Pick<User, 'uuid' | 'username' | 'email' | 'password' | 'accountVerified'>
   )> }
+);
+
+export type FilesQueryVariables = Exact<{
+  options: FilePaginationInput;
+}>;
+
+
+export type FilesQuery = (
+  { __typename?: 'Query' }
+  & { files: (
+    { __typename?: 'FilePagination' }
+    & Pick<FilePagination, 'hasMore'>
+    & { files: Array<(
+      { __typename?: 'File' }
+      & Pick<File, 'uuid' | 'name' | 'mimetype' | 'updatedAt' | 'createdAt' | 'link'>
+    )> }
+  ) }
 );
 
 export type FindUserQueryVariables = Exact<{
@@ -256,11 +290,39 @@ export type FirstMessagesQuery = (
     ), recipient: (
       { __typename?: 'UserMessage' }
       & Pick<UserMessage, 'uuid' | 'username'>
-    ), attachments: Array<(
-      { __typename?: 'Attachment' }
-      & Pick<Attachment, 'uuid' | 'name' | 'mimetype' | 'link' | 'createdAt' | 'height' | 'width'>
+    ), images: Array<(
+      { __typename?: 'Image' }
+      & Pick<Image, 'uuid' | 'name' | 'mimetype' | 'createdAt' | 'updatedAt' | 'minHeight' | 'minWidth'>
+      & { links: (
+        { __typename?: 'Links' }
+        & Pick<Links, 'orginal' | 'min'>
+      ) }
+    )>, files: Array<(
+      { __typename?: 'File' }
+      & Pick<File, 'uuid' | 'name' | 'mimetype' | 'createdAt' | 'updatedAt' | 'link'>
     )> }
   )> }
+);
+
+export type ImagesQueryVariables = Exact<{
+  options: ImagePaginationInput;
+}>;
+
+
+export type ImagesQuery = (
+  { __typename?: 'Query' }
+  & { images: (
+    { __typename?: 'ImagePagination' }
+    & Pick<ImagePagination, 'hasMore'>
+    & { images: Array<(
+      { __typename?: 'Image' }
+      & Pick<Image, 'uuid' | 'name' | 'mimetype' | 'minWidth' | 'minHeight' | 'updatedAt' | 'createdAt'>
+      & { links: (
+        { __typename?: 'Links' }
+        & Pick<Links, 'orginal' | 'min'>
+      ) }
+    )> }
+  ) }
 );
 
 export type MeQueryVariables = Exact<{ [key: string]: never; }>;
@@ -293,9 +355,16 @@ export type MessagesQuery = (
       ), recipient: (
         { __typename?: 'UserMessage' }
         & Pick<UserMessage, 'uuid' | 'username'>
-      ), attachments: Array<(
-        { __typename?: 'Attachment' }
-        & Pick<Attachment, 'uuid' | 'name' | 'mimetype' | 'link' | 'createdAt' | 'height' | 'width'>
+      ), images: Array<(
+        { __typename?: 'Image' }
+        & Pick<Image, 'uuid' | 'name' | 'mimetype' | 'createdAt' | 'updatedAt' | 'minHeight' | 'minWidth'>
+        & { links: (
+          { __typename?: 'Links' }
+          & Pick<Links, 'orginal' | 'min'>
+        ) }
+      )>, files: Array<(
+        { __typename?: 'File' }
+        & Pick<File, 'uuid' | 'name' | 'mimetype' | 'createdAt' | 'updatedAt' | 'link'>
       )> }
     )> }
   ) }
@@ -315,9 +384,16 @@ export type ChatroomSubscription = (
     ), recipient: (
       { __typename?: 'UserMessage' }
       & Pick<UserMessage, 'uuid' | 'username'>
-    ), attachments: Array<(
-      { __typename?: 'Attachment' }
-      & Pick<Attachment, 'uuid' | 'name' | 'mimetype' | 'link' | 'createdAt' | 'height' | 'width'>
+    ), images: Array<(
+      { __typename?: 'Image' }
+      & Pick<Image, 'uuid' | 'name' | 'mimetype' | 'minWidth' | 'minHeight' | 'updatedAt' | 'createdAt'>
+      & { links: (
+        { __typename?: 'Links' }
+        & Pick<Links, 'orginal' | 'min'>
+      ) }
+    )>, files: Array<(
+      { __typename?: 'File' }
+      & Pick<File, 'uuid' | 'name' | 'mimetype' | 'createdAt' | 'updatedAt' | 'link'>
     )> }
   ) }
 );
@@ -359,26 +435,6 @@ export const SignUpDocument = gql`
 export function useSignUpMutation() {
   return Urql.useMutation<SignUpMutation, SignUpMutationVariables>(SignUpDocument);
 };
-export const AttachmentsDocument = gql`
-    query Attachments($options: AttachmentPaginationInput!) {
-  attachments(options: $options) {
-    hasMore
-    attachments {
-      uuid
-      name
-      mimetype
-      link
-      createdAt
-      height
-      width
-    }
-  }
-}
-    `;
-
-export function useAttachmentsQuery(options: Omit<Urql.UseQueryArgs<AttachmentsQueryVariables>, 'query'> = {}) {
-  return Urql.useQuery<AttachmentsQuery>({ query: AttachmentsDocument, ...options });
-};
 export const AuthorizeDocument = gql`
     query Authorize($options: AuthorizeInput!) {
   authorize(token: $options) {
@@ -393,6 +449,25 @@ export const AuthorizeDocument = gql`
 
 export function useAuthorizeQuery(options: Omit<Urql.UseQueryArgs<AuthorizeQueryVariables>, 'query'> = {}) {
   return Urql.useQuery<AuthorizeQuery>({ query: AuthorizeDocument, ...options });
+};
+export const FilesDocument = gql`
+    query Files($options: FilePaginationInput!) {
+  files(options: $options) {
+    hasMore
+    files {
+      uuid
+      name
+      mimetype
+      updatedAt
+      createdAt
+      link
+    }
+  }
+}
+    `;
+
+export function useFilesQuery(options: Omit<Urql.UseQueryArgs<FilesQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<FilesQuery>({ query: FilesDocument, ...options });
 };
 export const FindUserDocument = gql`
     query FindUser($phase: String!) {
@@ -420,14 +495,26 @@ export const FirstMessagesDocument = gql`
       uuid
       username
     }
-    attachments {
+    images {
       uuid
       name
       mimetype
-      link
+      links {
+        orginal
+        min
+      }
       createdAt
-      height
-      width
+      updatedAt
+      minHeight
+      minWidth
+    }
+    files {
+      uuid
+      name
+      mimetype
+      createdAt
+      updatedAt
+      link
     }
   }
 }
@@ -435,6 +522,30 @@ export const FirstMessagesDocument = gql`
 
 export function useFirstMessagesQuery(options: Omit<Urql.UseQueryArgs<FirstMessagesQueryVariables>, 'query'> = {}) {
   return Urql.useQuery<FirstMessagesQuery>({ query: FirstMessagesDocument, ...options });
+};
+export const ImagesDocument = gql`
+    query Images($options: ImagePaginationInput!) {
+  images(options: $options) {
+    hasMore
+    images {
+      uuid
+      name
+      mimetype
+      minWidth
+      minHeight
+      links {
+        orginal
+        min
+      }
+      updatedAt
+      createdAt
+    }
+  }
+}
+    `;
+
+export function useImagesQuery(options: Omit<Urql.UseQueryArgs<ImagesQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<ImagesQuery>({ query: ImagesDocument, ...options });
 };
 export const MeDocument = gql`
     query Me {
@@ -467,14 +578,26 @@ export const MessagesDocument = gql`
         uuid
         username
       }
-      attachments {
+      images {
         uuid
         name
         mimetype
-        link
+        links {
+          orginal
+          min
+        }
         createdAt
-        height
-        width
+        updatedAt
+        minHeight
+        minWidth
+      }
+      files {
+        uuid
+        name
+        mimetype
+        createdAt
+        updatedAt
+        link
       }
     }
   }
@@ -499,14 +622,26 @@ export const ChatroomDocument = gql`
       uuid
       username
     }
-    attachments {
+    images {
       uuid
       name
       mimetype
-      link
+      minWidth
+      minHeight
+      links {
+        orginal
+        min
+      }
+      updatedAt
       createdAt
-      height
-      width
+    }
+    files {
+      uuid
+      name
+      mimetype
+      createdAt
+      updatedAt
+      link
     }
   }
 }

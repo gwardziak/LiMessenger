@@ -38,9 +38,8 @@ export const SendMessage = observer(
     ]);
     const defaultInput = "Aa";
     const [toggle, setToggle] = useState<boolean>(false);
-    const [isEmojiPickerVisible, setIsEmojiPickerVisible] = useState<boolean>(
-      false
-    );
+    const [isEmojiPickerVisible, setIsEmojiPickerVisible] =
+      useState<boolean>(false);
     const [input, setInput] = useState<string>("");
     const emojiRef = useRef(null);
     const inputRef = useRef<HTMLElement>(null);
@@ -175,9 +174,8 @@ export const SendMessage = observer(
 
               if (e.key === " " && emojiStartPosition !== -1) {
                 const emojiString = input.substring(emojiStartPosition);
-                const emojis: EmojiData[] | null = emojiIndex.search(
-                  emojiString
-                );
+                const emojis: EmojiData[] | null =
+                  emojiIndex.search(emojiString);
 
                 if (
                   emojis === null ||
@@ -197,7 +195,7 @@ export const SendMessage = observer(
                 e.preventDefault();
 
                 try {
-                  await rootStore.chatStore.sendMessage(
+                  rootStore.chatStore.sendMessage(
                     input.replace(/&nbsp;/g, " "),
                     uploadFiles
                   );

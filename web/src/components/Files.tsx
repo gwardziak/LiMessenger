@@ -1,10 +1,18 @@
 import React from "react";
 import styled from "styled-components";
-import { Attachment } from "../stores/ChatStore";
 import { File } from "./../Icons/File";
 
+type FileIntefrace = {
+  uuid: string;
+  name: string;
+  mimetype: string;
+  createdAt: string;
+  updatedAt: string;
+  link: string;
+};
+
 type FilesProps = {
-  files: Attachment[];
+  files: FileIntefrace[];
   sender: boolean;
 };
 

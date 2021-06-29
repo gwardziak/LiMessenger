@@ -1,0 +1,18 @@
+query Images($options: ImagePaginationInput!) {
+  images(options: $options) {
+    hasMore
+    images {
+      uuid
+      name
+      mimetype
+      minWidth
+      minHeight
+      links {
+        orginal
+        min
+      }
+      updatedAt
+      createdAt
+    }
+  }
+}

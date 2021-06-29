@@ -64,7 +64,6 @@ export class UserService {
     { assosiateWithUser }: GraphQLServer.Context
   ): Promise<User | null> {
     const user = await this.verifyUserToken(options.token);
-
     assosiateWithUser(user);
 
     return user;

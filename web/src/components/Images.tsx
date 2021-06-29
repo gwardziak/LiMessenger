@@ -2,10 +2,10 @@ import React from "react";
 import { useInView } from "react-intersection-observer";
 import styled from "styled-components";
 import { Image, Img } from "../components/Image";
-import { Attachment } from "../stores/ChatStore";
+import { AttachmentStore } from "../stores/AttachmentsStore";
 
 type ImagesProps = {
-  images: Attachment[];
+  images: AttachmentStore.Image[];
 };
 
 export const Images = ({ images }: ImagesProps) => {
@@ -23,10 +23,12 @@ export const Images = ({ images }: ImagesProps) => {
           //placeholder
           <Img
             key={image.uuid}
-            height={image.height}
-            width={image.width}
+            height={image.minHeight}
+            width={image.minWidth}
             imageCount={images.length}
-            data-src={`http://localhost:4000/${image.link}`}
+            data-src={`http://localhost:4000/${
+              image.links.min ?? image.links.orginal
+            }`}
           />
         )
       )}

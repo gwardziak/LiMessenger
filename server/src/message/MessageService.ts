@@ -1,10 +1,11 @@
-import sizeOf from "image-size";
+import { Stream } from "stream";
 import { PubSubEngine } from "type-graphql";
 import { Inject, Service } from "typedi";
 import { getRepository } from "typeorm";
-import { AttachmentService } from "../attachment/AttachmentService";
-import { AttachmentInput } from "../attachment/dto/AttachmentInput";
-import { Attachment } from "../db/entities/Attachment";
+import { FileService } from "../attachment/file/FileService";
+import { ImageService } from "../attachment/image/ImageService";
+import { File } from "../db/entities/File";
+import { Image } from "../db/entities/Image";
 import { Message } from "../db/entities/Message";
 import { User } from "../db/entities/User";
 import { upload } from "../utils/upload";
@@ -16,10 +17,18 @@ export namespace MessageService {
     recipientUuid: string;
     text: string;
   };
+
   export type PaginateMessages = {
     friendUuid: string;
     limit: number;
     cursor?: string | null;
+  };
+
+  export type Attachment = {
+    createReadStream: () => Stream;
+    filename: string;
+    mimetype: string;
+    encoding: string;
   };
 }
 
@@ -28,7 +37,8 @@ export class MessageService {
   private constructor(
     @Inject("PUB_SUB") private readonly pubSub: PubSubEngine,
     private readonly chatroomService: ChatroomService,
-    private readonly attachmentService: AttachmentService
+    private readonly fileService: FileService,
+    private readonly imageService: ImageService
   ) {}
   private messageRepository = getRepository(Message);
   private userRepository = getRepository(User);
@@ -129,7 +139,7 @@ export class MessageService {
   async sendMessage(
     sender: User,
     options: MessageService.SendMessage,
-    files: AttachmentService.upload[]
+    files: MessageService.Attachment[]
   ): Promise<void> {
     let room = await this.chatroomRepository
       .createQueryBuilder("chatroom")
@@ -166,10 +176,11 @@ export class MessageService {
       recipient,
     });
 
-    let attachments: Attachment[] = [];
+    const uploadFiles: File[] = [];
+    const uploadImages: Image[] = [];
 
     if (files.length > 0) {
-      const resolvedFiles: AttachmentInput[] = [];
+      const resolvedFiles: MessageService.Attachment[] = [];
 
       for (const file of files) {
         const result = await Promise.resolve(file);
@@ -183,46 +194,23 @@ export class MessageService {
       const uploadMany = await Promise.all([...streams]);
 
       for (const file of uploadMany) {
-        // const attachment = {
-        //   ...file,
-        //   participantA: sender,
-        //   participantB: recipient,
-        // };
-
-        //   if (file.mimetype.includes("image")) {
-        //     const newImage = await this.imageService.createImage(attachment);
-        //     uplaodImages.push(newImage);
-        //   }
-
-        //   const newFile = this.fileService.createFile(attachment);
-        //   uploadFiles.push(newFile);
-        // }
-
-        // message.images = [...uplaodImages];
-        // message.files = [...uploadFiles];
-
-        const binaryFile = Buffer.from(file.file, "binary");
-        let dimensions;
-        try {
-          dimensions = sizeOf(binaryFile);
-        } catch (ex) {
-          dimensions = { width: 0, height: 0 };
-        }
-
-        const attachment = new Attachment({
+        const attachment = {
+          ...file,
           participantA: sender,
           participantB: recipient,
-          name: file.name,
-          attachment: binaryFile,
-          mimetype: file.mimetype,
-          width: dimensions.width!,
-          height: dimensions.height!,
-        });
+        };
 
-        attachments.push(attachment);
+        if (file.mimetype.includes("image")) {
+          const newImage = await this.imageService.createImage(attachment);
+          uploadImages.push(newImage);
+        } else {
+          const newFile = this.fileService.createFile(attachment);
+          uploadFiles.push(newFile);
+        }
       }
 
-      message.attachments = [...attachments];
+      message.images = [...uploadImages];
+      message.files = [...uploadFiles];
     }
 
     await this.messageRepository.save(message);

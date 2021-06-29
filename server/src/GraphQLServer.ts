@@ -1,8 +1,8 @@
 import { ExpressContext } from "apollo-server-express/dist/ApolloServer";
 import { ConnectionContext } from "subscriptions-transport-ws";
+import { createLoaders } from "./dataloaders/createLoaders";
 import { User } from "./db/entities/User";
 import { UserService } from "./user/UserService";
-import { createLoaders } from "./utils/createLoaders";
 
 import WebSocket = require("ws");
 

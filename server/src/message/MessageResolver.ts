@@ -9,11 +9,11 @@ import {
   Query,
   Root,
 } from "type-graphql/decorators";
-import { AttachmentInput } from "../attachment/dto/AttachmentInput";
-import { AttachmentObjectType } from "../attachment/dto/AttachmentObjectType";
+import { FileObjectType } from "../attachment/file/dto/FileObjectType";
+import { ImageObjectType } from "../attachment/image/dto/ImageObjectType";
 import { Message } from "../db/entities/Message";
 import { GraphQLServer } from "../GraphQLServer";
-import { MessageInput } from "./dto/MessageInput";
+import { AttachmentInput, MessageInput } from "./dto/MessageInput";
 import {
   MessageObjectType,
   PaginatedMessagesObjectType,
@@ -74,11 +74,19 @@ export class MessageResolver {
     return loaders.recipient.load(message.id);
   }
 
-  @FieldResolver(() => [AttachmentObjectType])
-  async attachments(
+  @FieldResolver(() => [ImageObjectType])
+  async images(
     @Root() message: Message,
     @Ctx() { loaders }: GraphQLServer.Context
-  ): Promise<AttachmentObjectType[]> {
-    return loaders.attachments.load(message.id);
+  ): Promise<ImageObjectType[]> {
+    return loaders.images.load(message.id);
+  }
+
+  @FieldResolver(() => [FileObjectType])
+  async files(
+    @Root() message: Message,
+    @Ctx() { loaders }: GraphQLServer.Context
+  ): Promise<FileObjectType[]> {
+    return loaders.files.load(message.id);
   }
 }

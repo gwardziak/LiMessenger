@@ -9,7 +9,8 @@ import "reflect-metadata";
 import { buildSchema, useContainer } from "type-graphql";
 import { Container } from "typedi";
 import { createConnection } from "typeorm";
-import { AttachmentResolver } from "./attachment/AttachmentResolver";
+import { FileResolver } from "./attachment/file/FileResolver";
+import { ImageResolver } from "./attachment/image/ImageResolver";
 import { ChatroomResolver } from "./chatroom/ChatroomResolver";
 import { GraphQLServer } from "./GraphQLServer";
 import { MessageResolver } from "./message/MessageResolver";
@@ -28,9 +29,10 @@ const main = async () => {
   const schema = await buildSchema({
     resolvers: [
       MessageResolver,
+      FileResolver,
+      ImageResolver,
       UserResolver,
       ChatroomResolver,
-      AttachmentResolver,
     ],
     pubSub,
     authChecker,
@@ -41,10 +43,10 @@ const main = async () => {
   const httpServer = http.createServer(app);
 
   const fileServerService = Container.get(FileServerService);
-  app.get("/attachment/:participantUuid/:imageUuid", async (req, res) => {
+  app.get("/attachment/:participantUuid/:attachmentUuid", async (req, res) => {
     const file = await fileServerService.getOne(
       req.params.participantUuid,
-      req.params.imageUuid
+      req.params.attachmentUuid
     );
 
     if (!file) {
@@ -53,6 +55,7 @@ const main = async () => {
 
     res.setHeader("Content-Type", file.mimetype);
     res.setHeader("Content-disposition", "attachment; filename=" + file.name);
+
     return res.send(file.attachment);
   });
 

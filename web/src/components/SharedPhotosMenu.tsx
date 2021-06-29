@@ -4,7 +4,7 @@ import styled from "styled-components";
 import { ModalProvider } from "styled-react-modal";
 import { DownArrow } from "../Icons/DownArrow";
 import { UpArrow } from "../Icons/UpArrow";
-import { Attachment } from "../stores/ChatStore";
+import { AttachmentStore } from "../stores/AttachmentsStore";
 import { useRootStore } from "../stores/RootStore";
 import { Gallery } from "./Gallery";
 
@@ -14,7 +14,7 @@ type FileProps = {
 };
 
 type ImageProps = {
-  image: Attachment;
+  image: AttachmentStore.Image;
 };
 
 export const SharedPhotosMenu = observer(({ isOpen, setIsOpen }: FileProps) => {
@@ -43,12 +43,16 @@ const Image = ({ image }: ImageProps) => {
   return (
     <>
       <PhotoContainer onClick={() => setIsZoomImage(!isZoomImage)}>
-        <Photo src={`http://localhost:4000/${image.link}`} />
+        <Photo
+          src={`http://localhost:4000/${
+            image.links.min ?? image.links.orginal
+          }`}
+        />
       </PhotoContainer>
       {isZoomImage && (
         <ModalProvider>
           <Gallery
-            image={`http://localhost:4000/${image.link}`}
+            image={`http://localhost:4000/${image.links.orginal}`}
             zoomImage={isZoomImage}
             setZoomImage={setIsZoomImage}
           />
@@ -71,7 +75,7 @@ const Header = styled.div`
   display: grid;
   grid-template-rows: 20px;
   grid-template-columns: 1fr 20px;
-  padding: 14px;
+  padding: 14px 19px 14px 14px;
   cursor: pointer;
 
   &:hover {
@@ -88,7 +92,7 @@ const HeaderText = styled.div`
 const Photos = styled.div`
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
-  padding: 0 12px;
+  padding: 0 17px 0 17px;
   grid-gap: 4px 4px;
   box-sizing: border-box;
 `;

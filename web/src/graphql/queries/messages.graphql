@@ -13,14 +13,28 @@ query Messages($options: MessagePaginationInput!) {
         uuid
         username
       }
-      attachments {
+
+      images {
         uuid
         name
         mimetype
-        link
+        links {
+          orginal
+          min
+        }
         createdAt
-        height
-        width
+        updatedAt
+        minHeight
+        minWidth
+      }
+
+      files {
+        uuid
+        name
+        mimetype
+        createdAt
+        updatedAt
+        link
       }
     }
   }

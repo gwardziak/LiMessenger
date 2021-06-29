@@ -60,7 +60,7 @@ const Header = styled.div`
   display: grid;
   grid-template-rows: 20px;
   grid-template-columns: 1fr 20px;
-  padding: 14px;
+  padding: 14px 19px 14px 14px;
 
   &:hover {
     background-color: ${({ theme }) => theme.item.hover};

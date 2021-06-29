@@ -12,14 +12,28 @@ subscription Chatroom {
       uuid
       username
     }
-    attachments {
+
+    images {
       uuid
       name
       mimetype
-      link
+      minWidth
+      minHeight
+      links {
+        orginal
+        min
+      }
+      updatedAt
       createdAt
-      height
-      width
+    }
+
+    files {
+      uuid
+      name
+      mimetype
+      createdAt
+      updatedAt
+      link
     }
   }
 }

@@ -1,6 +1,6 @@
 import { Field, InputType, Int } from "type-graphql";
 
-export namespace IAttachmentPaginationInput {
+export namespace IFilePaginationInput {
   export type FilesOptions = {
     friendUuid: string;
     limit: number;
@@ -9,8 +9,7 @@ export namespace IAttachmentPaginationInput {
 }
 
 @InputType()
-export class AttachmentPaginationInput
-  implements IAttachmentPaginationInput.FilesOptions {
+export class FilePaginationInput implements IFilePaginationInput.FilesOptions {
   @Field()
   public readonly friendUuid!: string;
 
@@ -19,7 +18,4 @@ export class AttachmentPaginationInput
 
   @Field(() => String, { nullable: true })
   public readonly cursor!: string | null;
-
-  @Field()
-  public readonly isImage!: boolean;
 }

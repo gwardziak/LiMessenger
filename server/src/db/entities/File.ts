@@ -11,21 +11,19 @@ import {
 import { Message } from "./Message";
 import { User } from "./User";
 
-export namespace Attachment {
+export namespace File {
   export type Options = {
     name: string;
-    attachment: Buffer;
+    file: Buffer;
     participantA: User;
     participantB: User;
     mimetype: string;
-    width: number;
-    height: number;
     message?: Message;
   };
 }
 
 @Entity()
-export class Attachment implements Attachment.Options {
+export class File implements File.Options {
   @PrimaryGeneratedColumn()
   readonly id!: number;
 
@@ -37,16 +35,10 @@ export class Attachment implements Attachment.Options {
   name!: string;
 
   @Column({ type: "blob" })
-  attachment!: Buffer;
+  file!: Buffer;
 
   @Column()
   mimetype!: string;
-
-  @Column()
-  width!: number;
-
-  @Column()
-  height!: number;
 
   @Column()
   createdAt!: Date;
@@ -60,7 +52,7 @@ export class Attachment implements Attachment.Options {
   updatedAt!: Date;
 
   @Index()
-  @ManyToOne(() => Message, (message) => message.attachments, {
+  @ManyToOne(() => Message, (message) => message.files, {
     nullable: false,
   })
   message!: Message;
@@ -75,7 +67,7 @@ export class Attachment implements Attachment.Options {
   })
   public readonly participantB!: User;
 
-  constructor(options: Attachment.Options) {
+  constructor(options: File.Options) {
     if (options) {
       let participantA, participantB;
       if (options.participantA.id < options.participantB.id) {

@@ -1,0 +1,13 @@
+query Files($options: FilePaginationInput!) {
+  files(options: $options) {
+    hasMore
+    files {
+      uuid
+      name
+      mimetype
+      updatedAt
+      createdAt
+      link
+    }
+  }
+}
